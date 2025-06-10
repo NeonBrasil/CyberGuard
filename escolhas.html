@@ -1,23 +1,65 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CyberGuard - Simulador de Segurança</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #0d1117;
-      color: #c9d1d9;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
-    header, footer {
-      text-align: center;
-      padding: 1rem;
-      background-color: #161b22;
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      color: #c9d1d9;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    header {
+      background: rgba(22, 27, 34, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid #30363d;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #58a6ff;
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+    .nav-links a {
+      color: #c9d1d9;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover {
+      color: #58a6ff;
     }
     main {
-      padding: 2rem;
+      flex: 1 0 auto;
+      padding: 7rem 2rem 2rem 2rem;
       max-width: 800px;
       margin: auto;
     }
@@ -30,6 +72,7 @@
       font-size: 1rem;
       cursor: pointer;
       border-radius: 5px;
+      transition: background 0.3s;
     }
     .button:hover {
       background-color: #2ea043;
@@ -44,33 +87,93 @@
       font-weight: bold;
       margin-top: 1rem;
     }
+    footer {
+      flex-shrink: 0;
+      background: #0d1117;
+      padding: 2rem 0;
+      text-align: center;
+      border-top: 1px solid #30363d;
+      margin-top: 4rem;
+    }
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .social-links {
+      display: flex;
+      gap: 1rem;
+    }
+    .social-links a {
+      color: #6e7681;
+      font-size: 1.5rem;
+      transition: color 0.3s;
+    }
+    .social-links a:hover {
+      color: #58a6ff;
+    }
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      main {
+        padding: 7rem 1rem 2rem 1rem;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>CyberGuard - Simulador de Segurança</h1>
-  </header>  <main id="app">
+    <nav class="container">
+      <div class="logo">🛡️ CyberGuard</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="README.md">Sobre</a></li>
+        <li><a href="https://github.com/NeonBrasil">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="app">
     <section id="menu">
       <h2>Escolha o nível das perguntas:</h2>
       <button class="button" onclick="startSimulation('small')">Fácil</button>
       <button class="button" onclick="startSimulation('medium')">Médio</button>
       <button class="button" onclick="startSimulation('large')">Difícil</button>
-    </section><section id="quiz" class="hidden">
-  <div id="question-container" class="question"></div>
-  <div id="options-container"></div>
-  <button class="button" onclick="nextQuestion()">Próxima</button>
-</section>
- 
-<section id="result" class="hidden">
-  <h2>Resultado Final</h2>
-  <p id="score"></p>
-  <p id="feedback" class="feedback"></p>
-  <button class="button" onclick="location.reload()">Jogar Novamente</button>
-</section>
- 
-  </main>  <footer>
-    <p>&copy; 2025 Cayque Cicarelli</p>
-  </footer>  <script>
+    </section>
+    <section id="quiz" class="hidden">
+      <div id="question-container" class="question"></div>
+      <div id="options-container"></div>
+      <button class="button" onclick="nextQuestion()">Próxima</button>
+    </section>
+    <section id="result" class="hidden">
+      <h2>Resultado Final</h2>
+      <p id="score"></p>
+      <p id="feedback" class="feedback"></p>
+      <button class="button" onclick="location.reload()">Jogar Novamente</button>
+    </section>
+  </main>
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
     const quizzes = {
       small: [
         {
@@ -82,6 +185,16 @@
           question: "Você vê um colaborador acessando o e-mail pessoal no computador de serviço. O que você faz?",
           options: ["Aviso ele que o que está fazendo não é permitido.", "Ignoro e faço igual."],
           answer: 0
+        },
+        {
+          question: "Você recebe um e-mail suspeito com um link estranho. O que faz?",
+          options: ["Clica no link para ver o que é.", "Reporta à equipe de segurança."],
+          answer: 1
+        },
+        {
+          question: "Você encontra um pen drive na mesa de um colega. O que faz?",
+          options: ["Leva para casa para ver o que tem.", "Deixar ele."],
+          answer: 1
         },
         {
           question: "Você vê uma planilha de clientes sendo enviada por e-mail pessoal. E agora?",
@@ -96,8 +209,13 @@
           answer: 1
         },
         {
+          question: "Você está em uma reunião e alguém pede para compartilhar sua tela. O que faz?",
+          options: ["Compartilha sem pensar.", "Confirma o que será mostrado."],
+          answer: 1
+        },
+        {
           question: "Você recebeu um e-mail da Mincrosoft avisando que sua conta foi comprometida. O que você faz?",
-          options: ["Denúncio como Pishing.", "Entro em desespero e sigo o passo a passo do e-mail."],
+          options: ["Denúncia como Pishing.", "Entro em desespero e sigo o passo a passo do e-mail."],
           answer: 0
         },
         {
@@ -124,11 +242,11 @@
         }
       ]
     };
- 
+
     let currentQuiz = [];
     let currentIndex = 0;
     let score = 0;
- 
+
     function startSimulation(size) {
       currentQuiz = quizzes[size];
       currentIndex = 0;
@@ -137,7 +255,7 @@
       document.getElementById('quiz').classList.remove('hidden');
       showQuestion();
     }
- 
+
     function showQuestion() {
       const q = currentQuiz[currentIndex];
       document.getElementById('question-container').innerText = q.question;
@@ -154,7 +272,7 @@
         options.appendChild(btn);
       });
     }
- 
+
     function nextQuestion() {
       currentIndex++;
       if (currentIndex < currentQuiz.length) {
@@ -163,7 +281,7 @@
         showResult();
       }
     }
- 
+
     function showResult() {
       document.getElementById('quiz').classList.add('hidden');
       document.getElementById('result').classList.remove('hidden');
@@ -175,5 +293,6 @@
       else feedback = 'Excelente! Você é um agente da segurança!';
       document.getElementById('feedback').innerText = feedback;
     }
-  </script></body>
+  </script>
+</body>
 </html>

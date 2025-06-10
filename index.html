@@ -1,239 +1,164 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CyberGuard - Simulador de Segurança</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
   <style>
-    * {
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }  margin-bottom: 2rem;  color: #22c55e;  position: relative;  z-index: 1;}.button {  background: linear-gradient(45deg, #22c55e, #16a34a);  border: none;  color: white;  padding: 1rem 2rem;  margin: 0.75rem;  font-size: 1.1rem;  font-weight: 600;  cursor: pointer;  border-radius: 12px;  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);  position: relative;  overflow: hidden;  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);  min-width: 200px;  transform: translateY(0);}.button::before {  content: '';  position: absolute;  top: 50%;  left: 50%;  width: 0;  height: 0;  background: rgba(255, 255, 255, 0.2);  border-radius: 50%;  transform: translate(-50%, -50%);  transition: width 0.6s, height 0.6s;}.button:hover {  background: linear-gradient(45deg, #16a34a, #15803d);  transform: translateY(-2px);  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);}.button:active {  transform: translateY(0) scale(0.98);  box-shadow: 0 2px 10px rgba(34, 197, 94, 0.6);}.button:active::before {  width: 300px;  height: 300px;}.button.selected {  background: linear-gradient(45deg, #dc2626, #b91c1c);  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);}.button.correct {  background: linear-gradient(45deg, #059669, #047857);  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);}.button:disabled {  opacity: 0.7;  cursor: not-allowed;  transform: none;}.question-container {  background: rgba(15, 23, 42, 0.6);  border-radius: 15px;  padding: 2rem;  margin-bottom: 2rem;  border-left: 4px solid #22c55e;  position: relative;}.question-text {  font-size: 1.3rem;  font-weight: 500;  color: #f1f5f9;  margin-bottom: 1rem;}.options-container {  display: flex;  flex-direction: column;  gap: 1rem;  margin-bottom: 2rem;}.progress-bar {  width: 100%;  height: 8px;  background: rgba(71, 85, 105, 0.3);  border-radius: 4px;  margin-bottom: 2rem;  overflow: hidden;}.progress-fill {  height: 100%;  background: linear-gradient(90deg, #22c55e, #16a34a);  border-radius: 4px;  transition: width 0.5s ease;  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);}.result-container {  text-align: center;}.score-display {  font-size: 3rem;  font-weight: bold;  background: linear-gradient(45deg, #22c55e, #16a34a);  background-clip: text;  -webkit-background-clip: text;  -webkit-text-fill-color: transparent;  margin-bottom: 1rem;}.feedback {  font-size: 1.3rem;  margin: 2rem 0;  padding: 1.5rem;  border-radius: 12px;  font-weight: 500;}.feedback.excellent {  background: linear-gradient(135deg, rgba(5, 150, 105, 0.2), rgba(16, 185, 129, 0.1));  border: 1px solid rgba(5, 150, 105, 0.3);  color: #10b981;}.feedback.good {  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.1));  border: 1px solid rgba(245, 158, 11, 0.3);  color: #f59e0b;}.feedback.poor {  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(248, 113, 113, 0.1));  border: 1px solid rgba(239, 68, 68, 0.3);  color: #ef4444;}footer {  background: rgba(17, 24, 39, 0.8);  text-align: center;  padding: 2rem;  border-top: 1px solid rgba(71, 85, 105, 0.3);  backdrop-filter: blur(10px);}.hidden {  display: none;}.fade-in {  animation: fadeIn 0.5s ease-in;}@keyframes fadeIn {  from { opacity: 0; transform: translateY(20px); }  to { opacity: 1; transform: translateY(0); }}.bounce-in {  animation: bounceIn 0.6s ease-out;}@keyframes bounceIn {  0% { transform: scale(0.3); opacity: 0; }  50% { transform: scale(1.05); }  70% { transform: scale(0.9); }  100% { transform: scale(1); opacity: 1; }}.icon {  font-size: 1.5rem;  margin-right: 0.5rem;  vertical-align: middle;}@media (max-width: 768px) {  h1 {    font-size: 2rem;  }  .section {    padding: 2rem 1.5rem;    margin: 0 1rem;  }  .button {    padding: 0.8rem 1.5rem;    font-size: 1rem;    min-width: 150px;  }  .question-text {    font-size: 1.1rem;  }  .score-display {    font-size: 2rem;  }}@media (max-width: 480px) {  .options-container {    flex-direction: column;  }  .button {    width: 100%;    margin: 0.5rem 0;  }  h1 {    font-size: 1.8rem;  }  .section {    padding: 1.5rem 1rem;  }}
+    }
+    header, footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #161b22;
+    }
+    main {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    .button {
+      background-color: #238636;
+      border: none;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      margin: 1rem 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .button:hover {
+      background-color: #2ea043;
+    }
+    .question {
+      margin-top: 2rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .feedback {
+      font-weight: bold;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
   <header>
-    <div class="container">
-      <h1><i class="fas fa-shield-alt icon"></i>CyberGuard</h1>
-      <p class="subtitle">Simulador Interativo de Segurança Cibernética</p>
-    </div>
-  </header>
-  <main>
-    <div class="container">
-      <section id="menu" class="section animate__animated animate__fadeIn">
-        <h2><i class="fas fa-building icon"></i>Escolha o porte da empresa:</h2>
-        <div>
-          <button class="button" onclick="startSimulation('small')">
-            <i class="fas fa-store icon"></i>Pequena Empresa
-          </button>
-          <button class="button" onclick="startSimulation('medium')">
-            <i class="fas fa-industry icon"></i>Média Empresa
-          </button>
-          <button class="button" onclick="startSimulation('large')">
-            <i class="fas fa-building icon"></i>Grande Empresa
-          </button>
-        </div>
-      </section><section id="quiz" class="section hidden">    <div class="progress-bar">      <div id="progress-fill" class="progress-fill"></div>    </div>    <div id="question-container" class="question-container">      <div id="question-text" class="question-text"></div>    </div>    <div id="options-container" class="options-container"></div>    <button id="next-button" class="button" onclick="nextQuestion()" style="display: none;">      <div id="feedback" class="feedback"></div>      <button class="button" onclick="location.reload()">        <i class="fas fa-redo icon"></i>Jogar Novamente      </button>    </div>  </section></div>
-  </main>
-  <footer>
-    <div class="container">
-      <p><i class="fas fa-code icon"></i>&copy; 2025 Cayque Cicarelli - Especialista em Segurança Cibernética</p>
-    </div>
-  </footer>          question: "📧 Você vê uma planilha de clientes sendo enviada por e-mail pessoal. E agora?",
-          options: ["Ignora, não é seu problema.", "Reporta à equipe de segurança."],
+    <h1>CyberGuard - Simulador de Segurança</h1>
+  </header>  <main id="app">
+    <section id="menu">
+      <h2>Escolha o porte da empresa:</h2>
+      <button class="button" onclick="startSimulation('small')">Pequena Empresa</button>
+      <button class="button" onclick="startSimulation('medium')">Média Empresa</button>
+      <button class="button" onclick="startSimulation('large')">Grande Empresa</button>
+    </section><section id="quiz" class="hidden">
+  <div id="question-container" class="question"></div>
+  <div id="options-container"></div>
+  <button class="button" onclick="nextQuestion()">Próxima</button>
+</section>
+ 
+<section id="result" class="hidden">
+  <h2>Resultado Final</h2>
+  <p id="score"></p>
+  <p id="feedback" class="feedback"></p>
+  <button class="button" onclick="location.reload()">Jogar Novamente</button>
+</section>
+ 
+  </main>  <footer>
+    <p>&copy; 2025 Cayque Cicarelli</p>
+  </footer>  <script>
+    const quizzes = {
+      small: [
+        {
+          question: "Seu Wi-Fi de empresa está aberto e sem senha. O que você faz?",
+          options: ["Nada, está tudo bem.", "Coloca uma senha forte e WPA2."],
           answer: 1
         },
         {
-          question: "💻 Um funcionário instalou um software desconhecido no computador da empresa. Qual sua reação?",
-          options: ["Deixa passar, pode ser útil.", "Remove o software e orienta sobre políticas."],
+          question: "Você vê uma planilha de clientes sendo enviada por e-mail pessoal. E agora?",
+          options: ["Ignora, não é seu problema.", "Reporta à equipe de segurança."],
           answer: 1
         }
       ],
       medium: [
         {
-          question: "🎣 Recebeu um e-mail dizendo que precisa atualizar sua senha clicando em um link. O que fazer?",
+          question: "Recebeu um e-mail dizendo que precisa atualizar sua senha clicando em um link. O que fazer?",
           options: ["Clicar logo no link.", "Verificar remetente e contato oficial da TI."],
           answer: 1
         },
         {
-          question: "👥 Um colega de RH pede seu login para um teste. E agora?",
+          question: "Um colega de RH pede seu login para um teste. E agora?",
           options: ["Fornece na hora.", "Recusa e orienta a usar o sistema oficial."],
-          answer: 1
-        },
-        {
-          question: "🔄 O sistema solicita backup dos dados importantes. Qual sua atitude?",
-          options: ["Adia para depois, não é urgente.", "Realiza backup imediatamente."],
           answer: 1
         }
       ],
       large: [
         {
-          question: "💾 Você conecta um pendrive desconhecido encontrado na recepção. E agora?",
+          question: "Você conecta um pendrive desconhecido encontrado na recepção. E agora?",
           options: ["Ver o que tem dentro.", "Entregar à equipe de segurança."],
           answer: 1
         },
         {
-          question: "🔑 O sistema pede autenticação por token, mas você quer agilizar. O que faz?",
+          question: "O sistema pede autenticação por token, mas você quer agilizar. O que faz?",
           options: ["Pede para desativar.", "Entende a importância da autenticação."],
-          answer: 1
-        },
-        {
-          question: "🚨 Detectou uma atividade suspeita na rede da empresa. Qual sua primeira ação?",
-          options: ["Aguarda para ver se resolve sozinho.", "Reporta imediatamente ao time de segurança."],
           answer: 1
         }
       ]
     };
-
+ 
     let currentQuiz = [];
     let currentIndex = 0;
     let score = 0;
-    let selectedAnswer = null;
-
+ 
     function startSimulation(size) {
       currentQuiz = quizzes[size];
       currentIndex = 0;
       score = 0;
-      selectedAnswer = null;
-      
       document.getElementById('menu').classList.add('hidden');
       document.getElementById('quiz').classList.remove('hidden');
-      document.getElementById('quiz').classList.add('animate__animated', 'animate__fadeIn');
-      
       showQuestion();
-      updateProgress();
     }
-
+ 
     function showQuestion() {
       const q = currentQuiz[currentIndex];
-      const questionText = document.getElementById('question-text');
-      const optionsContainer = document.getElementById('options-container');
-      const nextButton = document.getElementById('next-button');
-      
-      questionText.textContent = q.question;
-      questionText.classList.add('animate__animated', 'animate__fadeIn');
-      
-      optionsContainer.innerHTML = '';
-      nextButton.style.display = 'none';
-      selectedAnswer = null;
-      
+      document.getElementById('question-container').innerText = q.question;
+      const options = document.getElementById('options-container');
+      options.innerHTML = '';
       q.options.forEach((opt, i) => {
         const btn = document.createElement('button');
         btn.className = 'button';
-        btn.textContent = opt;
-        btn.onclick = () => selectAnswer(i, btn);
-        optionsContainer.appendChild(btn);
+        btn.innerText = opt;
+        btn.onclick = () => {
+          if (i === q.answer) score++;
+          document.querySelectorAll('#options-container .button').forEach(b => b.disabled = true);
+        };
+        options.appendChild(btn);
       });
     }
-
-    function selectAnswer(answerIndex, buttonElement) {
-      if (selectedAnswer !== null) return;
-      
-      selectedAnswer = answerIndex;
-      const q = currentQuiz[currentIndex];
-      const buttons = document.querySelectorAll('#options-container .button');
-      
-      buttons.forEach((btn, index) => {
-        btn.disabled = true;
-        if (index === q.answer) {
-          btn.classList.add('correct');
-          btn.innerHTML = `✅ ${btn.textContent}`;
-        } else if (index === answerIndex && index !== q.answer) {
-          btn.classList.add('selected');
-          btn.innerHTML = `❌ ${btn.textContent}`;
-        }
-      });
-      
-      if (answerIndex === q.answer) {
-        score++;
-        buttonElement.classList.add('animate__animated', 'animate__pulse');
-      } else {
-        buttonElement.classList.add('animate__animated', 'animate__shakeX');
-      }
-      
-      setTimeout(() => {
-        document.getElementById('next-button').style.display = 'inline-block';
-      }, 1000);
-    }
-
+ 
     function nextQuestion() {
       currentIndex++;
-      updateProgress();
-      
       if (currentIndex < currentQuiz.length) {
         showQuestion();
       } else {
         showResult();
       }
     }
-
-    function updateProgress() {
-      const progressFill = document.getElementById('progress-fill');
-      const progress = (currentIndex / currentQuiz.length) * 100;
-      progressFill.style.width = progress + '%';
-    }
-
+ 
     function showResult() {
       document.getElementById('quiz').classList.add('hidden');
       document.getElementById('result').classList.remove('hidden');
-      document.getElementById('result').classList.add('animate__animated', 'animate__bounceIn');
-      
-      const scoreElement = document.getElementById('score');
-      const feedbackElement = document.getElementById('feedback');
-      
-      scoreElement.textContent = `${score}/${currentQuiz.length}`;
-      
-      const ratio = score / currentQuiz.length;
+      document.getElementById('score').innerText = `Você acertou ${score} de ${currentQuiz.length} perguntas.`;
       let feedback = '';
-      let feedbackClass = '';
-      
-      if (ratio < 0.5) {
-        feedback = '🚨 Atenção! Você precisa melhorar urgentemente sua postura em segurança cibernética. Considere fazer um treinamento especializado.';
-        feedbackClass = 'poor';
-      } else if (ratio < 0.8) {
-        feedback = '⚠️ Você está no caminho certo, mas ainda há pontos importantes para melhorar sua segurança digital.';
-        feedbackClass = 'good';
-      } else if (ratio < 1) {
-        feedback = '🎯 Muito bem! Você tem uma boa base de conhecimento em segurança, continue assim!';
-        feedbackClass = 'good';
-      } else {
-        feedback = '🏆 Excelente! Você é um verdadeiro guardião da segurança cibernética! Parabéns pela consciência exemplar.';
-        feedbackClass = 'excellent';
-      }
-      
-      feedbackElement.textContent = feedback;
-      feedbackElement.className = `feedback ${feedbackClass}`;
+      const ratio = score / currentQuiz.length;
+      if (ratio < 0.5) feedback = 'Você precisa melhorar sua postura em segurança!';
+      else if (ratio < 1) feedback = 'Você está no caminho certo!';
+      else feedback = 'Excelente! Você é um agente da segurança!';
+      document.getElementById('feedback').innerText = feedback;
     }
-
-    // Adiciona efeitos sonoros visuais para feedback
-    function addRippleEffect(element, event) {
-      const ripple = document.createElement('span');
-      const rect = element.getBoundingClientRect();
-      const size = Math.max(rect.height, rect.width);
-      const x = event.clientX - rect.left - size / 2;
-      const y = event.clientY - rect.top - size / 2;
-      
-      ripple.style.width = ripple.style.height = size + 'px';
-      ripple.style.left = x + 'px';
-      ripple.style.top = y + 'px';
-      ripple.classList.add('ripple');
-      
-      element.appendChild(ripple);
-      
-      setTimeout(() => {
-        ripple.remove();
-      }, 600);
-    }
-
-    // Adiciona event listeners para efeitos de ripple
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('button')) {
-        addRippleEffect(e.target, e);
-      }
-    });
-  </script>
-</body>
+  </script></body>
 </html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberGuard - Simulador de Segurança</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      margin: 0;
+      padding: 0;
+    }
+    header, footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #161b22;
+    }
+    main {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    .button {
+      background-color: #238636;
+      border: none;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      margin: 1rem 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .button:hover {
+      background-color: #2ea043;
+    }
+    .question {
+      margin-top: 2rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .feedback {
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CyberGuard - Simulador de Segurança</h1>
+  </header>  <main id="app">
+    <section id="menu">
+      <h2>Escolha o porte da empresa:</h2>
+      <button class="button" onclick="startSimulation('small')">Pequena Empresa</button>
+      <button class="button" onclick="startSimulation('medium')">Média Empresa</button>
+      <button class="button" onclick="startSimulation('large')">Grande Empresa</button>
+    </section><section id="quiz" class="hidden">
+  <div id="question-container" class="question"></div>
+  <div id="options-container"></div>
+  <button class="button" onclick="nextQuestion()">Próxima</button>
+</section>
+ 
+<section id="result" class="hidden">
+  <h2>Resultado Final</h2>
+  <p id="score"></p>
+  <p id="feedback" class="feedback"></p>
+  <button class="button" onclick="location.reload()">Jogar Novamente</button>
+</section>
+ 
+  </main>  <footer>
+    <p>&copy; 2025 Cayque Cicarelli</p>
+  </footer>  <script>
+    const quizzes = {
+      small: [
+        {
+          question: "Seu Wi-Fi de empresa está aberto e sem senha. O que você faz?",
+          options: ["Nada, está tudo bem.", "Coloca uma senha forte e WPA2."],
+          answer: 1
+        },
+        {
+          question: "Você vê uma planilha de clientes sendo enviada por e-mail pessoal. E agora?",
+          options: ["Ignora, não é seu problema.", "Reporta à equipe de segurança."],
+          answer: 1
+        }
+      ],
+      medium: [
+        {
+          question: "Recebeu um e-mail dizendo que precisa atualizar sua senha clicando em um link. O que fazer?",
+          options: ["Clicar logo no link.", "Verificar remetente e contato oficial da TI."],
+          answer: 1
+        },
+        {
+          question: "Um colega de RH pede seu login para um teste. E agora?",
+          options: ["Fornece na hora.", "Recusa e orienta a usar o sistema oficial."],
+          answer: 1
+        }
+      ],
+      large: [
+        {
+          question: "Você conecta um pendrive desconhecido encontrado na recepção. E agora?",
+          options: ["Ver o que tem dentro.", "Entregar à equipe de segurança."],
+          answer: 1
+        },
+        {
+          question: "O sistema pede autenticação por token, mas você quer agilizar. O que faz?",
+          options: ["Pede para desativar.", "Entende a importância da autenticação."],
+          answer: 1
+        }
+      ]
+    };
+ 
+    let currentQuiz = [];
+    let currentIndex = 0;
+    let score = 0;
+ 
+    function startSimulation(size) {
+      currentQuiz = quizzes[size];
+      currentIndex = 0;
+      score = 0;
+      document.getElementById('menu').classList.add('hidden');
+      document.getElementById('quiz').classList.remove('hidden');
+      showQuestion();
+    }
+ 
+    function showQuestion() {
+      const q = currentQuiz[currentIndex];
+      document.getElementById('question-container').innerText = q.question;
+      const options = document.getElementById('options-container');
+      options.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'button';
+        btn.innerText = opt;
+        btn.onclick = () => {
+          if (i === q.answer) score++;
+          document.querySelectorAll('#options-container .button').forEach(b => b.disabled = true);
+        };
+        options.appendChild(btn);
+      });
+    }
+ 
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < currentQuiz.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+ 
+    function showResult() {
+      document.getElementById('quiz').classList.add('hidden');
+      document.getElementById('result').classList.remove('hidden');
+      document.getElementById('score').innerText = `Você acertou ${score} de ${currentQuiz.length} perguntas.`;
+      let feedback = '';
+      const ratio = score / currentQuiz.length;
+      if (ratio < 0.5) feedback = 'Você precisa melhorar sua postura em segurança!';
+      else if (ratio < 1) feedback = 'Você está no caminho certo!';
+      else feedback = 'Excelente! Você é um agente da segurança!';
+      document.getElementById('feedback').innerText = feedback;
+    }
+  </script></body>
+</html>

@@ -71,11 +71,13 @@ let currentQuiz = [];
 let currentIndex = 0;
 let score = 0;
 let selectedOption = null;
+let wrongAnswers = []; // Armazena os índices das perguntas erradas
 
 function startSimulation(size) {
   currentQuiz = quizzes[size];
   currentIndex = 0;
   score = 0;
+  wrongAnswers = [];
   document.getElementById('menu').classList.add('hidden');
   document.getElementById('quiz').classList.remove('hidden');
   showQuestion();
@@ -110,7 +112,17 @@ function showQuestion() {
 
 function nextQuestion() {
   if (selectedOption === null) return; // Não deixa avançar sem selecionar
-  if (selectedOption === currentQuiz[currentIndex].answer) score++;
+  if (selectedOption === currentQuiz[currentIndex].answer) {
+    score++;
+  } else {
+    wrongAnswers.push({
+      index: currentIndex,
+      question: currentQuiz[currentIndex].question,
+      selected: selectedOption,
+      correct: currentQuiz[currentIndex].answer,
+      options: currentQuiz[currentIndex].options
+    });
+  }
   currentIndex++;
   if (currentIndex < currentQuiz.length) {
     showQuestion();
@@ -129,4 +141,48 @@ function showResult() {
   else if (ratio < 2) feedback = 'Você está no caminho certo!';
   else feedback = 'Excelente! Você é um agente da segurança!';
   document.getElementById('feedback').innerText = feedback;
+
+  // Mostrar perguntas erradas
+  const wrongDivId = 'wrong-answers';
+  let wrongDiv = document.getElementById(wrongDivId);
+  if (!wrongDiv) {
+    wrongDiv = document.createElement('div');
+    wrongDiv.id = wrongDivId;
+    document.getElementById('result').appendChild(wrongDiv);
+  }
+  wrongDiv.innerHTML = '';
+  if (wrongAnswers.length > 0) {
+    const title = document.createElement('h3');
+    title.style.marginTop = '2rem';
+    title.style.color = '#58a6ff';
+    title.innerText = 'Perguntas que você errou:';
+    wrongDiv.appendChild(title);
+
+    wrongAnswers.forEach(item => {
+      const qDiv = document.createElement('div');
+      qDiv.style.margin = '1.2rem 0';
+      qDiv.style.padding = '1rem';
+      qDiv.style.background = 'rgba(22,27,34,0.7)';
+      qDiv.style.borderRadius = '8px';
+      qDiv.style.border = '1px solid #30363d';
+
+      const qTitle = document.createElement('div');
+      qTitle.style.fontWeight = 'bold';
+      qTitle.style.marginBottom = '0.5rem';
+      qTitle.innerText = item.question;
+      qDiv.appendChild(qTitle);
+
+      const userAnswer = document.createElement('div');
+      userAnswer.innerHTML = `<span style="color:#ff5a5f;">Sua resposta: ${item.options[item.selected]}</span>`;
+      qDiv.appendChild(userAnswer);
+
+      const correctAnswer = document.createElement('div');
+      correctAnswer.innerHTML = `<span style="color:#238636;">Resposta correta: ${item.options[item.correct]}</span>`;
+      qDiv.appendChild(correctAnswer);
+
+      // Futuramente: explicação pode ser adicionada aqui
+
+      wrongDiv.appendChild(qDiv);
+    });
+  }
 }

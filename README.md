@@ -1,5 +1,10 @@
 # CyberGuard
 
+
+https://github.com/user-attachments/assets/0a18a119-e0b3-4553-b388-43b3df33f768
+
+
+
 CyberGuard é um aplicativo web gratuito criado para aumentar a conscientização sobre segurança cibernética em empresas e para qualquer pessoa interessada no tema. Através de quizzes interativos, os usuários podem testar e aprimorar seus conhecimentos, desde noções básicas até tópicos avançados como frameworks de segurança (ex: NIST).
 
 ## Funcionalidades

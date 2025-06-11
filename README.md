@@ -1,9 +1,7 @@
 # CyberGuard
 
 
-
-https://github.com/user-attachments/assets/a5c4cfd2-c67d-4fb9-b2cb-a74ea1c17f25
-
+![CyberGuard logo](https://github.com/user-attachments/assets/bd0ae510-fee0-4a68-bc0a-d626d3d79267)
 
 
 

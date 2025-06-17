@@ -1,0 +1,81 @@
+index=edenred_br_csc sourcetype=pps_messagelog source=proofpoint_message_log 
+
+```cria um campo Date baseado no campo _time```
+| eval Date=strftime(_time,"%Y-%m-%dT%H:%M:%S.%N")
+
+```renomeia os principais campos do index que serão utilizados nas analises```
+
+| rename  msgParts{}.disposition	as File_Disposition, msgParts{}.labeledExt	as File_Extension, envelope.from as userPrincipalName, 	envelope.rcpts{} as Recipients,  guid as PPS_GUID , msg_normalized_header_subject as Subject , filter.quarantine.rule	as Triggered_Rule, 	filter.modules.regulation.rules{}.rule as Triggered_Rules, 	filter.quarantine.folder as Folder, filter.quarantine.folderId as FolderId, message_id	as Message_ID, msg.parsedAddresses.fromDisplayNames{} as displayName, final_module as Module, filter.quarantine.type as Quarantine_Type , 	filter_action as Filter_Action, final_action as Action, 	filter.modules.regulation.rules{}.name as Triggered_Rules_Names, msgParts{}.metadata.author	as Autor_File, size as Size, file_size as File_Size_Byte, file_name as File_Name, file_hash as File_Hash, msgParts{}.sha256	as File_Hash_Sha256, msgParts{}.md5	as File_Hash_Md5
+| table _time combined_fields  Date userPrincipalName displayName Recipients PPS_GUID Subject  Triggered_Rule*  Triggered_Rules_Names Folder FolderId	Message_ID  Module	Quarantine_Type	Filter_Action Action File_Hash_Md5 File_Hash_Sha256 Autor_File  File_Name File_Size_Byte File_Extension File_Disposition	Size  *
+| mvexpand Recipients
+
+```concatena os campos File_Name, File_Size_Byte, File_Hash_Md5 e File_Hash_Sha256 para depois serem filtrados```
+| eval combined_fields = mvzip(mvzip(mvzip(mvzip(mvzip(File_Name, File_Size_Byte, "|"), File_Hash_Md5, "|"), File_Hash_Sha256, "|") , File_Disposition, "|"), File_Extension, "|")
+
+```expande o campo combined_fields caso haja mais de um arquivo numa mesma mensagem "pps_guid" - os demais campos são repetidos```
+| mvexpand combined_fields
+
+```são extraídos os campos  File_Name, File_Size_Byte, File_Hash_Md5 e File_Hash_Sha256 baseados no campo combined_fields```
+| eval File_Name=mvindex(split(combined_fields, "|"), 0)| eval File_Size_Byte=mvindex(split(combined_fields, "|"), 1) | eval File_Hash_Md5=mvindex(split(combined_fields, "|"), 2) | eval File_Hash_Sha256=mvindex(split(combined_fields, "|"), 3)
+| eval File_Disposition=mvindex(split(combined_fields, "|"), 4) | eval File_Extension=mvindex(split(combined_fields, "|"), 5)
+```são desconsiderados os arquivos com as nomenclaturas text.txt, text.html, image*.png, outlook*.png```
+| search NOT File_Name IN (text.txt, text.html, image*.png, outlook*.png,image*.jpg, text-calendar, ical.txt, *wr*.jpg, blobid*.png, *.gif)
+| search NOT File_Extension IN (git*, gif, gitignore)
+| table _time Date userPrincipalName displayName Recipients PPS_GUID Subject  Triggered_Rule*  Triggered_Rules_Names Folder FolderId	Message_ID  Module	Quarantine_Type	Filter_Action Action File_Hash_Md5 File_Hash_Sha256 Autor_File  File_Name File_Size_Byte File_Disposition File_Extension Size
+
+```join com com a lookup do ad para encontrar os dados do Sender "userPrincipalName" como bu country, manager e demais informações do remetente```
+| join type=left userPrincipalName 
+    [| inputlookup p2_ad_lanet_direct_users.csv 
+    | table userPrincipalName bu cn country description displayName dn employeeID manager objectSid ou sAMAccountName targetAddress userAccountControl whenCreated ] 
+
+```join com com a lookup do allowlist para retornar se o usuário participa de algum grupo do allowlist```
+| join type=left userPrincipalName 
+    [| inputlookup br_whitelist_allowlist_dlp.csv 
+    | table userPrincipalName WhiteList] 
+| table _time Date userPrincipalName displayName Recipients PPS_GUID Subject  Triggered_Rule*  Triggered_Rules_Names Folder FolderId	Message_ID  Module	Quarantine_Type	Filter_Action Action File_Hash_Md5 File_Hash_Sha256 Autor_File  File_Name File_Size_Byte	Size File_Disposition File_Extension  bu cn country description displayName  employeeID manager objectSid ou sAMAccountName targetAddress userAccountControl whenCreated  WhiteList 
+|  rename manager as dn
+
+```join com com a lookup do ad para encontrar os dados do gestor "manager" do Sender "userPrincipalName" como bu country, manager e demais informações do remetente```
+
+| join type=left dn [| inputlookup p2_ad_lanet_direct_users.csv |  table userPrincipalName dn displayName | rename userPrincipalName as userPrincipalName_gestor  displayName as displayName_gestor] 
+
+```são criados os campos de radical de sender "userPrincipalName",  destinatário "Recipients" e os dominios de e-mails dos destinatários```
+| eval radical_sender=mvindex(split(userPrincipalName, "@"), 0)
+| eval radical_recipients=mvindex(split(Recipients, "@"), 0)
+| eval dominio=mvindex(split(Recipients, "@"), 1)
+| eval radical_nome_sender = mvindex(split(radical_sender,"."),0) 
+| eval radical_sobrenome_sender = mvindex(split(radical_sender,"."),1) 
+| table userPrincipalName radical_sender radical_nome_sender radical_sobrenome_sender Recipients radical_recipients dominio Action Triggered_Rule Subject WhiteList *
+
+```join com com a lookup do tipo_dominio_email para obter o retorno do tipo do domínio do destinatário , são eles: tipo_dominio_anonimo, tipo_dominio_gratuitos, tipo_dominio_suspeito ou tipo_dominio_temporario```
+| join type=left dominio [ inputlookup tipo_dominio_email.csv |  table * ] 
+
+
+```são criados os campos os campos calculados: tipo_destinatario e mesma_pessoa, baseados no sender "userPrincipalName",  destinatário "Recipients" e os dominios de e-mails dos destinatários```
+| eval tipo_destinatario=case(tipo_dominio_gratuitos="Sim", "Publico", 1=1, "Corporativo") 
+| eval mesmapessoa_nome=if(match(radical_recipients, 'radical_nome_sender'), "Sim", "Nao")
+| eval mesmapessoa_sobrenome=if(match(radical_recipients, 'radical_sobrenome_sender'), "Sim", "Nao") 
+| eval mesma_pessoa=case(mesmapessoa_nome="Sim", "Sim", mesmapessoa_sobrenome="Sim" , "Sim" , 1=1, "Nao")
+| table  _time Motivo_da_Analise File_Extension WhiteList File_Name Action Recipients	mesma_pessoa	dominio tipo_destinatario tipo_dominio_suspeito tipo_dominio_anonimo tipo_dominio_gratuitos tipo_dominio_temporario Date  Folder  Message_ID Module  PPS_GUID Size Subject Triggered_Rule userPrincipalName bu cn country description displayName dn employeeID manager objectSid ou sAMAccountName targetAddress userAccountControl whenCreated Recipients WhiteList mesma_pessoa dominio tipo_destinatario *
+ 
+ ```é criado o campo File_Size_Range baseado no campo File_Size_Byte para determinar qual o range do tamanho do arquivo anexo```
+ 
+ | eval File_Size_Range = case( File_Size_Byte < 1024, "B", File_Size_Byte >= 1024 AND File_Size_Byte < 1048576, "KB",  File_Size_Byte >= 1048576 AND File_Size_Byte < 1073741824, "MB", File_Size_Byte >= 1073741824 AND File_Size_Byte < 1099511627776, "GB", File_Size_Byte >= 1099511627776, "TB")
+
+```é criado o campo Motivo_da_Analise baseado em várias condições como: Action, assunto, mesma pessoa, palavra chave e tipo de destinatário para entender qual são as mensagens a serem analisadas```
+
+| eval Motivo_da_Analise= Case((mesma_pessoa = "Sim" AND Action!= "discard"), "MesmaPessoa+Monitora" ,(mesma_pessoa = "Sim" AND Action= "discard"AND isnotnull(File_Extension)), "MesmaPessoa+Bloqueia+Anexo" ,   (WhiteList="Sim" AND mesma_pessoa = "Sim" AND Action != "discard"), "AllowList+Monitora+mesmapessoa", tipo_dominio_suspeito="Sim"  , "Dominio_Destinatario_Suspeito", tipo_dominio_anonimo="Sim" , "Dominio_Destinatario_Anonimo",  tipo_dominio_temporario="Sim" , "Dominio_Destinatario_Temporario", isnull(Subject), "AssuntoVazio", (tipo_destinatario = "Publico" AND (File_Name like  "%base%" OR   File_Name like "%contrato%" OR File_Name like  "%cartao%" OR File_Name like  "%cartão%" OR File_Name like  "%imprimir%" OR  File_Name like  "%cliente%" OR File_Name like   "%planilha%" OR File_Name like   "%teste%" OR File_Name like "%dados%" OR  File_Name like  "%acesso%" OR  File_Name like  "%senha%" OR File_Name like   "%curriculo%" OR  File_Name like  "%currículo%" ) AND Action != "discard"), "Anexo+PalavraChave", (tipo_destinatario = "Publico" AND (Subject like  "%base%" OR   Subject like "%contrato%" OR Subject like  "%cartao%" OR Subject like  "%cartão%" OR Subject like  "%imprimir%" OR  Subject like  "%cliente%" OR Subject like   "%planilha%" OR Subject like   "%teste%" OR Subject like "%dados%" OR  Subject like  "%acesso%" OR  Subject like  "%senha%" OR Subject like   "%curriculo%" OR  Subject like  "%currículo%" ) AND Action != "discard" AND File_Disposition="attached"), "Assunto+PalavraChave", (WhiteList="Sim" AND tipo_destinatario = "Publico" AND Action != "discard" AND isnotnull(File_Extension) ), "AllowList+Monitora+Anexo"  , 1=1, "NA")
+
+ ```filtros finais para exportar```
+| search Motivo_da_Analise!="NA"  | search dominio!="edenred.mail.onmicrosoft.com" | search dominio!="edenred.onmicrosoft.com"
+
+ ```Renomear alguns campos finais  para exportar```
+|  rename dn as manager |  rename description as Matricula |  rename userPrincipalName as Sender
+
+|  table _time Motivo_da_Analise Sender	Recipients Subject Action Folder PPS_GUID Triggered_Rule  mesma_pessoa dominio WhiteList  tipo_destinatario  sAMAccountName employeeID	objectSid	ou bu	cn	country	whenCreated	Matricula displayName manager displayName_gestor userPrincipalName_gestor Date Message_ID	userAccountControl 	Size  File_Size_Range File_Extension File_Size_Byte File_Name File*
+
+|  sort 0 _time | fillnull value="null"  Recipients PPS_GUID | fillnull value="Não"  WhiteList
+```são retirados os valores duplicados e sumarizado por camando values```
+| stats values(Recipients) as Recipients values(File_Size_Range) as File_Size_Range values(File_Extension) as File_Extension values(File_Size_Byte) as File_Size_Byte values(File_Name) as File_Name values(File_Disposition) as File_Disposition values(Subject) as Subject values(File_Hash_Md5) as File_Hash_Md5 values(File_Hash_Sha256) as File_Hash_Sha256 by Date Motivo_da_Analise Sender  Action Folder PPS_GUID Triggered_Rule  mesma_pessoa dominio WhiteList tipo_destinatario sAMAccountName employeeID objectSid ou bu cn country whenCreated Matricula displayName manager displayName_gestor userPrincipalName_gestor  Message_ID userAccountControl Size
+
+|  table Motivo_da_Analise Folder Sender Recipients Subject File_Name  PPS_GUID mesma_pessoa Triggered_Rule *

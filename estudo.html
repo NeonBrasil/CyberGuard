@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberGuard - Material de Estudo</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <style>
+    body {
+      background: #f6f8fa;
+    }
+    .study-container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      padding: 32px 24px;
+    }
+    .study-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .topic-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .topic-item {
+      border-bottom: 1px solid #ececec;
+      padding: 18px 0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .topic-item:last-child {
+      border-bottom: none;
+    }
+    .topic-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: #222;
+    }
+    .topic-header .arrow {
+      font-size: 1.2rem;
+      transition: transform 0.2s;
+    }
+    .topic-item.active .arrow {
+      transform: rotate(90deg);
+    }
+    .topic-content {
+      margin-top: 12px;
+      font-size: 1rem;
+      color: #444;
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+    .topic-item.active .topic-content {
+      display: block;
+    }
+    .start-btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 22px;
+      background: #2d7efb;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+    .start-btn:hover {
+      background: #195bb5;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ CyberGuard</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="study-container">
+      <h1 class="study-title">Material de Estudo</h1>
+      <ul class="topic-list">
+        <li class="topic-item">
+          <div class="topic-header">
+            <span>Tópico 1 - Introdução</span>
+            <span class="arrow">&#9654;</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              Descubra a importância da segurança cibernética, os principais conceitos e por que todos devem se preocupar com ameaças digitais. Ideal para quem está começando!
+            </p>
+            <a href="topico1.html" class="start-btn">Iniciar Estudo</a>
+          </div>
+        </li>
+        <li class="topic-item">
+          <div class="topic-header">
+            <span>Tópico 1.1 - Básicos da Segurança</span>
+            <span class="arrow">&#9654;</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              Aprenda os fundamentos: tipos de ameaças, princípios de proteção, terminologias essenciais e como identificar riscos no dia a dia.
+            </p>
+            <a href="topico1,1.html" class="start-btn">Iniciar Estudo</a>
+          </div>
+        </li>
+        <li class="topic-item">
+          <div class="topic-header">
+            <span>Tópico 1.2 - Ameaças Comuns</span>
+            <span class="arrow">&#9654;</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              Conheça as ameaças mais frequentes, como phishing, malware, ransomware e engenharia social, e saiba como se proteger delas.
+            </p>
+            <a href="topico1.2.html" class="start-btn">Iniciar Estudo</a>
+          </div>
+        </li>
+        <li class="topic-item">
+          <div class="topic-header">
+            <span>Tópico 2 - Boas Práticas</span>
+            <span class="arrow">&#9654;</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              Dicas práticas para proteger seus dados, criar senhas seguras, manter sistemas atualizados e evitar armadilhas digitais.
+            </p>
+            <a href="topico2.html" class="start-btn">Iniciar Estudo</a>
+          </div>
+        </li>
+        <!-- Adicione mais tópicos conforme necessário -->
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Accordion para tópicos
+    document.querySelectorAll('.topic-item').forEach(item => {
+      item.querySelector('.topic-header').addEventListener('click', () => {
+        item.classList.toggle('active');
+      });
+    });
+  </script>
+</body>

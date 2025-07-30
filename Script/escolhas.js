@@ -174,7 +174,12 @@ function shuffleArray(array) {
 }
 
 function displayQuestion() {
+  console.log('=== DISPLAY QUESTION ===');
+  console.log('Current index:', currentIndex);
+  console.log('Total questions:', currentQuiz.length);
+  
   if (currentIndex >= currentQuiz.length) {
+    console.log('🎯 QUIZ FINALIZADO! Chamando showResults...');
     showResults();
     return;
   }
@@ -248,12 +253,34 @@ function updateProgressBar() {
 }
 
 function showResults() {
+  console.log('=== SHOW RESULTS INICIADO ===');
+  
   var percentage = Math.round((score / currentQuiz.length) * 100);
+  console.log('Percentage:', percentage);
+  console.log('Score:', score + '/' + currentQuiz.length);
+  console.log('Difficulty:', currentDifficulty);
+  
+  // Verificar se elementos existem
+  var resultsModal = document.getElementById('resultsModal');
+  console.log('ResultsModal found:', !!resultsModal);
+  
+  if (!resultsModal) {
+    console.error('❌ CRÍTICO: resultsModal não encontrado no DOM!');
+    return;
+  }
   
   // Atualizar elementos da tela de resultados
-  document.getElementById('scorePercentage').textContent = percentage + '%';
-  document.getElementById('scoreText').textContent = 'Pontuação: ' + score + '/' + currentQuiz.length;
-  document.getElementById('difficultyText').textContent = 'Dificuldade: ' + currentDifficulty;
+  var scorePercentageEl = document.getElementById('scorePercentage');
+  var scoreTextEl = document.getElementById('scoreText');
+  var difficultyTextEl = document.getElementById('difficultyText');
+  
+  console.log('ScorePercentage element:', !!scorePercentageEl);
+  console.log('ScoreText element:', !!scoreTextEl);
+  console.log('DifficultyText element:', !!difficultyTextEl);
+  
+  if (scorePercentageEl) scorePercentageEl.textContent = percentage + '%';
+  if (scoreTextEl) scoreTextEl.textContent = 'Pontuação: ' + score + '/' + currentQuiz.length;
+  if (difficultyTextEl) difficultyTextEl.textContent = 'Dificuldade: ' + currentDifficulty;
   
   // Definir mensagem de performance
   var performanceMsg = document.getElementById('performanceMessage');
@@ -291,7 +318,12 @@ function showResults() {
   }
   
   // Configurar botão de salvar baseado no status do login
+  console.log('=== CONFIGURANDO BOTÃO DE SALVAR ===');
+  console.log('getCurrentUser function exists:', typeof window.getCurrentUser);
+  console.log('User logged in:', !!(window.getCurrentUser && window.getCurrentUser()));
+  
   if (window.getCurrentUser && window.getCurrentUser()) {
+    console.log('✅ Usuário logado - salvando automaticamente');
     saveBtn.textContent = '🏆 Resultado Salvo!';
     saveBtn.disabled = true;
     saveBtn.style.opacity = '0.7';
@@ -299,13 +331,16 @@ function showResults() {
     // Salvar resultado automaticamente se logado
     window.FirebaseManager.saveQuizResult(currentDifficulty, score, currentQuiz.length, wrongAnswers);
   } else {
+    console.log('❌ Usuário não logado - botão para login');
     saveBtn.textContent = '🏆 Salvar no Ranking';
     saveBtn.disabled = false;
     saveBtn.style.opacity = '1';
   }
   
   // Mostrar modal de resultados
+  console.log('=== MOSTRANDO MODAL DE RESULTADOS ===');
   document.getElementById('resultsModal').classList.remove('hidden');
+  console.log('✅ Modal de resultados exibido!');
 }
 
 // Função para esconder modal de resultados
@@ -316,9 +351,16 @@ function hideResultsModal() {
 
 // Função para solicitar login
 function promptLogin() {
+  console.log('=== PROMPT LOGIN INICIADO ===');
+  console.log('getCurrentUser:', typeof window.getCurrentUser);
+  console.log('getCurrentUser():', window.getCurrentUser ? window.getCurrentUser() : 'função não existe');
+  
   if (window.getCurrentUser && window.getCurrentUser()) {
+    console.log('❌ Usuário já está logado, cancelando prompt');
     return; // Já está logado
   }
+  
+  console.log('✅ Usuário não logado, continuando...');
   
   // Salvar resultado pendente
   pendingResult = {
@@ -328,14 +370,30 @@ function promptLogin() {
     wrongAnswers: wrongAnswers
   };
   
+  console.log('📝 Resultado pendente salvo:', pendingResult);
+  
   // Esconder modal de resultados e mostrar login
+  console.log('🔄 Escondendo modal de resultados...');
   document.getElementById('resultsModal').classList.add('hidden');
   
   // Garantir que o modal de login existe e é válido
   setTimeout(function() {
+    console.log('⏰ Timeout executado, verificando showLoginModal...');
+    console.log('showLoginModal exists:', typeof window.showLoginModal);
+    console.log('showLoginModal function:', window.showLoginModal);
+    
     if (window.showLoginModal && typeof window.showLoginModal === 'function') {
-      window.showLoginModal();
+      console.log('✅ Chamando showLoginModal()...');
+      try {
+        window.showLoginModal();
+        console.log('✅ showLoginModal() executado com sucesso');
+      } catch (error) {
+        console.error('❌ Erro ao executar showLoginModal():', error);
+        alert('Erro ao abrir modal de login: ' + error.message);
+      }
     } else {
+      console.error('❌ showLoginModal não está disponível');
+      console.log('Objetos window disponíveis:', Object.keys(window).filter(key => key.includes('Login') || key.includes('Modal')));
       alert('Sistema de login não disponível. Tente recarregar a página.');
     }
   }, 100);

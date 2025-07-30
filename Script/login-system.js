@@ -106,23 +106,56 @@ function updateUserInterface() {
 
 // Mostrar modal de login
 function showLoginModal() {
+  console.log('=== SHOW LOGIN MODAL CHAMADO ===');
+  
   var modal = document.getElementById('loginModal');
+  console.log('Modal element:', modal);
+  
   if (!modal) {
-    console.error('Modal de login não encontrado');
+    console.error('❌ Modal de login não encontrado no DOM!');
+    console.log('Elementos com ID disponíveis:', Array.from(document.querySelectorAll('[id]')).map(el => el.id));
     return;
   }
   
+  console.log('✅ Modal encontrado, removendo classe hidden...');
   modal.classList.remove('hidden');
-  document.getElementById('loginForm').classList.remove('hidden');
-  document.getElementById('userInfo').classList.add('hidden');
+  
+  var loginForm = document.getElementById('loginForm');
+  var userInfo = document.getElementById('userInfo');
+  
+  console.log('LoginForm element:', loginForm);
+  console.log('UserInfo element:', userInfo);
+  
+  if (loginForm) {
+    loginForm.classList.remove('hidden');
+    console.log('✅ LoginForm mostrado');
+  } else {
+    console.error('❌ LoginForm não encontrado!');
+  }
+  
+  if (userInfo) {
+    userInfo.classList.add('hidden');
+    console.log('✅ UserInfo escondido');
+  } else {
+    console.error('❌ UserInfo não encontrado!');
+  }
   
   // Limpar campos
   var emailField = document.getElementById('email');
   var passwordField = document.getElementById('password');
-  if (emailField) emailField.value = '';
-  if (passwordField) passwordField.value = '';
+  console.log('Email field:', emailField);
+  console.log('Password field:', passwordField);
   
-  console.log('Modal de login exibido');
+  if (emailField) {
+    emailField.value = '';
+    console.log('✅ Campo email limpo');
+  }
+  if (passwordField) {
+    passwordField.value = '';
+    console.log('✅ Campo senha limpo');
+  }
+  
+  console.log('✅ Modal de login exibido com sucesso!');
 }
 
 // Mostrar informações do usuário
@@ -247,8 +280,30 @@ function getCurrentUser() {
 
 // Inicializar quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM carregado, inicializando sistema de login');
+  console.log('=== LOGIN SYSTEM DOM LOADED ===');
+  console.log('Inicializando sistema de login modular...');
+  
+  // Verificar se elementos necessários existem
+  var loginModal = document.getElementById('loginModal');
+  var loginBtn = document.getElementById('loginBtn');
+  
+  console.log('LoginModal found:', !!loginModal);
+  console.log('LoginBtn found:', !!loginBtn);
+  
+  if (!loginModal) {
+    console.error('❌ CRÍTICO: loginModal não encontrado no DOM!');
+  }
+  
+  if (!loginBtn) {
+    console.error('❌ CRÍTICO: loginBtn não encontrado no DOM!');
+  }
+  
   initLoginSystem();
+  
+  console.log('=== FUNÇÕES EXPORTADAS ===');
+  console.log('window.showLoginModal:', typeof window.showLoginModal);
+  console.log('window.hideLoginModal:', typeof window.hideLoginModal);
+  console.log('window.getCurrentUser:', typeof window.getCurrentUser);
 });
 
 // Exportar funções globalmente

@@ -160,6 +160,107 @@ footer {
   border-radius: 50%;
   background: #fff;
 }
+
+/* Estilos do Modal de Login */
+.login-btn {
+  background: #238636;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+
+.login-btn:hover {
+  background: #2ea043;
+}
+
+.modal {
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #8b949e;
+}
+
+.close:hover {
+  color: #c9d1d9;
+}
+
+.modal-content h2 {
+  color: #58a6ff;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 5px;
+  color: #c9d1d9;
+  font-size: 1rem;
+}
+
+.modal-content input:focus {
+  outline: none;
+  border-color: #58a6ff;
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  background: #238636;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.modal-content button:hover {
+  background: #2ea043;
+}
+
+#userInfo {
+  text-align: center;
+}
+
+#userInfo h3 {
+  color: #58a6ff;
+  margin-bottom: 1rem;
+}
+
 @media (max-width: 768px) {
   .nav-links {
     display: none;

@@ -1,5 +1,139 @@
-// Importar FirebaseManager
-import { FirebaseManager } from './firebase-config.js';
+// Firebase Manager Simplificado
+const FirebaseManager = {
+  async loadQuestions(difficulty) {
+    try {
+      const questionsRef = window.firestore.collection(window.db, 'questions');
+      const q = window.firestore.query(questionsRef);
+      const querySnapshot = await window.firestore.getDocs(q);
+      
+      const questions = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.difficulty === difficulty) {
+          questions.push(data);
+        }
+      });
+      
+      return questions;
+    } catch (error) {
+      console.error('Erro ao carregar perguntas:', error);
+      return [];
+    }
+  },
+  
+  async saveQuizResult(difficulty, score, totalQuestions, wrongAnswers) {
+    if (!window.currentUser) return;
+    
+    try {
+      const result = {
+        userId: window.currentUser.uid,
+        difficulty: difficulty,
+        score: score,
+        totalQuestions: totalQuestions,
+        wrongAnswers: wrongAnswers,
+        timestamp: new Date(),
+        percentage: (score / totalQuestions) * 100
+      };
+      
+      await window.firestore.addDoc(window.firestore.collection(window.db, 'quiz_results'), result);
+      
+    } catch (error) {
+      console.error('Erro ao salvar resultado:', error);
+    }
+  }
+};
+
+// Sistema de Autenticação
+let currentUser = null;
+window.currentUser = null;
+
+// Monitorar estado do usuário
+if (window.auth) {
+  window.firebaseAuth.onAuthStateChanged(window.auth, (user) => {
+    currentUser = user;
+    window.currentUser = user;
+    updateUserInterface();
+  });
+}
+
+function updateUserInterface() {
+  const loginBtn = document.getElementById('loginBtn');
+  if (currentUser) {
+    loginBtn.textContent = `👤 ${currentUser.email || 'Usuário'}`;
+    loginBtn.onclick = showUserInfo;
+  } else {
+    loginBtn.textContent = '🔐 Login';
+    loginBtn.onclick = showLoginModal;
+  }
+}
+
+function showLoginModal() {
+  document.getElementById('loginModal').classList.remove('hidden');
+  document.getElementById('loginForm').classList.remove('hidden');
+  document.getElementById('userInfo').classList.add('hidden');
+}
+
+function showUserInfo() {
+  document.getElementById('loginModal').classList.remove('hidden');
+  document.getElementById('loginForm').classList.add('hidden');
+  document.getElementById('userInfo').classList.remove('hidden');
+  document.getElementById('userEmail').textContent = currentUser.email || 'Usuário anônimo';
+}
+
+function hideLoginModal() {
+  document.getElementById('loginModal').classList.add('hidden');
+}
+
+async function login() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  
+  if (!email || !password) {
+    alert('Preencha email e senha!');
+    return;
+  }
+  
+  try {
+    await window.firebaseAuth.signInWithEmailAndPassword(window.auth, email, password);
+    hideLoginModal();
+    alert('Login realizado com sucesso!');
+  } catch (error) {
+    alert('Erro no login: ' + error.message);
+  }
+}
+
+async function register() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  
+  if (!email || !password) {
+    alert('Preencha email e senha!');
+    return;
+  }
+  
+  if (password.length < 6) {
+    alert('Senha deve ter pelo menos 6 caracteres!');
+    return;
+  }
+  
+  try {
+    await window.firebaseAuth.createUserWithEmailAndPassword(window.auth, email, password);
+    hideLoginModal();
+    alert('Conta criada com sucesso!');
+  } catch (error) {
+    alert('Erro ao criar conta: ' + error.message);
+  }
+}
+
+async function logout() {
+  try {
+    await window.firebaseAuth.signOut(window.auth);
+    hideLoginModal();
+    alert('Logout realizado!');
+  } catch (error) {
+    alert('Erro no logout: ' + error.message);
+  }
+}
 
 // Fallback local para quando Firebase não estiver disponível
 const localQuizzes = {

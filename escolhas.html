@@ -13,8 +13,10 @@
       <ul class="nav-links">
         <li><a href="index.html">Início</a></li>
         <li><a href="features.html">Recursos</a></li>
+        <li><a href="ranking.html">Ranking</a></li>
         <li><a href="about.html">Sobre</a></li>
         <li><a href="contato.html">Contato</a></li>
+        <li><button id="loginBtn" class="login-btn" onclick="showLoginModal()">🔐 Login</button></li>
       </ul>
     </nav>
   </header>
@@ -40,6 +42,28 @@
       <p id="feedback" class="feedback"></p>
       <button class="button" onclick="location.reload()">Jogar Novamente</button>
     </section>
+    
+    <!-- Modal de Login -->
+    <div id="loginModal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close" onclick="hideLoginModal()">&times;</span>
+        <h2>🔐 Login / Cadastro</h2>
+        <div id="loginForm">
+          <input type="email" id="email" placeholder="Email" required>
+          <input type="password" id="password" placeholder="Senha" required>
+          <button onclick="login()">Entrar</button>
+          <button onclick="register()">Criar Conta</button>
+          <p style="margin-top: 1rem; font-size: 0.9rem; color: #8b949e;">
+            Crie uma conta para salvar seu progresso e aparecer no ranking!
+          </p>
+        </div>
+        <div id="userInfo" class="hidden">
+          <h3>Bem-vindo!</h3>
+          <p id="userEmail"></p>
+          <button onclick="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
   </main>
   <footer>
     <div class="container">
@@ -59,12 +83,29 @@
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, collection, getDocs, addDoc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getAuth, signInAnonymously, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAY7gBP_ygNQ5P2if_j7ad-P5udblblnzA",
+      authDomain: "cyberguard-pro-27c29.firebaseapp.com",
+      projectId: "cyberguard-pro-27c29",
+      storageBucket: "cyberguard-pro-27c29.firebasestorage.app",
+      messagingSenderId: "891637083155",
+      appId: "1:891637083155:web:b1f3fb09f84d25bcee63e6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
     
-    // Disponibilizar globalmente para compatibilidade
-    window.firebase = { initializeApp, getFirestore, getAuth };
+    // Disponibilizar globalmente
+    window.db = db;
+    window.auth = auth;
+    window.firebaseAuth = { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged };
+    window.firestore = { collection, getDocs, addDoc, query, orderBy, limit };
   </script>
-  <script type="module" src="Script/escolhas.js"></script>
+  <script src="Script/escolhas.js"></script>
 </body>
 </html>

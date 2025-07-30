@@ -21,7 +21,7 @@
     </nav>
   </header>
   <main id="app">
-    <section id="menu">
+    <section class="difficulty-section">
       <h2>Escolha o nível das perguntas:</h2>
       <p style="margin-bottom: 1.5rem; color: #58a6ff; font-size: 1.1rem;">
         As perguntas abrangem diversos temas como segurança digital, awareness, frameworks de segurança, boas práticas e muito mais.<br>
@@ -31,17 +31,20 @@
       <button class="button" onclick="startSimulation('medium')">Médio</button>
       <button class="button" onclick="startSimulation('large')">Difícil</button>
     </section>
-    <section id="quiz" class="hidden">
-      <div id="question-container" class="question"></div>
-      <div id="options-container"></div>
-      <button class="button" onclick="nextQuestion()">Próxima</button>
-    </section>
-    <section id="result" class="hidden">
-      <h2>Resultado Final</h2>
-      <p id="score"></p>
-      <p id="feedback" class="feedback"></p>
-      <button class="button" onclick="location.reload()">Jogar Novamente</button>
-    </section>
+    
+    <!-- Container do Quiz -->
+    <div id="quiz-container" style="display: none;">
+      <div class="progress-bar">
+        <div id="progress-fill"></div>
+      </div>
+      <div id="progress-text" class="progress-text">0/0</div>
+      
+      <div class="question-container">
+        <h2 id="question-title"></h2>
+        <div id="options-container"></div>
+        <button id="next-btn" class="button" onclick="nextQuestion()" disabled>Próxima</button>
+      </div>
+    </div>
     
     <!-- Modal de Login -->
     <div id="loginModal" class="modal hidden">
@@ -81,11 +84,11 @@
   </footer>
   
   <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getFirestore, collection, getDocs, addDoc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getAuth, signInAnonymously, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  
+  <script>
     // Configuração do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAY7gBP_ygNQ5P2if_j7ad-P5udblblnzA",
@@ -96,15 +99,15 @@
       appId: "1:891637083155:web:b1f3fb09f84d25bcee63e6"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
     
     // Disponibilizar globalmente
     window.db = db;
     window.auth = auth;
-    window.firebaseAuth = { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged };
-    window.firestore = { collection, getDocs, addDoc, query, orderBy, limit };
+    window.firebase = firebase;
   </script>
   <script src="Script/escolhas.js"></script>
 </body>

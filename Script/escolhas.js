@@ -14,232 +14,121 @@ var difficultyMap = {
   'large': 'hard'
 };
 
-// Aguardar o Firebase carregar
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM carregado');
-  console.log('Firebase disponível:', !!window.firebase);
-  console.log('DB disponível:', !!window.db);
-  console.log('Auth disponível:', !!window.auth);
-  
-  // Firebase Manager Simplificado
-  window.FirebaseManager = {
-    loadQuestions: function(difficulty) {
-      return new Promise(function(resolve, reject) {
-        try {
-          if (!window.db) {
-            console.error('Firebase não inicializado');
-            resolve([]);
-            return;
-          }
-          
-          var questionsRef = db.collection('questions');
-          questionsRef.get().then(function(querySnapshot) {
-            var questions = [];
-            querySnapshot.forEach(function(doc) {
-              var data = doc.data();
-              if (data.difficulty === difficulty) {
-                questions.push(data);
-              }
-            });
-            resolve(questions);
-          }).catch(function(error) {
-            console.error('Erro ao carregar perguntas:', error);
-            resolve([]);
-          });
-        } catch (error) {
-          console.error('Erro ao carregar perguntas:', error);
+// Firebase Manager para o Quiz
+window.FirebaseManager = {
+  loadQuestions: function(difficulty) {
+    return new Promise(function(resolve, reject) {
+      try {
+        if (!window.db) {
+          console.error('Firebase não inicializado');
           resolve([]);
-        }
-      });
-    },
-    
-    saveQuizResult: function(difficulty, score, totalQuestions, wrongAnswers) {
-      return new Promise(function(resolve, reject) {
-        if (!window.currentUser) {
-          resolve();
           return;
         }
         
-        try {
-          var result = {
-            userId: window.currentUser.uid,
-            difficulty: difficulty,
-            score: score,
-            totalQuestions: totalQuestions,
-            wrongAnswers: wrongAnswers,
-            timestamp: new Date(),
-            percentage: (score / totalQuestions) * 100
-          };
-          
-          db.collection('quiz_results').add(result).then(function() {
-            resolve();
-          }).catch(function(error) {
-            console.error('Erro ao salvar resultado:', error);
-            resolve();
+        var questionsRef = db.collection('questions');
+        questionsRef.get().then(function(querySnapshot) {
+          var questions = [];
+          querySnapshot.forEach(function(doc) {
+            var data = doc.data();
+            if (data.difficulty === difficulty) {
+              questions.push(data);
+            }
           });
-        } catch (error) {
+          resolve(questions);
+        }).catch(function(error) {
+          console.error('Erro ao carregar perguntas:', error);
+          resolve([]);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar perguntas:', error);
+        resolve([]);
+      }
+    });
+  },
+  
+  saveQuizResult: function(difficulty, score, totalQuestions, wrongAnswers) {
+    return new Promise(function(resolve, reject) {
+      if (!window.currentUser) {
+        resolve();
+        return;
+      }
+      
+      try {
+        var result = {
+          userId: window.currentUser.uid,
+          difficulty: difficulty,
+          score: score,
+          totalQuestions: totalQuestions,
+          wrongAnswers: wrongAnswers,
+          timestamp: new Date(),
+          percentage: (score / totalQuestions) * 100
+        };
+        
+        db.collection('quiz_results').add(result).then(function() {
+          resolve();
+        }).catch(function(error) {
           console.error('Erro ao salvar resultado:', error);
           resolve();
-        }
-      });
-    }
-  };
-
-  // Sistema de Autenticação
-  if (window.auth) {
-    console.log('Inicializando sistema de autenticação');
-    auth.onAuthStateChanged(function(user) {
-      console.log('Estado do usuário mudou:', user);
-      currentUser = user;
-      window.currentUser = user;
-      updateUserInterface();
+        });
+      } catch (error) {
+        console.error('Erro ao salvar resultado:', error);
+        resolve();
+      }
     });
-  } else {
-    console.error('Firebase Auth não está disponível');
   }
-  
-  // Fechar modal clicando fora dele
-  var modal = document.getElementById('loginModal');
-  if (modal) {
-    modal.onclick = function(event) {
-      if (event.target === modal) {
-        hideLoginModal();
-      }
-    };
-  }
-  
-  // Fechar modal com tecla ESC
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-      var modal = document.getElementById('loginModal');
-      if (modal && !modal.classList.contains('hidden')) {
-        hideLoginModal();
-      }
-    }
-  });
-});
+};
 
-function updateUserInterface() {
-  console.log('Atualizando interface do usuário');
-  var loginBtn = document.getElementById('loginBtn');
-  
-  if (!loginBtn) {
-    console.error('Botão de login não encontrado');
-    return;
-  }
-  
-  if (currentUser && currentUser.email) {
-    loginBtn.textContent = '👤 ' + currentUser.email;
-    loginBtn.onclick = showUserInfo;
-    console.log('Usuário logado:', currentUser.email);
-  } else {
-    loginBtn.textContent = '🔐 Login';
-    loginBtn.onclick = showLoginModal;
-    console.log('Usuário não logado');
-  }
-}
+// Variável para salvar resultado pendente
+var pendingResult = null;
 
-function showLoginModal() {
-  document.getElementById('loginModal').classList.remove('hidden');
-  document.getElementById('loginForm').classList.remove('hidden');
-  document.getElementById('userInfo').classList.add('hidden');
-}
-
-function showUserInfo() {
-  document.getElementById('loginModal').classList.remove('hidden');
-  document.getElementById('loginForm').classList.add('hidden');
-  document.getElementById('userInfo').classList.remove('hidden');
-  document.getElementById('userEmail').textContent = currentUser.email || 'Usuário anônimo';
-}
-
-function hideLoginModal() {
-  document.getElementById('loginModal').classList.add('hidden');
-  
+// Callbacks para o sistema de login modular
+window.onLoginModalClose = function() {
   // Se há resultado pendente e usuário fechou modal, reinicia quiz
   if (pendingResult) {
     pendingResult = null;
     restartQuiz();
   }
-}
+};
 
-// Variáveis para salvar resultado pendente
-var pendingResult = null;
-
-function login() {
-  var email = document.getElementById('email').value;
-  var password = document.getElementById('password').value;
-  
-  if (!email || !password) {
-    alert('Preencha email e senha!');
-    return;
+window.onLoginSuccess = function() {
+  // Salvar resultado pendente se existir
+  if (pendingResult) {
+    window.FirebaseManager.saveQuizResult(
+      pendingResult.difficulty, 
+      pendingResult.score, 
+      pendingResult.totalQuestions, 
+      pendingResult.wrongAnswers
+    ).then(function() {
+      alert('Seu resultado foi salvo! Agora você aparece no ranking! 🏆');
+      pendingResult = null;
+      restartQuiz();
+    });
   }
-  
-  auth.signInWithEmailAndPassword(email, password).then(function() {
-    hideLoginModal();
-    alert('Login realizado com sucesso!');
-    
-    // Salvar resultado pendente se existir
-    if (pendingResult) {
-      window.FirebaseManager.saveQuizResult(
-        pendingResult.difficulty, 
-        pendingResult.score, 
-        pendingResult.totalQuestions, 
-        pendingResult.wrongAnswers
-      ).then(function() {
-        alert('Seu resultado foi salvo! Agora você aparece no ranking! 🏆');
-        pendingResult = null;
-        restartQuiz();
-      });
-    }
-  }).catch(function(error) {
-    alert('Erro no login: ' + error.message);
-  });
-}
+};
 
-function register() {
-  var email = document.getElementById('email').value;
-  var password = document.getElementById('password').value;
-  
-  if (!email || !password) {
-    alert('Preencha email e senha!');
-    return;
+window.onRegisterSuccess = function() {
+  // Salvar resultado pendente se existir
+  if (pendingResult) {
+    window.FirebaseManager.saveQuizResult(
+      pendingResult.difficulty, 
+      pendingResult.score, 
+      pendingResult.totalQuestions, 
+      pendingResult.wrongAnswers
+    ).then(function() {
+      alert('Seu resultado foi salvo! Bem-vindo ao ranking! 🏆');
+      pendingResult = null;
+      restartQuiz();
+    });
   }
-  
-  if (password.length < 6) {
-    alert('Senha deve ter pelo menos 6 caracteres!');
-    return;
-  }
-  
-  auth.createUserWithEmailAndPassword(email, password).then(function() {
-    hideLoginModal();
-    alert('Conta criada com sucesso!');
-    
-    // Salvar resultado pendente se existir
-    if (pendingResult) {
-      window.FirebaseManager.saveQuizResult(
-        pendingResult.difficulty, 
-        pendingResult.score, 
-        pendingResult.totalQuestions, 
-        pendingResult.wrongAnswers
-      ).then(function() {
-        alert('Seu resultado foi salvo! Bem-vindo ao ranking! 🏆');
-        pendingResult = null;
-        restartQuiz();
-      });
-    }
-  }).catch(function(error) {
-    alert('Erro ao criar conta: ' + error.message);
-  });
-}
+};
 
-function logout() {
-  auth.signOut().then(function() {
-    hideLoginModal();
-    alert('Logout realizado!');
-  }).catch(function(error) {
-    alert('Erro no logout: ' + error.message);
-  });
-}
+// Aguardar Firebase e sistema de login carregarem
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM carregado para o quiz');
+  console.log('Firebase disponível:', !!window.firebase);
+  console.log('DB disponível:', !!window.db);
+  console.log('Auth disponível:', !!window.auth);
+});
 
 // Funções principais do quiz
 function startSimulation(difficulty) {
@@ -383,7 +272,7 @@ function showResults() {
   }
   
   // Salvar resultado no Firebase se o usuário estiver logado
-  if (window.currentUser) {
+  if (window.getCurrentUser && window.getCurrentUser()) {
     window.FirebaseManager.saveQuizResult(currentDifficulty, score, currentQuiz.length, wrongAnswers);
     alert(message);
   } else {
@@ -397,7 +286,7 @@ function showResults() {
         totalQuestions: currentQuiz.length,
         wrongAnswers: wrongAnswers
       };
-      showLoginModal();
+      window.showLoginModal();
       return; // Não reinicia o quiz ainda
     }
   }
@@ -421,12 +310,6 @@ function restartQuiz() {
   }
 }
 
-// Disponibilizar funções globalmente para o HTML
+// Disponibilizar funções do quiz globalmente para o HTML
 window.startSimulation = startSimulation;
 window.nextQuestion = nextQuestion;
-window.showLoginModal = showLoginModal;
-window.showUserInfo = showUserInfo;
-window.hideLoginModal = hideLoginModal;
-window.login = login;
-window.register = register;
-window.logout = logout;

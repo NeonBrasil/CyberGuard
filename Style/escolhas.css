@@ -300,7 +300,8 @@ footer {
   position: absolute;
   right: 1rem;
   top: 1rem;
-  font-size: 1.5rem;
+  font-size: 28px;
+  font-weight: bold;
   cursor: pointer;
   color: #8b949e;
 }

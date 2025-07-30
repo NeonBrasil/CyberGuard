@@ -48,9 +48,24 @@ function setupModalEvents() {
     return;
   }
   
+  // Configurar X de fechar
+  var closeBtn = modal.querySelector('.close');
+  if (closeBtn) {
+    closeBtn.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('X clicado, fechando modal');
+      hideLoginModal();
+    };
+    console.log('Event listener do X configurado');
+  } else {
+    console.warn('Botão X (.close) não encontrado no modal');
+  }
+  
   // Fechar modal clicando fora dele
   modal.onclick = function(event) {
     if (event.target === modal) {
+      console.log('Clique fora do modal, fechando');
       hideLoginModal();
     }
   };
@@ -59,6 +74,7 @@ function setupModalEvents() {
   document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
       if (modal && !modal.classList.contains('hidden')) {
+        console.log('ESC pressionado, fechando modal');
         hideLoginModal();
       }
     }

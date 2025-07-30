@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Migração de Dados - CyberGuard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      margin: 0;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #161b22;
+      padding: 2rem;
+      border-radius: 10px;
+      border: 1px solid #30363d;
+    }
+    h1 { color: #58a6ff; }
+    button {
+      background: #238636;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 0.5rem;
+      font-size: 1rem;
+    }
+    button:hover { background: #2ea043; }
+    button:disabled { background: #6e7681; cursor: not-allowed; }
+    .status {
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 5px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+    }
+    .success { border-color: #238636; color: #238636; }
+    .error { border-color: #da3633; color: #da3633; }
+    .info { border-color: #58a6ff; color: #58a6ff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔄 Migração de Dados para Firebase</h1>
+    <p>Use este utilitário para migrar as perguntas do CyberGuard para o Firestore.</p>
+    
+    <div id="status" class="status info">
+      Aguardando conexão com Firebase...
+    </div>
+    
+    <button id="migrateBtn" onclick="migrateQuestions()" disabled>
+      Migrar Perguntas para Firestore
+    </button>
+    
+    <button id="clearBtn" onclick="clearFirestore()" disabled style="background: #da3633;">
+      Limpar Dados do Firestore
+    </button>
+    
+    <button onclick="testConnection()">
+      Testar Conexão Firebase
+    </button>
+    
+    <div id="progress" style="margin-top: 2rem;"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    // CONFIGURAÇÃO DO SEU FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyAY7gBP_ygNQ5P2if_j7ad-P5udblblnzA",
+      authDomain: "cyberguard-pro-27c29.firebaseapp.com",
+      projectId: "cyberguard-pro-27c29",
+      storageBucket: "cyberguard-pro-27c29.firebasestorage.app",
+      messagingSenderId: "891637083155",
+      appId: "1:891637083155:web:b1f3fb09f84d25bcee63e6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Tentar autenticação
+    signInAnonymously(auth).then(() => {
+      updateStatus('Conectado ao Firebase! ✅', 'success');
+      document.getElementById('migrateBtn').disabled = false;
+      document.getElementById('clearBtn').disabled = false;
+    }).catch((error) => {
+      updateStatus('Erro na conexão: ' + error.message, 'error');
+    });
+
+    function updateStatus(message, type = 'info') {
+      const statusDiv = document.getElementById('status');
+      statusDiv.textContent = message;
+      statusDiv.className = `status ${type}`;
+    }
+
+    function updateProgress(message) {
+      document.getElementById('progress').innerHTML += `<p>${message}</p>`;
+    }
+
+    // Perguntas locais para migração
+    const localQuestions = {
+      easy: [
+        {
+          question: "Seu Wi-Fi de empresa está aberto e sem senha. O que você faz?",
+          options: ["Nada, está tudo bem.", "Coloca uma senha forte e WPA2."],
+          correctAnswer: 1,
+          difficulty: "easy",
+          category: "network_security"
+        },
+        {
+          question: "Você vê um colaborador acessando o e-mail pessoal no computador de serviço. O que você faz?",
+          options: ["Aviso ele que o que está fazendo não é permitido.", "Ignoro e faço igual."],
+          correctAnswer: 0,
+          difficulty: "easy",
+          category: "security_policy"
+        },
+        {
+          question: "Você recebe um e-mail suspeito com um link estranho. O que faz?",
+          options: ["Clica no link para ver o que é.", "Reporta à equipe de segurança."],
+          correctAnswer: 1,
+          difficulty: "easy",
+          category: "phishing"
+        },
+        {
+          question: "Você encontra um pen drive na mesa de um colega. O que faz?",
+          options: ["Leva para casa para ver o que tem.", "Deixa onde está."],
+          correctAnswer: 1,
+          difficulty: "easy",
+          category: "physical_security"
+        },
+        {
+          question: "Você vê uma planilha de clientes sendo enviada por e-mail pessoal. E agora?",
+          options: ["Ignora, não é seu problema.", "Reporta à equipe de segurança."],
+          correctAnswer: 1,
+          difficulty: "easy",
+          category: "data_protection"
+        },
+        {
+          question: "Você está em uma reunião e alguém pede para compartilhar sua tela. O que faz?",
+          options: ["Compartilha sem pensar.", "Confirma o que será mostrado."],
+          correctAnswer: 1,
+          difficulty: "easy",
+          category: "information_security"
+        },
+        {
+          question: "Você recebeu um e-mail da 'Mincrosoft' avisando que sua conta foi comprometida. O que você faz?",
+          options: ["Denúncia como Phishing.", "Entro em desespero e sigo o passo a passo do e-mail."],
+          correctAnswer: 0,
+          difficulty: "easy",
+          category: "phishing"
+        },
+        {
+          question: "Um colega de RH pede seu login para um teste. E agora?",
+          options: ["Fornece na hora.", "Recusa e orienta a usar o sistema oficial."],
+          correctAnswer: 1,
+          difficulty: "easy",
+          category: "social_engineering"
+        },
+        {
+          question: "Você conecta um pendrive desconhecido encontrado na recepção. E agora?",
+          options: ["Ver o que tem dentro.", "Entregar à equipe de segurança."],
+          correctAnswer: 1,
+          difficulty: "easy",
+          category: "physical_security"
+        },
+        {
+          question: "Qual das seguintes é um Framework de segurança aceito mundialmente?",
+          options: ["ISO 27001.", "NOST Cybersecurity Framework"],
+          correctAnswer: 0,
+          difficulty: "easy",
+          category: "frameworks"
+        },
+        {
+          question: "O sistema pede autenticação por token, mas você quer agilizar. O que faz?",
+          options: ["Pede para desativar.", "Entende a importância da autenticação."],
+          correctAnswer: 1,
+          difficulty: "easy",
+          category: "authentication"
+        }
+      ],
+      medium: [
+        {
+          question: "Recebeu um e-mail dizendo que precisa atualizar sua senha clicando em um link. O que fazer?",
+          options: ["Clicar logo no link.", "Verificar remetente e contatar oficial da TI."],
+          correctAnswer: 1,
+          difficulty: "medium",
+          category: "phishing"
+        },
+        {
+          question: "Qual dessas práticas representa melhor a gestão de senhas em um ambiente corporativo?",
+          options: [
+            "Alterar a senha a cada 90 dias e anotar em um caderno seguro.",
+            "Utilizar a mesma senha para todos os sistemas, mas com autenticação em dois fatores.",
+            "Criar senhas únicas, usar um gerenciador de senhas e ativar autenticação em dois fatores sempre que possível.",
+            "Usar a mesma senha, mas com caracteres especiais."
+          ],
+          correctAnswer: 2,
+          difficulty: "medium",
+          category: "password_management"
+        },
+        {
+          question: "Em uma situação de vazamento de dados, qual é a primeira ação recomendada?",
+          options: [
+            "Notificar imediatamente o canal oficial de segurança da informação da empresa.",
+            "Avisar um colega imediatamente para decidir juntos o que fazer.",
+            "Corrigir o erro rapidamente e seguir o trabalho para não causar impacto.",
+            "Esperar para ver se o problema se resolve sozinho."
+          ],
+          correctAnswer: 0,
+          difficulty: "medium",
+          category: "incident_response"
+        },
+        {
+          question: "Você precisa usar um software gratuito para converter arquivos. O que deve fazer?",
+          options: [
+            "Usar sites conhecidos.",
+            "Baixar um programa conhecido em um fórum conhecido.",
+            "Solicitar à equipe de TI para validar o software.",
+            "Usar um software que você conhece e depois desinstalar após o uso."
+          ],
+          correctAnswer: 2,
+          difficulty: "medium",
+          category: "software_security"
+        },
+        {
+          question: "Sobre redes WI-FI corporativas, qual prática representa risco elevado de segurança?",
+          options: [
+            "Exigir autenticação com certificado digital.",
+            "Permitir que visitantes usem a mesma rede dos colaboradores.",
+            "Ter uma rede separada para dispositivos pessoais.",
+            "Usar redes segmentadas com controle de acesso."
+          ],
+          correctAnswer: 1,
+          difficulty: "medium",
+          category: "network_security"
+        },
+        {
+          question: "Qual princípio de segurança da informação está sendo violado quando um funcionário com baixa autorização consegue acessar dados sensíveis?",
+          options: ["Confidencialidade.", "Integridade.", "Disponibilidade.", "Autenticidade."],
+          correctAnswer: 0,
+          difficulty: "medium",
+          category: "security_principles"
+        },
+        {
+          question: "Um grande ataque de phishing avançado que utiliza uma URL visualmente idêntica ao site original e SSL válido é conhecido como:",
+          options: ["Phishing de URL.", "Phishing de SSL.", "Phishing de Homógrafos.", "Phishing de Spoofing."],
+          correctAnswer: 2,
+          difficulty: "medium",
+          category: "phishing"
+        },
+        {
+          question: "Sobre ataque de phishing avançado, qual a melhor técnica de defesa?",
+          options: [
+            "Bloqueio de sites suspeitos via firewall.",
+            "Antívirus atualizado com lista de sites maliciosos.",
+            "Conscientização dos usuários.",
+            "Autenticação com senha complexa."
+          ],
+          correctAnswer: 2,
+          difficulty: "medium",
+          category: "phishing"
+        },
+        {
+          question: "Qual é a diferença entre phishing e spear phishing?",
+          options: [
+            "Phishing é um ataque genérico, enquanto spear phishing é direcionado a indivíduos específicos.",
+            "Phishing usa e-mails, enquanto spear phishing usa redes sociais.",
+            "Phishing é mais perigoso que spear phishing.",
+            "Spear phishing é um tipo de malware."
+          ],
+          correctAnswer: 0,
+          difficulty: "medium",
+          category: "phishing"
+        },
+        {
+          question: "Qual das alternativas caracteriza um falso positivo em um sistema de segurança?",
+          options: [
+            "Um alerta de segurança que identifica uma ameaça real.",
+            "Um alerta de segurança que não representa uma ameaça real.",
+            "Um ataque bem-sucedido que não é detectado pelo sistema.",
+            "Uma falha de segurança que é corrigida rapidamente."
+          ],
+          correctAnswer: 1,
+          difficulty: "medium",
+          category: "security_monitoring"
+        }
+      ],
+      hard: [
+        {
+          question: "Você conecta um pendrive desconhecido encontrado na recepção. E agora?",
+          options: ["Ver o que tem dentro.", "Entregar à equipe de segurança."],
+          correctAnswer: 1,
+          difficulty: "hard",
+          category: "physical_security"
+        },
+        {
+          question: "O que é LGPD?",
+          options: [
+            "Lei de Garantia de Privacidade Digital",
+            "Lei Geral de Proteção de Dados.",
+            "Lei de Gestão de Dados Pessoais",
+            "Lei Global de Privacidade de Dados"
+          ],
+          correctAnswer: 1,
+          difficulty: "hard",
+          category: "compliance"
+        },
+        {
+          question: "Ao realizar uma análise de risco, qual fórmula representa a abordagem clássica de risco?",
+          options: [
+            "Risco = Vulnerabilidade / Ameaça",
+            "Risco = Ativo + Probabilidade",
+            "Risco = Impacto * Probabilidade",
+            "Risco = Ameaça * Vulnerabilidade",
+            "Risco = Ameaça + Vulnerabilidade + Impacto"
+          ],
+          correctAnswer: 2,
+          difficulty: "hard",
+          category: "risk_management"
+        },
+        {
+          question: "Segundo a ISO/IEC 27002, qual controle visa garantir a segurança física de equipamentos críticos?",
+          options: [
+            "Gestão de Acessos",
+            "Áreas Seguras",
+            "Proteção de Redes",
+            "Conformidade Legal",
+            "Gestão de Incidentes",
+            "Gestão de Continuidade"
+          ],
+          correctAnswer: 1,
+          difficulty: "hard",
+          category: "iso_27002"
+        },
+        {
+          question: "Segundo a ISO/IEC 27002, qual controle é essencial para proteger informações em trânsito?",
+          options: [
+            "Criptografia",
+            "Gestão de Acessos", 
+            "Proteção de Redes",
+            "Conformidade Legal",
+            "Gestão de Incidentes"
+          ],
+          correctAnswer: 0,
+          difficulty: "hard",
+          category: "iso_27002"
+        },
+        {
+          question: "De acordo com a LGPD, quando uma empresa é considerada 'controladora' de dados?",
+          options: [
+            "Quando armazena dados sensíveis por obrigação legal.",
+            "Quando coleta, trata e decide sobre o uso de dados pessoais.",
+            "Quando processa dados sob ordem judicial.",
+            "Quando apenas fornece infraestrutura técnica a terceiros.",
+            "Quando atua como intermediária entre usuários e serviços."
+          ],
+          correctAnswer: 1,
+          difficulty: "hard",
+          category: "compliance"
+        },
+        {
+          question: "Segundo o NIST SP 800-53, qual é o objetivo principal do controle AC-2?",
+          options: [
+            "Gerenciar o acesso a sistemas e informações.",
+            "Proteger a integridade dos dados.",
+            "Garantir a disponibilidade de serviços críticos.",
+            "Monitorar atividades suspeitas.",
+            "Implementar criptografia forte."
+          ],
+          correctAnswer: 0,
+          difficulty: "hard",
+          category: "nist_framework"
+        },
+        {
+          question: "Segundo o NIST SP 800-53, o controle de 'Separation of Duties' busca principalmente:",
+          options: [
+            "Reduzir número de funcionários com acesso à rede.",
+            "Garantir backup redundante de operações sensíveis.",
+            "Fornecer isolamento entre VLANs.",
+            "Impedir que um único indivíduo tenha controle total sobre um processo crítico."
+          ],
+          correctAnswer: 3,
+          difficulty: "hard",
+          category: "nist_framework"
+        }
+      ]
+    };
+
+    window.migrateQuestions = async function() {
+      document.getElementById('migrateBtn').disabled = true;
+      document.getElementById('progress').innerHTML = '';
+      
+      updateStatus('Iniciando migração...', 'info');
+      
+      let totalMigrated = 0;
+      
+      try {
+        for (const [difficulty, questions] of Object.entries(localQuestions)) {
+          updateProgress(`📚 Migrando perguntas de nível: ${difficulty}`);
+          
+          for (const [index, question] of questions.entries()) {
+            const questionData = {
+              ...question,
+              createdAt: new Date(),
+              migrated: true,
+              id: `${difficulty}_${index}`
+            };
+            
+            await addDoc(collection(db, 'questions'), questionData);
+            totalMigrated++;
+            updateProgress(`✅ Pergunta ${index + 1}/${questions.length} de ${difficulty}`);
+          }
+        }
+        
+        updateStatus(`✅ Migração concluída! ${totalMigrated} perguntas migradas.`, 'success');
+        
+      } catch (error) {
+        updateStatus('❌ Erro na migração: ' + error.message, 'error');
+      }
+      
+      document.getElementById('migrateBtn').disabled = false;
+    };
+
+    window.clearFirestore = async function() {
+      if (!confirm('⚠️ Isso apagará TODAS as perguntas do Firestore. Continuar?')) {
+        return;
+      }
+      
+      document.getElementById('clearBtn').disabled = true;
+      updateStatus('Limpando dados...', 'info');
+      
+      try {
+        const q = query(collection(db, 'questions'));
+        const querySnapshot = await getDocs(q);
+        
+        let deleted = 0;
+        for (const docSnapshot of querySnapshot.docs) {
+          await deleteDoc(doc(db, 'questions', docSnapshot.id));
+          deleted++;
+        }
+        
+        updateStatus(`✅ ${deleted} perguntas removidas do Firestore.`, 'success');
+        
+      } catch (error) {
+        updateStatus('❌ Erro ao limpar: ' + error.message, 'error');
+      }
+      
+      document.getElementById('clearBtn').disabled = false;
+    };
+
+    window.testConnection = async function() {
+      updateStatus('Testando conexão...', 'info');
+      
+      try {
+        const q = query(collection(db, 'questions'));
+        const querySnapshot = await getDocs(q);
+        
+        updateStatus(`✅ Conexão OK! ${querySnapshot.size} perguntas encontradas.`, 'success');
+        
+      } catch (error) {
+        updateStatus('❌ Erro na conexão: ' + error.message, 'error');
+      }
+    };
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "name": "cyberguard",
+  "version": "2.0.0",
+  "description": "CyberGuard - Simulador de Segurança Cibernética com Firebase",
+  "main": "index.html",
+  "scripts": {
+    "dev": "firebase serve",
+    "build": "echo 'No build process needed for this static site'",
+    "deploy": "firebase deploy",
+    "setup": "firebase init",
+    "migrate": "echo 'Abra migrate-data.html no navegador para migrar dados'"
+  },
+  "keywords": [
+    "cybersecurity",
+    "education",
+    "quiz",
+    "firebase",
+    "security-awareness"
+  ],
+  "author": "Cayque Cicarelli",
+  "license": "MIT",
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NeonBrasil/CyberGuard.git"
+  },
+  "homepage": "https://github.com/NeonBrasil/CyberGuard",
+  "dependencies": {
+    "firebase": "^12.0.0"
+  }
+}

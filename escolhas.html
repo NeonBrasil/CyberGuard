@@ -55,6 +55,16 @@
       </div>
     </div>
   </footer>
-  <script src="Script/escolhas.js"></script>
+  
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    
+    // Disponibilizar globalmente para compatibilidade
+    window.firebase = { initializeApp, getFirestore, getAuth };
+  </script>
+  <script type="module" src="Script/escolhas.js"></script>
 </body>
 </html>

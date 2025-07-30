@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ranking - CyberGuard</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <style>
+    .ranking-container {
+      max-width: 1000px;
+      margin: 8rem auto 2rem;
+      padding: 0 2rem;
+    }
+    .ranking-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #30363d;
+    }
+    .tab-button {
+      background: none;
+      border: none;
+      color: #c9d1d9;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+    }
+    .tab-button.active {
+      color: #58a6ff;
+      border-bottom-color: #58a6ff;
+    }
+    .leaderboard {
+      background: rgba(22, 27, 34, 0.8);
+      border-radius: 10px;
+      padding: 2rem;
+      border: 1px solid #30363d;
+    }
+    .leaderboard h2 {
+      color: #58a6ff;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .ranking-item {
+      display: grid;
+      grid-template-columns: 60px 1fr 120px 120px 100px;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(13, 17, 23, 0.6);
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      align-items: center;
+      border: 1px solid #30363d;
+      transition: transform 0.2s;
+    }
+    .ranking-item:hover {
+      transform: translateX(5px);
+      border-color: #58a6ff;
+    }
+    .rank {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    .rank.gold { color: #ffd700; }
+    .rank.silver { color: #c0c0c0; }
+    .rank.bronze { color: #cd7f32; }
+    .player-name {
+      font-weight: bold;
+      color: #c9d1d9;
+    }
+    .score {
+      text-align: center;
+      color: #238636;
+      font-weight: bold;
+    }
+    .stats {
+      text-align: center;
+      color: #6e7681;
+      font-size: 0.9rem;
+    }
+    .percentage {
+      text-align: center;
+      font-weight: bold;
+    }
+    .loading {
+      text-align: center;
+      color: #6e7681;
+      padding: 2rem;
+    }
+    .empty-state {
+      text-align: center;
+      color: #6e7681;
+      padding: 3rem;
+    }
+    .user-rank {
+      background: rgba(88, 166, 255, 0.1);
+      border-color: #58a6ff;
+    }
+    @media (max-width: 768px) {
+      .ranking-item {
+        grid-template-columns: 50px 1fr 80px;
+        gap: 0.5rem;
+      }
+      .stats, .percentage {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ CyberGuard</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="ranking.html">🏆 Ranking</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="ranking-container">
+    <h1 style="text-align: center; color: #58a6ff; margin-bottom: 2rem;">🏆 Leaderboard CyberGuard</h1>
+    
+    <!-- Seção de Login/Usuário -->
+    <div id="login-section" style="text-align: center; margin-bottom: 2rem; display: none;">
+      <p style="color: #6e7681; margin-bottom: 1rem;">Faça login para aparecer no ranking!</p>
+      <button onclick="showLoginModal()" class="cta-button">🔐 Fazer Login</button>
+    </div>
+    
+    <div id="user-section" style="display: none;">
+      <div id="user-info" style="text-align: center; margin-bottom: 2rem;"></div>
+    </div>
+
+    <!-- Tabs do Ranking -->
+    <div class="ranking-tabs">
+      <button class="tab-button active" onclick="showLeaderboard('global')">🌍 Geral</button>
+      <button class="tab-button" onclick="showLeaderboard('easy')">🟢 Fácil</button>
+      <button class="tab-button" onclick="showLeaderboard('medium')">🟡 Médio</button>
+      <button class="tab-button" onclick="showLeaderboard('hard')">🔴 Difícil</button>
+    </div>
+
+    <!-- Conteúdo do Ranking -->
+    <div id="leaderboard-content">
+      <div class="loading">Carregando ranking...</div>
+    </div>
+  </main>
+
+  <!-- Modal de Login -->
+  <div id="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #161b22; padding: 2rem; border-radius: 10px; border: 1px solid #30363d; min-width: 400px;">
+      <h3 style="color: #58a6ff; margin-bottom: 2rem; text-align: center;">Login / Cadastro</h3>
+      
+      <div id="login-form">
+        <input type="email" id="email" placeholder="E-mail" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; background: #0d1117; border: 1px solid #30363d; border-radius: 5px; color: #c9d1d9;">
+        <input type="password" id="password" placeholder="Senha" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; background: #0d1117; border: 1px solid #30363d; border-radius: 5px; color: #c9d1d9;">
+        <input type="text" id="displayName" placeholder="Nome para exibir" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; background: #0d1117; border: 1px solid #30363d; border-radius: 5px; color: #c9d1d9; display: none;">
+        
+        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+          <button onclick="handleLogin()" style="flex: 1; padding: 0.75rem; background: #238636; color: white; border: none; border-radius: 5px; cursor: pointer;">Entrar</button>
+          <button onclick="toggleSignup()" style="flex: 1; padding: 0.75rem; background: #58a6ff; color: white; border: none; border-radius: 5px; cursor: pointer;">Cadastrar</button>
+        </div>
+        
+        <div style="text-align: center;">
+          <button onclick="closeLoginModal()" style="background: none; border: none; color: #6e7681; cursor: pointer;">Cancelar</button>
+        </div>
+      </div>
+      
+      <div id="login-message" style="margin-top: 1rem; text-align: center;"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    
+    window.firebase = { initializeApp, getFirestore, getAuth };
+  </script>
+  <script type="module" src="Script/user-manager.js"></script>
+  
+  <script>
+    let currentTab = 'global';
+    let isSignupMode = false;
+    
+    // Mostrar leaderboard
+    async function showLeaderboard(type) {
+      currentTab = type;
+      
+      // Atualizar tabs ativas
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const content = document.getElementById('leaderboard-content');
+      content.innerHTML = '<div class="loading">Carregando ranking...</div>';
+      
+      try {
+        let data = [];
+        
+        if (type === 'global') {
+          data = await LeaderboardManager.getGlobalLeaderboard();
+        } else {
+          data = await LeaderboardManager.getDifficultyLeaderboard(type);
+        }
+        
+        renderLeaderboard(data, type);
+        
+      } catch (error) {
+        content.innerHTML = `
+          <div class="empty-state">
+            <h3>😅 Ops! Algo deu errado</h3>
+            <p>Não foi possível carregar o ranking. Tente novamente mais tarde.</p>
+          </div>
+        `;
+      }
+    }
+    
+    // Renderizar leaderboard
+    function renderLeaderboard(data, type) {
+      const content = document.getElementById('leaderboard-content');
+      
+      if (data.length === 0) {
+        content.innerHTML = `
+          <div class="empty-state">
+            <h3>🎯 Seja o primeiro!</h3>
+            <p>Ainda não há jogadores neste ranking. Que tal ser o primeiro?</p>
+            <a href="escolhas.html" class="cta-button">Jogar Agora</a>
+          </div>
+        `;
+        return;
+      }
+      
+      let html = `
+        <div class="leaderboard">
+          <h2>${getLeaderboardTitle(type)}</h2>
+      `;
+      
+      data.forEach((player, index) => {
+        const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+        const rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+        
+        html += `
+          <div class="ranking-item">
+            <div class="rank ${rankClass}">${rankIcon} ${player.rank}</div>
+            <div class="player-name">${player.displayName}</div>
+            <div class="score">${type === 'global' ? player.totalScore : player.score}${type !== 'global' ? '%' : ''}</div>
+            <div class="stats">${player.totalQuizzes || 0} quiz${(player.totalQuizzes || 0) !== 1 ? 'zes' : ''}</div>
+            <div class="percentage">${type === 'global' ? player.avgScore : player.score}${type === 'global' ? ' avg' : '%'}</div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      content.innerHTML = html;
+    }
+    
+    function getLeaderboardTitle(type) {
+      const titles = {
+        'global': '🌍 Ranking Geral',
+        'easy': '🟢 Ranking - Nível Fácil', 
+        'medium': '🟡 Ranking - Nível Médio',
+        'hard': '🔴 Ranking - Nível Difícil'
+      };
+      return titles[type] || 'Ranking';
+    }
+    
+    // Modal de login
+    function showLoginModal() {
+      document.getElementById('login-modal').style.display = 'block';
+    }
+    
+    function closeLoginModal() {
+      document.getElementById('login-modal').style.display = 'none';
+      isSignupMode = false;
+      document.getElementById('displayName').style.display = 'none';
+    }
+    
+    function toggleSignup() {
+      isSignupMode = !isSignupMode;
+      const displayNameField = document.getElementById('displayName');
+      displayNameField.style.display = isSignupMode ? 'block' : 'none';
+    }
+    
+    async function handleLogin() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const displayName = document.getElementById('displayName').value;
+      const messageDiv = document.getElementById('login-message');
+      
+      if (!email || !password) {
+        messageDiv.innerHTML = '<span style="color: #da3633;">Preencha todos os campos!</span>';
+        return;
+      }
+      
+      if (isSignupMode && !displayName) {
+        messageDiv.innerHTML = '<span style="color: #da3633;">Nome para exibir é obrigatório!</span>';
+        return;
+      }
+      
+      messageDiv.innerHTML = '<span style="color: #58a6ff;">Processando...</span>';
+      
+      try {
+        let result;
+        if (isSignupMode) {
+          result = await userManager.createAccount(email, password, displayName);
+        } else {
+          result = await userManager.login(email, password);
+        }
+        
+        if (result.success) {
+          messageDiv.innerHTML = '<span style="color: #238636;">Sucesso!</span>';
+          setTimeout(() => {
+            closeLoginModal();
+            showLeaderboard(currentTab);
+          }, 1000);
+        } else {
+          messageDiv.innerHTML = `<span style="color: #da3633;">${result.error}</span>`;
+        }
+      } catch (error) {
+        messageDiv.innerHTML = `<span style="color: #da3633;">Erro: ${error.message}</span>`;
+      }
+    }
+    
+    // Disponibilizar funções globalmente
+    window.showLeaderboard = showLeaderboard;
+    window.showLoginModal = showLoginModal;
+    window.closeLoginModal = closeLoginModal;
+    window.toggleSignup = toggleSignup;
+    window.handleLogin = handleLogin;
+    
+    // Carregar ranking inicial
+    setTimeout(() => {
+      showLeaderboard('global');
+    }, 1000);
+  </script>
+</body>
+</html>

@@ -120,6 +120,12 @@ function showLoginModal() {
   console.log('✅ Modal encontrado, removendo classe hidden...');
   modal.classList.remove('hidden');
   
+  // Remover qualquer style inline que possa estar conflitando
+  modal.style.display = '';
+  console.log('Style inline removido');
+  
+  console.log('Classes do modal após show:', modal.className);
+  
   var loginForm = document.getElementById('loginForm');
   var userInfo = document.getElementById('userInfo');
   
@@ -176,13 +182,31 @@ function showUserInfo() {
 
 // Esconder modal de login
 function hideLoginModal() {
+  console.log('=== HIDE LOGIN MODAL CHAMADO ===');
+  
   var modal = document.getElementById('loginModal');
   if (!modal) {
     console.error('Modal de login não encontrado');
     return;
   }
   
+  console.log('Modal element:', modal);
+  console.log('Classes antes:', modal.className);
+  console.log('Tem classe hidden antes?', modal.classList.contains('hidden'));
+  
   modal.classList.add('hidden');
+  
+  console.log('Classes depois:', modal.className);
+  console.log('Tem classe hidden depois?', modal.classList.contains('hidden'));
+  
+  // Verificar computed style
+  var computedStyle = window.getComputedStyle(modal);
+  console.log('Display computed:', computedStyle.display);
+  console.log('Visibility computed:', computedStyle.visibility);
+  
+  // Forçar hiding com inline style como backup
+  modal.style.display = 'none';
+  console.log('Display inline forçado para none');
   
   // Executar callback específico da página se houver resultado pendente
   if (typeof window.onLoginModalClose === 'function') {

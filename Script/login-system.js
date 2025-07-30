@@ -120,9 +120,13 @@ function showLoginModal() {
   console.log('✅ Modal encontrado, removendo classe hidden...');
   modal.classList.remove('hidden');
   
-  // Remover qualquer style inline que possa estar conflitando
+  // Remover TODOS os estilos inline que podem estar conflitando
   modal.style.display = '';
-  console.log('Style inline removido');
+  modal.style.visibility = '';
+  modal.style.opacity = '';
+  modal.style.pointerEvents = '';
+  modal.style.zIndex = '';
+  console.log('Todos os styles inline removidos');
   
   console.log('Classes do modal após show:', modal.className);
   
@@ -194,7 +198,13 @@ function hideLoginModal() {
   console.log('Classes antes:', modal.className);
   console.log('Tem classe hidden antes?', modal.classList.contains('hidden'));
   
+  // SOLUÇÃO AGRESSIVA: FORÇAR ESCONDER COM TODOS OS MÉTODOS POSSÍVEIS
   modal.classList.add('hidden');
+  modal.style.display = 'none !important';
+  modal.style.visibility = 'hidden';
+  modal.style.opacity = '0';
+  modal.style.pointerEvents = 'none';
+  modal.style.zIndex = '-9999';
   
   console.log('Classes depois:', modal.className);
   console.log('Tem classe hidden depois?', modal.classList.contains('hidden'));
@@ -203,10 +213,19 @@ function hideLoginModal() {
   var computedStyle = window.getComputedStyle(modal);
   console.log('Display computed:', computedStyle.display);
   console.log('Visibility computed:', computedStyle.visibility);
+  console.log('Opacity computed:', computedStyle.opacity);
   
-  // Forçar hiding com inline style como backup
-  modal.style.display = 'none';
-  console.log('Display inline forçado para none');
+  // Tentar remover o modal do DOM temporariamente como última tentativa
+  if (modal.style.display !== 'none') {
+    console.log('❌ Modal ainda visível, removendo do DOM...');
+    modal.parentNode.removeChild(modal);
+    
+    // Recriar o modal depois de 100ms
+    setTimeout(function() {
+      document.body.appendChild(modal);
+      console.log('✅ Modal recriado no DOM');
+    }, 100);
+  }
   
   // Executar callback específico da página se houver resultado pendente
   if (typeof window.onLoginModalClose === 'function') {

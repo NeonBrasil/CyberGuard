@@ -46,6 +46,42 @@
       </div>
     </div>
     
+    <!-- Tela de Resultados -->
+    <div id="resultsModal" class="modal hidden">
+      <div class="modal-content results-content">
+        <span class="close" onclick="hideResultsModal()">&times;</span>
+        <h2 id="resultsTitle">🎯 Quiz Finalizado!</h2>
+        <div id="resultsBody">
+          <div class="score-section">
+            <div class="score-circle">
+              <span id="scorePercentage">0%</span>
+            </div>
+            <div class="score-details">
+              <p id="scoreText">Pontuação: 0/0</p>
+              <p id="difficultyText">Dificuldade: Easy</p>
+            </div>
+          </div>
+          <div id="performanceMessage" class="performance-message">
+            <!-- Mensagem de performance será inserida aqui -->
+          </div>
+          <div id="wrongAnswersSection" class="wrong-answers-section hidden">
+            <h3>❌ Respostas Incorretas:</h3>
+            <div id="wrongAnswersList">
+              <!-- Lista de respostas incorretas será inserida aqui -->
+            </div>
+          </div>
+          <div class="results-actions">
+            <button id="saveResultsBtn" class="cta-button" onclick="promptLogin()">
+              🏆 Salvar no Ranking
+            </button>
+            <button class="cta-button secondary" onclick="restartQuiz()">
+              🔄 Tentar Novamente
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- Modal de Login -->
     <div id="loginModal" class="modal hidden">
       <div class="modal-content">

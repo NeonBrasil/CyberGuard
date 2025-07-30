@@ -258,6 +258,10 @@ footer {
   align-items: center;
 }
 
+.modal.hidden {
+  display: none !important;
+}
+
 .modal-content {
   background: #21262d;
   padding: 2rem;

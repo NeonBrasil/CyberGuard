@@ -16,7 +16,7 @@
         <li><a href="about.html">Sobre</a></li>
         <li><a href="contato.html">Contato</a></li>
         <li><a href="ranking.html">🏆 Ranking</a></li>
-        <li><button id="loginBtn" class="login-btn" onclick="showLoginModal()">🔐 Login</button></li>
+        <li><button id="loginBtn" class="login-btn">🔐 Login</button></li>
       </ul>
     </nav>
   </header>
@@ -166,98 +166,6 @@
     window.db = db;
     window.auth = auth;
     window.firebase = firebase;
-    
-    // Variáveis globais
-    var currentUser = null;
-    
-    // Sistema de Autenticação
-    document.addEventListener('DOMContentLoaded', function() {
-      if (window.auth) {
-        auth.onAuthStateChanged(function(user) {
-          currentUser = user;
-          window.currentUser = user;
-          updateUserInterface();
-        });
-      }
-    });
-    
-    function updateUserInterface() {
-      var loginBtn = document.getElementById('loginBtn');
-      if (!loginBtn) return;
-      
-      if (currentUser && currentUser.email) {
-        loginBtn.textContent = '👤 ' + currentUser.email;
-        loginBtn.onclick = showUserInfo;
-      } else {
-        loginBtn.textContent = '🔐 Login';
-        loginBtn.onclick = showLoginModal;
-      }
-    }
-    
-    function showLoginModal() {
-      document.getElementById('loginModal').classList.remove('hidden');
-      document.getElementById('loginForm').classList.remove('hidden');
-      document.getElementById('userInfo').classList.add('hidden');
-    }
-    
-    function showUserInfo() {
-      document.getElementById('loginModal').classList.remove('hidden');
-      document.getElementById('loginForm').classList.add('hidden');
-      document.getElementById('userInfo').classList.remove('hidden');
-      document.getElementById('userEmail').textContent = currentUser.email || 'Usuário anônimo';
-    }
-    
-    function hideLoginModal() {
-      document.getElementById('loginModal').classList.add('hidden');
-    }
-    
-    function login() {
-      var email = document.getElementById('email').value;
-      var password = document.getElementById('password').value;
-      
-      if (!email || !password) {
-        alert('Preencha email e senha!');
-        return;
-      }
-      
-      auth.signInWithEmailAndPassword(email, password).then(function() {
-        hideLoginModal();
-        alert('Login realizado com sucesso!');
-      }).catch(function(error) {
-        alert('Erro no login: ' + error.message);
-      });
-    }
-    
-    function register() {
-      var email = document.getElementById('email').value;
-      var password = document.getElementById('password').value;
-      
-      if (!email || !password) {
-        alert('Preencha email e senha!');
-        return;
-      }
-      
-      if (password.length < 6) {
-        alert('Senha deve ter pelo menos 6 caracteres!');
-        return;
-      }
-      
-      auth.createUserWithEmailAndPassword(email, password).then(function() {
-        hideLoginModal();
-        alert('Conta criada com sucesso!');
-      }).catch(function(error) {
-        alert('Erro ao criar conta: ' + error.message);
-      });
-    }
-    
-    function logout() {
-      auth.signOut().then(function() {
-        hideLoginModal();
-        alert('Logout realizado!');
-      }).catch(function(error) {
-        alert('Erro no logout: ' + error.message);
-      });
-    }
   </script>
 
   <script src="Script/login-system.js"></script>

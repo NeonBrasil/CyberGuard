@@ -83,10 +83,9 @@ var pendingResult = null;
 
 // Callbacks para o sistema de login modular
 window.onLoginModalClose = function() {
-  // Se há resultado pendente e usuário fechou modal, reinicia quiz
+  // Se há resultado pendente e usuário fechou modal, volta para tela de resultados
   if (pendingResult) {
-    pendingResult = null;
-    restartQuiz();
+    document.getElementById('resultsModal').classList.remove('hidden');
   }
 };
 
@@ -101,7 +100,7 @@ window.onLoginSuccess = function() {
     ).then(function() {
       alert('Seu resultado foi salvo! Agora você aparece no ranking! 🏆');
       pendingResult = null;
-      restartQuiz();
+      hideResultsModal(); // Fecha tela de resultados e reinicia
     });
   }
 };
@@ -117,7 +116,7 @@ window.onRegisterSuccess = function() {
     ).then(function() {
       alert('Seu resultado foi salvo! Bem-vindo ao ranking! 🏆');
       pendingResult = null;
-      restartQuiz();
+      hideResultsModal(); // Fecha tela de resultados e reinicia
     });
   }
 };
@@ -250,48 +249,96 @@ function updateProgressBar() {
 
 function showResults() {
   var percentage = Math.round((score / currentQuiz.length) * 100);
-  var message = '🎯 Quiz Finalizado!\n\n';
-  message += '📊 Pontuação: ' + score + '/' + currentQuiz.length + ' (' + percentage + '%)\n';
-  message += '🎯 Dificuldade: ' + currentDifficulty + '\n\n';
+  
+  // Atualizar elementos da tela de resultados
+  document.getElementById('scorePercentage').textContent = percentage + '%';
+  document.getElementById('scoreText').textContent = 'Pontuação: ' + score + '/' + currentQuiz.length;
+  document.getElementById('difficultyText').textContent = 'Dificuldade: ' + currentDifficulty;
+  
+  // Definir mensagem de performance
+  var performanceMsg = document.getElementById('performanceMessage');
+  var saveBtn = document.getElementById('saveResultsBtn');
   
   if (percentage >= 80) {
-    message += '🏆 Excelente! Você domina este tópico!';
+    performanceMsg.textContent = '🏆 Excelente! Você domina este tópico!';
+    performanceMsg.className = 'performance-message excellent';
   } else if (percentage >= 60) {
-    message += '👍 Bom trabalho! Continue estudando!';
+    performanceMsg.textContent = '👍 Bom trabalho! Continue estudando!';
+    performanceMsg.className = 'performance-message good';
   } else {
-    message += '📚 Continue estudando para melhorar!';
+    performanceMsg.textContent = '📚 Continue estudando para melhorar!';
+    performanceMsg.className = 'performance-message needs-improvement';
   }
+  
+  // Mostrar respostas incorretas se houver
+  var wrongSection = document.getElementById('wrongAnswersSection');
+  var wrongList = document.getElementById('wrongAnswersList');
   
   if (wrongAnswers.length > 0) {
-    message += '\n\n❌ Respostas incorretas:\n';
+    wrongSection.classList.remove('hidden');
+    wrongList.innerHTML = '';
+    
     wrongAnswers.forEach(function(wrong, index) {
-      message += '\n' + (index + 1) + '. ' + wrong.question + '\n';
-      message += '   Sua resposta: ' + wrong.selectedAnswer + '\n';
-      message += '   Resposta correta: ' + wrong.correctAnswer + '\n';
+      var item = document.createElement('div');
+      item.className = 'wrong-answer-item';
+      item.innerHTML = '<div class="question">' + (index + 1) + '. ' + wrong.question + '</div>' +
+                      '<div class="answer user-answer">Sua resposta: ' + wrong.selectedAnswer + '</div>' +
+                      '<div class="answer correct-answer">Resposta correta: ' + wrong.correctAnswer + '</div>';
+      wrongList.appendChild(item);
     });
-  }
-  
-  // Salvar resultado no Firebase se o usuário estiver logado
-  if (window.getCurrentUser && window.getCurrentUser()) {
-    window.FirebaseManager.saveQuizResult(currentDifficulty, score, currentQuiz.length, wrongAnswers);
-    alert(message);
   } else {
-    // Usuário não logado - oferecer login para salvar resultado
-    alert(message + '\n\n💡 Dica: Faça login para salvar seu progresso e aparecer no ranking!');
-    if (confirm('Deseja fazer login agora para salvar este resultado?')) {
-      // Salvar resultado para quando o usuário fizer login
-      pendingResult = {
-        difficulty: currentDifficulty,
-        score: score,
-        totalQuestions: currentQuiz.length,
-        wrongAnswers: wrongAnswers
-      };
-      window.showLoginModal();
-      return; // Não reinicia o quiz ainda
-    }
+    wrongSection.classList.add('hidden');
   }
   
+  // Configurar botão de salvar baseado no status do login
+  if (window.getCurrentUser && window.getCurrentUser()) {
+    saveBtn.textContent = '🏆 Resultado Salvo!';
+    saveBtn.disabled = true;
+    saveBtn.style.opacity = '0.7';
+    
+    // Salvar resultado automaticamente se logado
+    window.FirebaseManager.saveQuizResult(currentDifficulty, score, currentQuiz.length, wrongAnswers);
+  } else {
+    saveBtn.textContent = '🏆 Salvar no Ranking';
+    saveBtn.disabled = false;
+    saveBtn.style.opacity = '1';
+  }
+  
+  // Mostrar modal de resultados
+  document.getElementById('resultsModal').classList.remove('hidden');
+}
+
+// Função para esconder modal de resultados
+function hideResultsModal() {
+  document.getElementById('resultsModal').classList.add('hidden');
   restartQuiz();
+}
+
+// Função para solicitar login
+function promptLogin() {
+  if (window.getCurrentUser && window.getCurrentUser()) {
+    return; // Já está logado
+  }
+  
+  // Salvar resultado pendente
+  pendingResult = {
+    difficulty: currentDifficulty,
+    score: score,
+    totalQuestions: currentQuiz.length,
+    wrongAnswers: wrongAnswers
+  };
+  
+  // Esconder modal de resultados e mostrar login
+  document.getElementById('resultsModal').classList.add('hidden');
+  
+  // Garantir que o modal de login existe e é válido
+  setTimeout(function() {
+    if (window.showLoginModal && typeof window.showLoginModal === 'function') {
+      window.showLoginModal();
+    } else {
+      alert('Sistema de login não disponível. Tente recarregar a página.');
+    }
+  }, 100);
 }
 
 function restartQuiz() {
@@ -313,3 +360,5 @@ function restartQuiz() {
 // Disponibilizar funções do quiz globalmente para o HTML
 window.startSimulation = startSimulation;
 window.nextQuestion = nextQuestion;
+window.hideResultsModal = hideResultsModal;
+window.promptLogin = promptLogin;

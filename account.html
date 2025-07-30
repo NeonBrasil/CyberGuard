@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-widt          <div class="stat-card">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-value" id="averageScore">0%</div>
+            <div class="stat-label">Pontuação Média</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-value" id="totalScore">0</div>
+            <div class="stat-label">Pontos Totais</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-value" id="timeSpent">0s</div>
+            <div class="stat-label">Tempo Estudando</div>
+          </div>e=1.0">
+  <title>Minha Conta - CyberGuard</title>
+  
+  <!-- Meta tags de segurança -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  
+  <link rel="stylesheet" href="./Style/index.css">
+  <link rel="stylesheet" href="./Style/account.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ CyberGuard</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="escolhas.html">Quiz</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="privacy.html">Privacidade</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="account.html" class="active">Minha Conta</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Tela de Login (para usuários não logados) -->
+    <section id="loginSection" class="account-section">
+      <div class="login-prompt">
+        <h1>🔐 Faça Login para Acessar sua Conta</h1>
+        <p>Entre com suas credenciais para gerenciar seu perfil e ver suas estatísticas.</p>
+        
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label for="loginEmail">Email:</label>
+            <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="loginPassword">Senha:</label>
+            <input type="password" id="loginPassword" placeholder="Sua senha" required>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="primary-btn">
+              � Entrar
+            </button>
+          </div>
+          <div class="auth-links">
+            <p>Não tem conta? <a href="#" id="showRegister">Criar conta</a></p>
+            <p><a href="#" id="resetPassword">Esqueci minha senha</a></p>
+          </div>
+        </form>        <!-- Formulário de Registro (inicialmente oculto) -->
+        <form id="registerForm" class="register-form hidden">
+          <h2>📝 Criar Nova Conta</h2>
+          
+          <div class="form-group">
+            <label for="registerName">Nome Completo:</label>
+            <input type="text" id="registerName" placeholder="Seu nome completo" required maxlength="50">
+          </div>
+          
+          <div class="form-group">
+            <label for="registerEmail">Email:</label>
+            <input type="email" id="registerEmail" placeholder="seu@email.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="registerPassword">Senha:</label>
+            <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword">Confirmar Senha:</label>
+            <input type="password" id="confirmPassword" placeholder="Digite a senha novamente" required>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="primary-btn">
+              ✨ Criar Conta
+            </button>
+            <button type="button" id="showLogin" class="secondary-btn">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Tela de Perfil (para usuários logados) -->
+    <section id="profileSection" class="account-section hidden">
+      <div class="profile-header">
+        <div class="profile-avatar-large" id="profileAvatarLarge"></div>
+        <div class="profile-info">
+          <h1 id="userName">Carregando...</h1>
+          <p id="userEmail">email@exemplo.com</p>
+          <p class="member-since" id="memberSince">Membro desde ...</p>
+        </div>
+        <div class="profile-actions">
+          <button id="editProfileBtn" class="edit-btn">✏️ Editar</button>
+          <button id="logoutBtn" class="logout-btn">🚪 Sair</button>
+        </div>
+      </div>
+
+      <!-- Estatísticas do Usuário -->
+      <div class="stats-section">
+        <h2>📊 Suas Estatísticas</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-value" id="totalQuizzes">0</div>
+            <div class="stat-label">Quizzes Realizados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-value" id="bestScore">0%</div>
+            <div class="stat-label">Melhor Pontuação</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-value" id="averageScore">0%</div>
+            <div class="stat-label">Média Geral</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-value" id="totalTime">0min</div>
+            <div class="stat-label">Tempo Jogado</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ações da Conta -->
+      <div class="account-actions">
+        <h2>⚙️ Gerenciar Conta</h2>
+                <div class="actions-grid">
+          <button id="editAccountBtn" class="action-btn edit">
+            <div class="action-icon">✏️</div>
+            <div class="action-text">
+              <h3>Editar Perfil</h3>
+              <p>Alterar nome e informações</p>
+            </div>
+          </button>
+          
+          <button id="changePasswordBtn" class="action-btn password">
+            <div class="action-icon">�</div>
+            <div class="action-text">
+              <h3>Alterar Senha</h3>
+              <p>Trocar sua senha de acesso</p>
+            </div>
+          </button>
+          
+          <button id="privacySettingsBtn" class="action-btn privacy">
+            <div class="action-icon">�️</div>
+            <div class="action-text">
+              <h3>Configurações de Privacidade</h3>
+              <p>Gerenciar seus dados e consentimentos</p>
+            </div>
+          </button>
+          
+          <button id="exportDataBtn" class="action-btn export">
+            <div class="action-icon">📥</div>
+            <div class="action-text">
+              <h3>Exportar Dados</h3>
+              <p>Baixar cópia dos seus dados</p>
+            </div>
+          </button>
+          
+          <button id="auditDataBtn" class="action-btn audit">
+            <div class="action-icon">🔍</div>
+            <div class="action-text">
+              <h3>Auditoria de Dados</h3>
+              <p>Ver logs de acesso e atividades</p>
+            </div>
+          </button>
+          
+          <button id="deleteAccountBtn" class="action-btn delete">
+            <div class="action-icon">🗑️</div>
+            <div class="action-text">
+              <h3>Excluir Conta</h3>
+              <p>Remover permanentemente sua conta</p>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Histórico Recente -->
+      <div class="recent-activity">
+        <h2>📋 Atividade Recente</h2>
+        <div id="recentQuizzes" class="activity-list">
+          <p>Carregando histórico...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+          <p>
+            <a href="privacy.html">🔒 Política de Privacidade</a>
+            <a href="contato.html">📧 Contato</a>
+          </p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  
+  <script>
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAY7gBP_ygNQ5P2if_j7ad-P5udblblnzA",
+      authDomain: "cyberguard-pro-27c29.firebaseapp.com",
+      projectId: "cyberguard-pro-27c29",
+      storageBucket: "cyberguard-pro-27c29.firebasestorage.app",
+      messagingSenderId: "646756380856",
+      appId: "1:646756380856:web:81c502e5f0dbea8ed6ae3b"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    
+    // Disponibilizar globalmente
+    window.db = db;
+    window.auth = auth;
+    window.firebase = firebase;
+  </script>
+  
+  <script src="./Script/security.js"></script>
+  <script src="./Script/privacy-consent.js"></script>
+  <script src="./Script/data-auditor.js"></script>
+  <script src="./Script/user-account.js"></script>
+  <script src="./Script/account-page.js"></script>
+</body>
+</html>

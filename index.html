@@ -110,18 +110,45 @@
       <span class="close">&times;</span>
       <h2>🔐 Login / Cadastro</h2>
       <div id="loginForm">
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Senha" required>
-        <button onclick="login()">Entrar</button>
-        <button onclick="register()">Criar Conta</button>
-        <p style="margin-top: 1rem; font-size: 0.9rem; color: #8b949e;">
-          Crie uma conta para salvar seu progresso e aparecer no ranking!
+        <div id="loginTab" class="auth-tab active">
+          <h3>Fazer Login</h3>
+          <input type="email" id="loginEmail" placeholder="Email" required>
+          <input type="password" id="loginPassword" placeholder="Senha" required>
+          <button onclick="login()">Entrar</button>
+          <p class="switch-tab">
+            Não tem conta? <a href="#" onclick="switchToRegister()">Criar conta</a>
+          </p>
+        </div>
+        
+        <div id="registerTab" class="auth-tab hidden">
+          <h3>Criar Conta</h3>
+          <input type="text" id="registerName" placeholder="Nome completo" required maxlength="50">
+          <input type="email" id="registerEmail" placeholder="Email" required>
+          <input type="password" id="registerPassword" placeholder="Senha (mín. 6 caracteres)" required>
+          <button onclick="register()">Criar Conta</button>
+          <p class="switch-tab">
+            Já tem conta? <a href="#" onclick="switchToLogin()">Fazer login</a>
+          </p>
+        </div>
+        
+        <p class="auth-info">
+          🔒 Seus dados são protegidos e nunca compartilhados com terceiros.
         </p>
       </div>
       <div id="userInfo" class="hidden">
-        <h3>Bem-vindo!</h3>
-        <p id="userEmail"></p>
-        <button onclick="logout()">Logout</button>
+        <div class="user-welcome">
+          <div class="user-avatar" id="userAvatar"></div>
+          <div class="user-details">
+            <h3 id="userName">Bem-vindo!</h3>
+            <p id="userEmail"></p>
+          </div>
+        </div>
+        <div class="user-actions">
+          <button onclick="userAccountManager.showUserProfile()" class="profile-btn">
+            👤 Meu Perfil
+          </button>
+          <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
       </div>
     </div>
   </div>
@@ -131,11 +158,15 @@
       <div class="footer-content">
         <div>
           <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+          <p>
+            <a href="privacy.html" style="color: var(--secondary-color); text-decoration: none; margin-right: 1rem;">🔒 Política de Privacidade</a>
+            <a href="contato.html" style="color: var(--secondary-color); text-decoration: none;">📧 Contato</a>
+          </p>
         </div>
         <div class="social-links">
           <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
           <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
-          <a href="" title="Email">📧</a>
+          <a href="mailto:cayque@cyberguard.com" title="Email">📧</a>
         </div>
       </div>
     </div>
@@ -168,6 +199,10 @@
     window.firebase = firebase;
   </script>
 
+  <script src="Script/privacy-consent.js"></script>
+  <script src="Script/data-auditor.js"></script>
+  <script src="Script/security.js"></script>
+  <script src="Script/user-account.js"></script>
   <script src="Script/login-system.js"></script>
   <script src="Script/index.js"></script>
 </body>

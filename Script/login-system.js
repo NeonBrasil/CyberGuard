@@ -179,7 +179,35 @@ function showUserInfo() {
   modal.classList.remove('hidden');
   document.getElementById('loginForm').classList.add('hidden');
   document.getElementById('userInfo').classList.remove('hidden');
-  document.getElementById('userEmail').textContent = currentUser.email || 'Usuário anônimo';
+  
+  // Atualizar informações do usuário
+  var userEmailElement = document.getElementById('userEmail');
+  var userNameElement = document.getElementById('userName');
+  var userAvatarElement = document.getElementById('userAvatar');
+  
+  if (currentUser && userEmailElement) {
+    userEmailElement.textContent = currentUser.email || 'email@exemplo.com';
+  }
+  
+  // Carregar nome do usuário se disponível
+  if (window.userAccountManager && window.userAccountManager.userDoc) {
+    if (userNameElement) {
+      userNameElement.textContent = 'Olá, ' + window.userAccountManager.userDoc.name + '!';
+    }
+    if (userAvatarElement) {
+      const name = window.userAccountManager.userDoc.name;
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      userAvatarElement.textContent = initials;
+    }
+  } else {
+    if (userNameElement) {
+      userNameElement.textContent = 'Bem-vindo!';
+    }
+    if (userAvatarElement && currentUser) {
+      const email = currentUser.email || 'A';
+      userAvatarElement.textContent = email.charAt(0).toUpperCase();
+    }
+  }
   
   console.log('Informações do usuário exibidas');
 }
@@ -195,37 +223,18 @@ function hideLoginModal() {
   }
   
   console.log('Modal element:', modal);
-  console.log('Classes antes:', modal.className);
-  console.log('Tem classe hidden antes?', modal.classList.contains('hidden'));
   
-  // SOLUÇÃO AGRESSIVA: FORÇAR ESCONDER COM TODOS OS MÉTODOS POSSÍVEIS
+  // SOLUÇÃO SIMPLIFICADA: usar apenas CSS
   modal.classList.add('hidden');
-  modal.style.display = 'none !important';
-  modal.style.visibility = 'hidden';
-  modal.style.opacity = '0';
-  modal.style.pointerEvents = 'none';
-  modal.style.zIndex = '-9999';
   
-  console.log('Classes depois:', modal.className);
-  console.log('Tem classe hidden depois?', modal.classList.contains('hidden'));
+  // Limpar estilos inline conflitantes
+  modal.style.display = '';
+  modal.style.visibility = '';
+  modal.style.opacity = '';
+  modal.style.pointerEvents = '';
+  modal.style.zIndex = '';
   
-  // Verificar computed style
-  var computedStyle = window.getComputedStyle(modal);
-  console.log('Display computed:', computedStyle.display);
-  console.log('Visibility computed:', computedStyle.visibility);
-  console.log('Opacity computed:', computedStyle.opacity);
-  
-  // Tentar remover o modal do DOM temporariamente como última tentativa
-  if (modal.style.display !== 'none') {
-    console.log('❌ Modal ainda visível, removendo do DOM...');
-    modal.parentNode.removeChild(modal);
-    
-    // Recriar o modal depois de 100ms
-    setTimeout(function() {
-      document.body.appendChild(modal);
-      console.log('✅ Modal recriado no DOM');
-    }, 100);
-  }
+  console.log('Classes após esconder:', modal.className);
   
   // Executar callback específico da página se houver resultado pendente
   if (typeof window.onLoginModalClose === 'function') {
@@ -237,11 +246,21 @@ function hideLoginModal() {
 
 // Fazer login
 function login() {
-  var email = document.getElementById('email').value;
-  var password = document.getElementById('password').value;
+  var email = document.getElementById('loginEmail').value;
+  var password = document.getElementById('loginPassword').value;
   
-  if (!email || !password) {
-    alert('Preencha email e senha!');
+  try {
+    // VALIDAÇÃO DE SEGURANÇA
+    window.InputValidator.validateEmail(email);
+    window.InputValidator.validatePassword(password);
+    
+    // VERIFICAR RATE LIMITING
+    window.LoginSecurity.canAttemptLogin(email);
+    
+    console.log('✅ Validações de segurança passaram, tentando login...');
+    
+  } catch (error) {
+    alert('Erro de segurança: ' + error.message);
     return;
   }
   
@@ -250,31 +269,88 @@ function login() {
     return;
   }
   
-  auth.signInWithEmailAndPassword(email, password).then(function() {
-    hideLoginModal();
-    alert('Login realizado com sucesso!');
-    
-    // Executar callback específico da página após login
-    if (typeof window.onLoginSuccess === 'function') {
-      window.onLoginSuccess();
-    }
-  }).catch(function(error) {
-    alert('Erro no login: ' + error.message);
-  });
+  console.log('Tentando fazer login com:', email);
+  
+  auth.signInWithEmailAndPassword(email, password)
+    .then(function(userCredential) {
+      console.log('Login bem-sucedido:', userCredential.user);
+      window.LoginSecurity.recordLoginAttempt(email, true);
+      
+      // Mostrar mensagem de sucesso
+      showLoginMessage('✅ Login realizado com sucesso!', 'success');
+      
+      // Aguardar um pouco antes de fechar o modal
+      setTimeout(function() {
+        hideLoginModal();
+      }, 1500);
+      
+      // Executar callback de sucesso se houver
+      if (typeof window.onLoginSuccess === 'function') {
+        window.onLoginSuccess();
+      }
+    })
+    .catch(function(error) {
+      console.error('Erro no login:', error);
+      window.LoginSecurity.recordLoginAttempt(email, false);
+      
+      var message = 'Erro no login: ';
+      switch (error.code) {
+        case 'auth/user-not-found':
+          message += 'Usuário não encontrado';
+          break;
+        case 'auth/wrong-password':
+          message += 'Senha incorreta';
+          break;
+        case 'auth/too-many-requests':
+          message += 'Muitas tentativas. Tente mais tarde';
+          break;
+        case 'auth/invalid-email':
+          message += 'Email inválido';
+          break;
+        default:
+          message += error.message;
+      }
+      showLoginMessage(message, 'error');
+    });
 }
 
 // Registrar nova conta
 function register() {
-  var email = document.getElementById('email').value;
-  var password = document.getElementById('password').value;
+  console.log('=== REGISTER FUNCTION INICIADA ===');
   
-  if (!email || !password) {
-    alert('Preencha email e senha!');
+  var nameField = document.getElementById('registerName');
+  var emailField = document.getElementById('registerEmail');
+  var passwordField = document.getElementById('registerPassword');
+  
+  console.log('Name field:', nameField);
+  console.log('Email field:', emailField);
+  console.log('Password field:', passwordField);
+  
+  if (!nameField || !emailField || !passwordField) {
+    console.error('❌ Campos de registro não encontrados no DOM!');
+    alert('Erro: Campos de registro não encontrados na página.');
     return;
   }
   
-  if (password.length < 6) {
-    alert('Senha deve ter pelo menos 6 caracteres!');
+  var name = nameField.value;
+  var email = emailField.value;
+  var password = passwordField.value;
+  
+  console.log('Valores capturados:', { name, email, password: '***' });
+  
+  try {
+    // VALIDAÇÃO DE SEGURANÇA
+    window.InputValidator.validateName(name);
+    window.InputValidator.validateEmail(email);
+    window.InputValidator.validatePassword(password);
+    
+    // VERIFICAR RATE LIMITING (usar mesmo limite do login)
+    window.LoginSecurity.canAttemptLogin(email);
+    
+    console.log('✅ Validações de segurança passaram, tentando registro...');
+    
+  } catch (error) {
+    alert('Erro de validação: ' + error.message);
     return;
   }
   
@@ -283,16 +359,55 @@ function register() {
     return;
   }
   
-  auth.createUserWithEmailAndPassword(email, password).then(function() {
-    hideLoginModal();
-    alert('Conta criada com sucesso!');
+  auth.createUserWithEmailAndPassword(email, password).then(function(userCredential) {
+    var user = userCredential.user;
     
-    // Executar callback específico da página após registro
-    if (typeof window.onRegisterSuccess === 'function') {
-      window.onRegisterSuccess();
-    }
+    // Atualizar perfil do usuário com o nome
+    return user.updateProfile({
+      displayName: name
+    }).then(function() {
+      // Criar perfil inicial no Firestore
+      if (window.userAccountManager) {
+        return window.userAccountManager.createInitialProfile(user, name);
+      }
+      return Promise.resolve();
+    }).then(function() {
+      window.LoginSecurity.recordLoginAttempt(email, true);
+      
+      // Mostrar mensagem de sucesso
+      showLoginMessage('✅ Conta criada com sucesso! Bem-vindo, ' + name + '!', 'success');
+      
+      // Aguardar um pouco antes de fechar o modal
+      setTimeout(function() {
+        hideLoginModal();
+      }, 2000);
+      
+      // Executar callback específico da página após registro
+      if (typeof window.onRegisterSuccess === 'function') {
+        window.onRegisterSuccess();
+      }
+    });
   }).catch(function(error) {
-    alert('Erro ao criar conta: ' + error.message);
+    window.LoginSecurity.recordLoginAttempt(email, false);
+    
+    var message = 'Erro ao criar conta: ';
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        message += 'Email já está em uso';
+        break;
+      case 'auth/weak-password':
+        message += 'Senha muito fraca (mínimo 6 caracteres)';
+        break;
+      case 'auth/too-many-requests':
+        message += 'Muitas tentativas. Tente mais tarde';
+        break;
+      case 'auth/invalid-email':
+        message += 'Email inválido';
+        break;
+      default:
+        message += error.message;
+    }
+    showLoginMessage(message, 'error');
   });
 }
 
@@ -305,10 +420,34 @@ function logout() {
   
   auth.signOut().then(function() {
     hideLoginModal();
-    alert('Logout realizado!');
+    alert('Logout realizado com sucesso!');
+    
+    // Executar callback específico da página após logout
+    if (typeof window.onLogoutSuccess === 'function') {
+      window.onLogoutSuccess();
+    }
   }).catch(function(error) {
+    console.error('Erro no logout:', error);
     alert('Erro no logout: ' + error.message);
   });
+}
+
+// Alternar para aba de registro
+function switchToRegister() {
+  var loginTab = document.getElementById('loginTab');
+  var registerTab = document.getElementById('registerTab');
+  
+  if (loginTab) loginTab.classList.add('hidden');
+  if (registerTab) registerTab.classList.remove('hidden');
+}
+
+// Alternar para aba de login
+function switchToLogin() {
+  var loginTab = document.getElementById('loginTab');
+  var registerTab = document.getElementById('registerTab');
+  
+  if (registerTab) registerTab.classList.add('hidden');
+  if (loginTab) loginTab.classList.remove('hidden');
 }
 
 // Verificar se o usuário está logado
@@ -349,6 +488,57 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('window.getCurrentUser:', typeof window.getCurrentUser);
 });
 
+// Função para mostrar mensagens no modal de login
+function showLoginMessage(message, type) {
+  console.log('Mostrando mensagem:', message, 'tipo:', type);
+  
+  // Remover mensagens existentes
+  var existingMessages = document.querySelectorAll('.login-message');
+  existingMessages.forEach(function(msg) {
+    msg.remove();
+  });
+  
+  // Criar nova mensagem
+  var messageDiv = document.createElement('div');
+  messageDiv.className = 'login-message ' + type;
+  messageDiv.textContent = message;
+  
+  // Estilos da mensagem
+  messageDiv.style.cssText = `
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: 500;
+    z-index: 10001;
+    max-width: 90%;
+    text-align: center;
+    animation: slideDown 0.3s ease;
+    ${type === 'success' ? 'background: #4CAF50; color: white;' : 'background: #f44336; color: white;'}
+  `;
+  
+  // Adicionar ao modal
+  var modal = document.getElementById('loginModal');
+  if (modal) {
+    var modalContent = modal.querySelector('.modal-content');
+    if (modalContent) {
+      modalContent.appendChild(messageDiv);
+      
+      // Remover após 4 segundos
+      setTimeout(function() {
+        if (messageDiv.parentNode) {
+          messageDiv.style.animation = 'slideUp 0.3s ease';
+          setTimeout(function() {
+            messageDiv.remove();
+          }, 300);
+        }
+      }, 4000);
+    }
+  }
+}
+
 // Exportar funções globalmente
 window.showLoginModal = showLoginModal;
 window.showUserInfo = showUserInfo;
@@ -360,3 +550,27 @@ window.isUserLoggedIn = isUserLoggedIn;
 window.getCurrentUser = getCurrentUser;
 window.onUserStateChange = onUserStateChange;
 window.initLoginSystem = initLoginSystem;
+
+// Adicionar estilos CSS para as mensagens se não existirem
+if (!document.querySelector('#login-message-styles')) {
+  var style = document.createElement('style');
+  style.id = 'login-message-styles';
+  style.textContent = `
+    @keyframes slideDown {
+      from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateX(-50%) translateY(0); opacity: 1; }
+      to { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+    }
+    
+    .login-message {
+      font-family: inherit;
+      font-size: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+  `;
+  document.head.appendChild(style);
+}

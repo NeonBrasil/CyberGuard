@@ -189,18 +189,36 @@
   </footer>
 
   <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  
+  <script>
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAY7gBP_ygNQ5P2if_j7ad-P5udblblnzA",
+      authDomain: "cyberguard-pro-27c29.firebaseapp.com",
+      projectId: "cyberguard-pro-27c29",
+      storageBucket: "cyberguard-pro-27c29.firebasestorage.app",
+      messagingSenderId: "891637083155",
+      appId: "1:891637083155:web:b1f3fb09f84d25bcee63e6"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
     
-    window.firebase = { initializeApp, getFirestore, getAuth };
+    // Disponibilizar globalmente
+    window.db = db;
+    window.auth = auth;
+    window.firebase = firebase;
   </script>
-  <script type="module" src="Script/user-manager.js"></script>
+  
+  <script src="Script/ranking.js"></script>
   
   <script>
     let currentTab = 'global';
-    let isSignupMode = false;
     
     // Mostrar leaderboard
     async function showLeaderboard(type) {
@@ -211,146 +229,53 @@
       event.target.classList.add('active');
       
       const content = document.getElementById('leaderboard-content');
-      content.innerHTML = '<div class="loading">Carregando ranking...</div>';
+      content.innerHTML = '<div class="loading">⏳ Carregando ranking...</div>';
       
       try {
+        console.log('Carregando ranking do tipo:', type);
+        
         let data = [];
         
         if (type === 'global') {
-          data = await LeaderboardManager.getGlobalLeaderboard();
+          data = await window.RankingManager.getGlobalRanking();
         } else {
-          data = await LeaderboardManager.getDifficultyLeaderboard(type);
+          data = await window.RankingManager.getDifficultyRanking(type);
         }
         
-        renderLeaderboard(data, type);
+        console.log('Dados do ranking carregados:', data);
+        window.RankingManager.renderRanking(data, 'leaderboard-content', type);
         
       } catch (error) {
+        console.error('Erro ao carregar ranking:', error);
         content.innerHTML = `
           <div class="empty-state">
             <h3>😅 Ops! Algo deu errado</h3>
             <p>Não foi possível carregar o ranking. Tente novamente mais tarde.</p>
+            <p style="font-size: 0.9rem; color: #666; margin-top: 1rem;">Erro: ${error.message}</p>
           </div>
         `;
       }
     }
     
-    // Renderizar leaderboard
-    function renderLeaderboard(data, type) {
-      const content = document.getElementById('leaderboard-content');
+    // Carregar ranking inicial quando a página carrega
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Página de ranking carregada');
       
-      if (data.length === 0) {
-        content.innerHTML = `
-          <div class="empty-state">
-            <h3>🎯 Seja o primeiro!</h3>
-            <p>Ainda não há jogadores neste ranking. Que tal ser o primeiro?</p>
-            <a href="escolhas.html" class="cta-button">Jogar Agora</a>
-          </div>
-        `;
-        return;
-      }
-      
-      let html = `
-        <div class="leaderboard">
-          <h2>${getLeaderboardTitle(type)}</h2>
-      `;
-      
-      data.forEach((player, index) => {
-        const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-        const rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
-        
-        html += `
-          <div class="ranking-item">
-            <div class="rank ${rankClass}">${rankIcon} ${player.rank}</div>
-            <div class="player-name">${player.displayName}</div>
-            <div class="score">${type === 'global' ? player.totalScore : player.score}${type !== 'global' ? '%' : ''}</div>
-            <div class="stats">${player.totalQuizzes || 0} quiz${(player.totalQuizzes || 0) !== 1 ? 'zes' : ''}</div>
-            <div class="percentage">${type === 'global' ? player.avgScore : player.score}${type === 'global' ? ' avg' : '%'}</div>
-          </div>
-        `;
-      });
-      
-      html += '</div>';
-      content.innerHTML = html;
-    }
-    
-    function getLeaderboardTitle(type) {
-      const titles = {
-        'global': '🌍 Ranking Geral',
-        'easy': '🟢 Ranking - Nível Fácil', 
-        'medium': '🟡 Ranking - Nível Médio',
-        'hard': '🔴 Ranking - Nível Difícil'
-      };
-      return titles[type] || 'Ranking';
-    }
-    
-    // Modal de login
-    function showLoginModal() {
-      document.getElementById('login-modal').style.display = 'block';
-    }
-    
-    function closeLoginModal() {
-      document.getElementById('login-modal').style.display = 'none';
-      isSignupMode = false;
-      document.getElementById('displayName').style.display = 'none';
-    }
-    
-    function toggleSignup() {
-      isSignupMode = !isSignupMode;
-      const displayNameField = document.getElementById('displayName');
-      displayNameField.style.display = isSignupMode ? 'block' : 'none';
-    }
-    
-    async function handleLogin() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const displayName = document.getElementById('displayName').value;
-      const messageDiv = document.getElementById('login-message');
-      
-      if (!email || !password) {
-        messageDiv.innerHTML = '<span style="color: #da3633;">Preencha todos os campos!</span>';
-        return;
-      }
-      
-      if (isSignupMode && !displayName) {
-        messageDiv.innerHTML = '<span style="color: #da3633;">Nome para exibir é obrigatório!</span>';
-        return;
-      }
-      
-      messageDiv.innerHTML = '<span style="color: #58a6ff;">Processando...</span>';
-      
-      try {
-        let result;
-        if (isSignupMode) {
-          result = await userManager.createAccount(email, password, displayName);
-        } else {
-          result = await userManager.login(email, password);
+      // Aguardar Firebase estar pronto
+      const checkFirebase = setInterval(() => {
+        if (window.db && window.RankingManager) {
+          clearInterval(checkFirebase);
+          console.log('Firebase e RankingManager prontos, carregando ranking global...');
+          
+          // Simular clique no botão global
+          const globalBtn = document.querySelector('.tab-button[onclick="showLeaderboard(\'global\')"]');
+          if (globalBtn) {
+            globalBtn.classList.add('active');
+            showLeaderboard('global');
+          }
         }
-        
-        if (result.success) {
-          messageDiv.innerHTML = '<span style="color: #238636;">Sucesso!</span>';
-          setTimeout(() => {
-            closeLoginModal();
-            showLeaderboard(currentTab);
-          }, 1000);
-        } else {
-          messageDiv.innerHTML = `<span style="color: #da3633;">${result.error}</span>`;
-        }
-      } catch (error) {
-        messageDiv.innerHTML = `<span style="color: #da3633;">Erro: ${error.message}</span>`;
-      }
-    }
-    
-    // Disponibilizar funções globalmente
-    window.showLeaderboard = showLeaderboard;
-    window.showLoginModal = showLoginModal;
-    window.closeLoginModal = closeLoginModal;
-    window.toggleSignup = toggleSignup;
-    window.handleLogin = handleLogin;
-    
-    // Carregar ranking inicial
-    setTimeout(() => {
-      showLeaderboard('global');
-    }, 1000);
+      }, 100);
+    });
   </script>
 </body>
 </html>

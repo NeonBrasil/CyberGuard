@@ -53,9 +53,16 @@ class FirebaseManager {
     }
   }
   
-  // Salvar resultado do quiz
+  // Salvar resultado do quiz (com verificação de consentimento)
   static async saveQuizResult(difficulty, score, totalQuestions, wrongAnswers) {
     if (!currentUser) return;
+    
+    // Verificar consentimento antes de salvar dados
+    const hasConsent = window.privacyConsent && window.privacyConsent.hasConsent('essential');
+    if (!hasConsent) {
+      console.log('🔒 Salvamento de dados bloqueado - sem consentimento');
+      return;
+    }
     
     try {
       const result = {
@@ -70,8 +77,15 @@ class FirebaseManager {
       
       await addDoc(collection(db, 'quiz_results'), result);
       
-      // Atualizar ranking
+      // Atualizar ranking (dados essenciais para funcionalidade)
       await this.updateRanking(currentUser.uid, difficulty, score, totalQuestions);
+      
+      // Log apenas se analytics permitido
+      if (window.privacyConsent && window.privacyConsent.canUseAnalytics()) {
+        console.log('📊 Resultado salvo com analytics');
+      } else {
+        console.log('💾 Resultado salvo (modo essencial)');
+      }
       
     } catch (error) {
       console.error('Erro ao salvar resultado:', error);

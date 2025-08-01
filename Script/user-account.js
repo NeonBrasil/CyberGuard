@@ -487,7 +487,7 @@ class UserAccountManager {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `cyberguard_data_${this.userDoc.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `sia_data_${this.userDoc.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       
       URL.revokeObjectURL(url);

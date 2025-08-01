@@ -1,4 +1,4 @@
-// Sistema de Autenticação e Usuários para CyberGuard
+// Sistema de Autenticação e Usuários para SIA: Security & Information Academy
 import { FirebaseManager } from './firebase-config.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';

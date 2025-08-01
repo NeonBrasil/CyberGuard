@@ -1,7 +1,7 @@
-// Sistema de Segurança SIA: Security & Information Academy
+// Sistema de Segurança CyberGuard
 // Proteção contra ataques DDoS, spam, abuso de recursos e vazamento de dados
 
-console.log('🛡️ SIA: Security & Information Academy Security System carregado');
+console.log('🛡️ CyberGuard Security System carregado');
 
 // Configurações de segurança
 var SecurityConfig = {
@@ -306,6 +306,160 @@ var ResourceMonitor = {
   startTime: Date.now(),
   
   // Verificar uso de memória (aproximado)
+    if (!email || !SecurityConfig.enableDataMasking) return email;
+    
+    var parts = email.split('@');
+    if (parts.length !== 2) return '***@***.***';
+    
+    var username = parts[0];
+    var domain = parts[1];
+    
+    var maskedUsername = username.length > 2 ? 
+      username.substring(0, 2) + '*'.repeat(username.length - 2) : 
+      '*'.repeat(username.length);
+    
+    var domainParts = domain.split('.');
+    var maskedDomain = domainParts.length > 1 ?
+      domainParts[0].substring(0, 1) + '*'.repeat(domainParts[0].length - 1) + '.' + domainParts.slice(1).join('.') :
+      '*'.repeat(domain.length);
+    
+    return maskedUsername + '@' + maskedDomain;
+  },
+  
+  // Log seguro com mascaramento de dados
+  secureLog: function(level, message, data) {
+    // Verificar consentimento para logs analíticos
+    var canLog = true;
+    if (level === 'analytics' && window.privacyConsent) {
+      canLog = window.privacyConsent.canUseAnalytics();
+    }
+    
+    if (!canLog) {
+      return; // Não fazer log se não há consentimento
+    }
+    
+    var logEntry = {
+      timestamp: new Date().toISOString(),
+      level: level || 'info',
+      message: message,
+      data: data ? this.maskSensitiveData(data) : null
+    };
+    
+    // Verificar se dados contêm informações sensíveis
+    if (data && this.containsSensitiveData(data)) {
+      logEntry.warning = '⚠️ Log contém dados mascarados por segurança';
+    }
+    
+    console.log(logEntry);
+  },
+  
+  // Verificar se dados contêm informações sensíveis
+  containsSensitiveData: function(data) {
+    if (!data || typeof data !== 'object') return false;
+    
+    var sensitiveFields = ['email', 'password', 'userId', 'ip', 'phone', 'cpf'];
+    
+    for (var key in data) {
+      if (data.hasOwnProperty(key)) {
+        if (sensitiveFields.includes(key.toLowerCase())) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  },
+  
+  // Mascarar dados sensíveis
+  maskSensitiveData: function(data) {
+    var masked = {};
+    var sensitiveFields = ['email', 'password', 'userId', 'ip', 'phone', 'cpf'];
+    
+    for (var key in data) {
+      if (data.hasOwnProperty(key)) {
+        if (sensitiveFields.includes(key.toLowerCase())) {
+          if (key.toLowerCase() === 'email') {
+            masked[key] = this.maskEmail(data[key]);
+          } else {
+            masked[key] = '***';
+          }
+        } else {
+          masked[key] = data[key];
+        }
+      }
+    }
+    
+    return masked;
+  },
+  
+  // Limpar dados sensíveis do localStorage
+  clearSensitiveStorage: function() {
+    try {
+      var sensitiveKeys = ['password', 'token', 'auth', 'user_data'];
+      sensitiveKeys.forEach(function(key) {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      });
+      console.log('✅ Dados sensíveis removidos do storage');
+    } catch (error) {
+      console.warn('⚠️ Erro ao limpar storage:', error);
+    }
+  },
+  
+  // Verificar se há vazamentos potenciais
+  checkDataLeaks: function() {
+    var warnings = [];
+    
+    // Verificar localStorage
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && (key.includes('password') || key.includes('email') || key.includes('auth'))) {
+          warnings.push('Dados sensíveis encontrados no localStorage: ' + key);
+        }
+      }
+    } catch (error) {
+      // Ignore se não pode acessar localStorage
+    }
+    
+    // Verificar se console está aberto (em desenvolvimento)
+    if (typeof console !== 'undefined' && console.clear) {
+      var start = performance.now();
+      console.clear();
+      var end = performance.now();
+      if (end - start > 1) {
+        warnings.push('DevTools podem estar abertos - dados podem ser visíveis');
+      }
+    }
+    
+    return warnings;
+  },
+  
+  // Implementar Content Security Policy via JavaScript
+  implementCSP: function() {
+    // Adicionar meta tag CSP se não existir
+    if (!document.querySelector('meta[http-equiv="Content-Security-Policy"]')) {
+      var meta = document.createElement('meta');
+      meta.setAttribute('http-equiv', 'Content-Security-Policy');
+      meta.setAttribute('content', 
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' https://www.gstatic.com; " +
+        "style-src 'self' 'unsafe-inline'; " +
+        "img-src 'self' data: https:; " +
+        "connect-src 'self' https://*.firebaseapp.com https://*.googleapis.com; " +
+        "frame-ancestors 'none';"
+      );
+      document.head.appendChild(meta);
+      console.log('✅ CSP implementado via JavaScript');
+    }
+  }
+};
+
+// Monitoramento de recursos
+var ResourceMonitor = {
+  startTime: Date.now(),
+  
+  // Verificar uso de memória (aproximado)
   checkMemoryUsage: function() {
     if (performance && performance.memory) {
       var used = performance.memory.usedJSHeapSize;
@@ -346,13 +500,18 @@ window.ResourceMonitor = ResourceMonitor;
 
 // Inicializar proteções automáticas
 if (window.DataProtection) {
-  // A nova implementação usa uma instância da classe
-  console.log('✅ DataProtection carregado e disponível');
-  
-  // Limpar dados baseado no consentimento se necessário
-  if (window.DataProtection.cleanDataBasedOnConsent) {
-    window.DataProtection.cleanDataBasedOnConsent();
-  }
+  window.DataProtection.implementCSP();
+  window.DataProtection.clearSensitiveStorage();
 }
+
+// Verificar vazamentos potenciais
+setTimeout(function() {
+  if (window.DataProtection) {
+    var warnings = window.DataProtection.checkDataLeaks();
+    if (warnings.length > 0) {
+      console.warn('⚠️ Avisos de segurança detectados:', warnings);
+    }
+  }
+}, 2000);
 
 console.log('✅ Sistemas de segurança e proteção de dados carregados e ativos');

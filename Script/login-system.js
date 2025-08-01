@@ -1,4 +1,4 @@
-// Sistema de Login Modular para CyberGuard
+// Sistema de Login Modular para SIA: Security & Information Academy
 // Pode ser usado em qualquer página do projeto
 
 // Variáveis globais do sistema de login

@@ -4,7 +4,7 @@
 class PrivacyConsent {
   constructor() {
     this.consentVersion = '1.0';
-    this.consentKey = 'cyberguard_privacy_consent';
+    this.consentKey = 'sia_privacy_consent';
     this.consentData = this.loadConsent();
     
     // Inicializar após carregamento da página
@@ -16,8 +16,21 @@ class PrivacyConsent {
   }
 
   init() {
+    // Carregar consentimento existente primeiro
+    this.consentData = this.loadConsent();
+    
+    // Verificar se precisa mostrar banner
     this.checkConsentRequired();
     this.setupPrivacyNotifications();
+    
+    // DEBUG: Adicionar função global para testar banner
+    window.showPrivacyBanner = () => {
+      localStorage.removeItem(this.consentKey);
+      this.consentData = null;
+      this.showConsentBanner();
+    };
+    
+    console.log('🔒 Sistema de privacidade inicializado');
   }
 
   loadConsent() {
@@ -58,6 +71,11 @@ class PrivacyConsent {
     }
   }
 
+  // Adicionar método getConsent que estava faltando
+  getConsent() {
+    return this.consentData;
+  }
+
   checkConsentRequired() {
     // Verificar se precisa mostrar banner de consentimento
     if (!this.consentData || this.consentData.version !== this.consentVersion) {
@@ -79,18 +97,15 @@ class PrivacyConsent {
       <div class="consent-content">
         <div class="consent-icon">🔒</div>
         <div class="consent-text">
-          <h3>Proteção de Dados</h3>
-          <p>Utilizamos apenas dados essenciais para o funcionamento do CyberGuard. Não compartilhamos informações pessoais com terceiros.</p>
+          <h3>🇧🇷 Proteção de Dados (LGPD)</h3>
+          <p><strong>Dados Essenciais:</strong> Coletamos apenas o mínimo necessário (email para login, resultados para progresso).</p>
+          <p><strong>Sua Escolha:</strong> Funcionalidades extras requerem consentimento específico. Você pode alterar isso a qualquer momento.</p>
         </div>
-        <div class="consent-actions">
-          <button class="consent-btn primary" onclick="privacyConsent.acceptConsent()">
-            ✅ Aceitar
-          </button>
-          <button class="consent-btn secondary" onclick="privacyConsent.showPrivacySettings()">
-            ⚙️ Configurar
-          </button>
-          <a href="privacy.html" class="consent-link">📖 Política de Privacidade</a>
-        </div>
+                  <div class="consent-actions">
+            <button class="consent-btn secondary" id="essential-only-btn">Só Essenciais</button>
+            <button class="consent-btn secondary" id="customize-btn">Personalizar</button>
+            <button class="consent-btn primary" id="accept-all-btn">Aceitar Tudo</button>
+          </div>
       </div>
     `;
 
@@ -206,6 +221,114 @@ class PrivacyConsent {
     `;
 
     document.body.appendChild(banner);
+
+    // Adicionar event listeners para o banner
+    setTimeout(() => {
+      const essentialBtn = document.getElementById('essential-only-btn');
+      const customizeBtn = document.getElementById('customize-btn');
+      const acceptAllBtn = document.getElementById('accept-all-btn');
+      
+      if (essentialBtn) {
+        essentialBtn.addEventListener('click', () => {
+          this.acceptEssentialOnly();
+        });
+      }
+      
+      if (customizeBtn) {
+        customizeBtn.addEventListener('click', () => {
+          this.showPrivacySettings();
+        });
+      }
+      
+      if (acceptAllBtn) {
+        acceptAllBtn.addEventListener('click', () => {
+          this.acceptAll();
+        });
+      }
+    }, 100);
+  }
+
+  // Novas funções LGPD
+  acceptEssentialOnly() {
+    const essentialConsent = {
+      essential: true,
+      analytics: false,
+      marketing: false,
+      functional: false
+    };
+    
+    const success = this.saveConsent(essentialConsent);
+    
+    if (success) {
+      this.hideConsentBanner();
+      this.showNotification('✅ Modo essencial ativado! Funcionalidades básicas disponíveis.', 'info');
+      this.applyConsentSettings(essentialConsent);
+    }
+  }
+
+  acceptAll() {
+    const fullConsent = {
+      essential: true,
+      analytics: true,
+      marketing: true,
+      functional: true
+    };
+    
+    const success = this.saveConsent(fullConsent);
+    
+    if (success) {
+      this.hideConsentBanner();
+      this.showNotification('✅ Todas as funcionalidades ativadas! Obrigado pela confiança.', 'success');
+      this.applyConsentSettings(fullConsent);
+    }
+  }
+
+  applyConsentSettings(consent) {
+    // Aplicar configurações baseadas no consentimento
+    if (consent.functional) {
+      this.enablePersonalization();
+    } else {
+      this.disablePersonalization();
+    }
+    
+    if (consent.analytics) {
+      this.enableAnalytics();
+    } else {
+      this.disableAnalytics();
+    }
+    
+    if (consent.marketing) {
+      this.enableMarketing();
+    } else {
+      this.disableMarketing();
+    }
+  }
+
+  enablePersonalization() {
+    // Funcionalidades que requerem dados funcionais
+    if (window.userAccountManager) {
+      console.log('✅ Personalização habilitada');
+    }
+  }
+
+  disablePersonalization() {
+    console.log('🔒 Personalização desabilitada - modo essencial');
+  }
+
+  enableAnalytics() {
+    console.log('📊 Analytics habilitado');
+  }
+
+  disableAnalytics() {
+    console.log('🔒 Analytics desabilitado');
+  }
+
+  enableMarketing() {
+    console.log('📧 Marketing habilitado');
+  }
+
+  disableMarketing() {
+    console.log('🔒 Marketing desabilitado');
   }
 
   acceptConsent() {
@@ -232,7 +355,7 @@ class PrivacyConsent {
       <div class="privacy-modal-content">
         <div class="privacy-modal-header">
           <h2>🔒 Configurações de Privacidade</h2>
-          <button class="close-modal" onclick="privacyConsent.closePrivacySettings()">×</button>
+          <button class="close-modal" id="close-privacy-modal">×</button>
         </div>
         
         <div class="privacy-modal-body">
@@ -286,10 +409,10 @@ class PrivacyConsent {
         </div>
         
         <div class="privacy-modal-footer">
-          <button class="consent-btn secondary" onclick="privacyConsent.closePrivacySettings()">
+          <button class="consent-btn secondary" id="cancel-privacy-settings">
             Cancelar
           </button>
-          <button class="consent-btn primary" onclick="privacyConsent.savePrivacySettings()">
+          <button class="consent-btn primary" id="save-privacy-settings">
             💾 Salvar Configurações
           </button>
         </div>
@@ -485,13 +608,64 @@ class PrivacyConsent {
     `;
 
     document.body.appendChild(modal);
+    
+    // Adicionar event listeners
+    const closeBtn = document.getElementById('close-privacy-modal');
+    const cancelBtn = document.getElementById('cancel-privacy-settings');
+    const saveBtn = document.getElementById('save-privacy-settings');
+    
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => this.closePrivacySettings());
+    }
+    
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => this.closePrivacySettings());
+    }
+    
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => this.savePrivacySettings());
+    }
+    
+    // Fechar clicando fora do modal
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        this.closePrivacySettings();
+      }
+    });
+    
+    // Fechar com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closePrivacySettings();
+      }
+    });
+    
+    // Carregar configurações atuais
+    this.loadCurrentSettingsInModal();
+  }
+
+  loadCurrentSettingsInModal() {
+    const currentConsent = this.getConsent();
+    
+    if (currentConsent) {
+      // Definir os toggles baseados nas preferências atuais
+      const analyticsToggle = document.getElementById('analytics-toggle');
+      const marketingToggle = document.getElementById('marketing-toggle');
+      
+      if (analyticsToggle) analyticsToggle.checked = currentConsent.analytics || false;
+      if (marketingToggle) marketingToggle.checked = currentConsent.marketing || false;
+    }
   }
 
   savePrivacySettings() {
+    const analyticsToggle = document.getElementById('analytics-toggle');
+    const marketingToggle = document.getElementById('marketing-toggle');
+    
     const preferences = {
       essential: true, // Sempre true
-      analytics: document.getElementById('analytics-toggle').checked,
-      marketing: document.getElementById('marketing-toggle').checked
+      functional: true, // Necessário para conta de usuário
+      analytics: analyticsToggle ? analyticsToggle.checked : false,
+      marketing: marketingToggle ? marketingToggle.checked : false
     };
 
     const success = this.saveConsent(preferences);
@@ -499,9 +673,10 @@ class PrivacyConsent {
     if (success) {
       this.closePrivacySettings();
       this.hideConsentBanner();
-      this.showNotification('Configurações de privacidade atualizadas! ✅', 'success');
+      this.applyConsentSettings(preferences);
+      this.showNotification('✅ Configurações de privacidade atualizadas com sucesso!', 'success');
     } else {
-      this.showNotification('Erro ao salvar configurações. Tente novamente.', 'error');
+      this.showNotification('❌ Erro ao salvar configurações. Tente novamente.', 'error');
     }
   }
 

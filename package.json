@@ -1,7 +1,7 @@
 {
-  "name": "cyberguard",
+  "name": "sia-security-information-academy",
   "version": "2.0.0",
-  "description": "CyberGuard - Simulador de Segurança Cibernética com Firebase",
+  "description": "SIA: Security & Information Academy - Simulador de Segurança Cibernética com Firebase",
   "main": "index.html",
   "scripts": {
     "dev": "firebase serve",

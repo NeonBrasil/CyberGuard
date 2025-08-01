@@ -738,13 +738,16 @@ class UserAccountManager {
         }
         
         .profile-btn.preferences {
-          border-color: var(--secondary-color, #6495ed);
-          color: var(--secondary-color, #6495ed);
+          border-color: #6e7681;
+          color: #6e7681;
+          opacity: 0.7;
+          cursor: help;
         }
         
         .profile-btn.preferences:hover {
-          background: var(--secondary-color, #6495ed);
+          background: #6e7681;
           color: var(--bg-color, #0a0a0a);
+          opacity: 0.8;
         }
         
         .profile-btn.export {

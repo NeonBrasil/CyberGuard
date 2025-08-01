@@ -215,7 +215,7 @@
     window.firebase = firebase;
   </script>
   
-  <script src="Script/ranking.js"></script>
+  <script src="Script/ranking.js?v=1754066224"></script>
   
   <script>
     let currentTab = 'global';
@@ -229,21 +229,34 @@
       event.target.classList.add('active');
       
       const content = document.getElementById('leaderboard-content');
-      content.innerHTML = '<div class="loading">⏳ Carregando ranking...</div>';
       
       try {
         console.log('Carregando ranking do tipo:', type);
         
-        let data = [];
-        
         if (type === 'global') {
-          data = await window.RankingManager.getGlobalRanking();
+          content.innerHTML = '<div class="loading">⏳ Carregando ranking...</div>';
+          
+          let data = await window.RankingManager.getGlobalRanking();
+          console.log('Dados do ranking carregados:', data);
+          window.RankingManager.renderRanking(data, 'leaderboard-content', type);
         } else {
-          data = await window.RankingManager.getDifficultyRanking(type);
+          // Para easy, medium e hard, mostrar apenas "Em breve"
+          content.innerHTML = `
+            <div class="leaderboard">
+              <h2>🚧 Ranking ${type === 'easy' ? 'Fácil' : type === 'medium' ? 'Médio' : 'Difícil'}</h2>
+              <div class="empty-state">
+                <h3>🔜 Em breve</h3>
+                <p>Esta seção do ranking estará disponível em uma próxima atualização.</p>
+                <p style="font-size: 0.9rem; color: #6e7681; margin-top: 1rem;">
+                  Por enquanto, confira o ranking geral! 🏆
+                </p>
+                <button onclick="showLeaderboard('global')" class="cta-button" style="margin-top: 1rem;">
+                  Ver Ranking Geral
+                </button>
+              </div>
+            </div>
+          `;
         }
-        
-        console.log('Dados do ranking carregados:', data);
-        window.RankingManager.renderRanking(data, 'leaderboard-content', type);
         
       } catch (error) {
         console.error('Erro ao carregar ranking:', error);
@@ -267,12 +280,23 @@
           clearInterval(checkFirebase);
           console.log('Firebase e RankingManager prontos, carregando ranking global...');
           
-          // Simular clique no botão global
-          const globalBtn = document.querySelector('.tab-button[onclick="showLeaderboard(\'global\')"]');
-          if (globalBtn) {
-            globalBtn.classList.add('active');
-            showLeaderboard('global');
-          }
+          // Carregar ranking global automaticamente
+          const content = document.getElementById('leaderboard-content');
+          content.innerHTML = '<div class="loading">⏳ Carregando ranking...</div>';
+          
+          window.RankingManager.getGlobalRanking()
+            .then(data => {
+              window.RankingManager.renderRanking(data, 'leaderboard-content', 'global');
+            })
+            .catch(error => {
+              console.error('Erro ao carregar ranking inicial:', error);
+              content.innerHTML = `
+                <div class="empty-state">
+                  <h3>😅 Ops! Algo deu errado</h3>
+                  <p>Não foi possível carregar o ranking. Tente novamente mais tarde.</p>
+                </div>
+              `;
+            });
         }
       }, 100);
     });

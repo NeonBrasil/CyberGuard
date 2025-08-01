@@ -5,7 +5,7 @@ window.RankingManager = {
   cache: {
     globalRanking: null,
     lastUpdate: null,
-    cacheTime: 24 * 60 * 60 * 1000 // 24 horas em ms - atualização diária
+    cacheTime: 6 * 60 * 60 * 1000 // 6 horas em ms
   },
   
   // Verificar se cache é válido
@@ -176,10 +176,7 @@ window.RankingManager = {
     // Adicionar cabeçalho explicativo para ranking global
     if (type === 'global') {
       const cacheAge = this.cache.lastUpdate ? 
-        Math.round((Date.now() - this.cache.lastUpdate) / (1000 * 60 * 60)) : 0; // em horas
-      
-      const timeLeft = this.cache.lastUpdate ? 
-        Math.round((this.cache.cacheTime - (Date.now() - this.cache.lastUpdate)) / (1000 * 60 * 60)) : 24; // em horas
+        Math.round((Date.now() - this.cache.lastUpdate) / (1000 * 60)) : 0;
       
       html += `
         <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 8px; padding: 1rem; margin-bottom: 2rem; text-align: center;">
@@ -188,14 +185,8 @@ window.RankingManager = {
             Classificação baseada na <strong>média de acertos</strong> de todos os quizzes realizados
           </p>
           <p style="color: #6e7681; margin: 0.5rem 0 0 0; font-size: 0.8rem;">
-            🕐 Atualizado há ${cacheAge}h • Próxima atualização em ~${timeLeft}h • 💰 Sistema ultra-econômico
+            🕐 Atualizado há ${cacheAge} minutos • Próxima atualização em ${Math.round((this.cache.cacheTime - (Date.now() - this.cache.lastUpdate)) / (1000 * 60))} min
           </p>
-          ${cacheAge >= 12 ? `
-            <button onclick="window.RankingManager.refreshCache().then(() => window.location.reload())" 
-                    style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: #238636; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
-              🔄 Forçar Atualização
-            </button>
-          ` : ''}
         </div>
       `;
     }

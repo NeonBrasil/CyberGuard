@@ -1,41 +1,13 @@
-// Sistema de Ranking Otimizado com Cache
+// Sistema de Ranking compatível com Firebase v8 (compat)
 window.RankingManager = {
   
-  // Cache local com timestamp
-  cache: {
-    globalRanking: null,
-    lastUpdate: null,
-    cacheTime: 24 * 60 * 60 * 1000 // 24 horas em ms - atualização diária
-  },
-  
-  // Verificar se cache é válido
-  isCacheValid() {
-    if (!this.cache.lastUpdate || !this.cache.globalRanking) {
-      return false;
-    }
-    
-    const now = Date.now();
-    const timeDiff = now - this.cache.lastUpdate;
-    return timeDiff < this.cache.cacheTime;
-  },
-  
-  // Carregar ranking global com cache
+  // Carregar ranking global (baseado em pontuação média)
   async getGlobalRanking() {
     try {
-      console.log('🏆 Verificando cache do ranking...');
+      console.log('🏆 Carregando ranking global baseado na média de acertos...');
       
-      // Se cache é válido, usar dados locais
-      if (this.isCacheValid()) {
-        console.log('✅ Usando ranking do cache (economizando reads)');
-        return this.cache.globalRanking;
-      }
-      
-      console.log('🔄 Cache expirado, buscando dados atualizados...');
-      
-      // Buscar dados atualizados (só quando necessário)
+      // Consulta mais simples para evitar problemas de índice
       const usersSnapshot = await window.db.collection('users')
-        .where('stats.totalQuizzes', '>', 0)
-        .limit(50) // Limitar para economizar
         .get();
       
       const ranking = [];
@@ -43,51 +15,41 @@ window.RankingManager = {
         const userData = doc.data();
         const stats = userData.stats || {};
         
-        ranking.push({
-          id: doc.id,
-          name: userData.name || 'Usuário Anônimo',
-          totalQuizzes: stats.totalQuizzes || 0,
-          averageScore: Math.round(stats.averageScore || 0),
-          totalScore: stats.totalScore || 0,
-          timeSpent: stats.timeSpent || 0
-        });
-      });
-      
-      // Ordenar localmente (mais eficiente)
-      ranking.sort((a, b) => {
-        if (b.averageScore !== a.averageScore) {
-          return b.averageScore - a.averageScore;
+        // Só incluir usuários que fizeram pelo menos 1 quiz
+        if ((stats.totalQuizzes || 0) > 0) {
+          ranking.push({
+            id: doc.id,
+            name: userData.name || 'Usuário Anônimo',
+            totalQuizzes: stats.totalQuizzes || 0,
+            averageScore: Math.round(stats.averageScore || 0),
+            totalScore: stats.totalScore || 0,
+            timeSpent: stats.timeSpent || 0
+          });
         }
-        return b.totalQuizzes - a.totalQuizzes;
       });
       
-      // Atualizar cache
-      this.cache.globalRanking = ranking;
-      this.cache.lastUpdate = Date.now();
+      // Ordenar no cliente por média de acertos (desc) e depois por total de quizzes (desc)
+      ranking.sort((a, b) => {
+        if (a.averageScore !== b.averageScore) {
+          return b.averageScore - a.averageScore; // Maior média primeiro
+        }
+        return b.totalQuizzes - a.totalQuizzes; // Mais quizzes em caso de empate
+      });
       
-      console.log(`✅ Ranking atualizado: ${ranking.length} usuários (${usersSnapshot.size} reads consumidos)`);
-      return ranking;
+      // Limitar aos top 50
+      const topRanking = ranking.slice(0, 50);
+      
+      console.log('✅ Ranking global carregado:', topRanking.length, 'usuários');
+      console.log('📊 Top 3:', topRanking.slice(0, 3).map(u => ({ nome: u.name, media: u.averageScore, quizzes: u.totalQuizzes })));
+      return topRanking;
       
     } catch (error) {
-      console.error('❌ Erro ao carregar ranking:', error);
-      
-      // Se falhar, tentar usar cache antigo
-      if (this.cache.globalRanking) {
-        console.log('⚠️ Usando cache antigo como fallback');
-        return this.cache.globalRanking;
-      }
-      
+      console.error('❌ Erro ao carregar ranking global:', error);
       throw error;
     }
   },
   
-  // Forçar atualização do cache
-  async refreshCache() {
-    this.cache.lastUpdate = null;
-    return await this.getGlobalRanking();
-  },
-  
-  // Carregar ranking por dificuldade (mantido como estava)
+  // Carregar ranking por dificuldade (baseado nos resultados de quiz)
   async getDifficultyRanking(difficulty) {
     try {
       console.log('🎯 Carregando ranking por dificuldade:', difficulty);
@@ -95,11 +57,13 @@ window.RankingManager = {
       const resultsSnapshot = await window.db.collection('quizResults')
         .where('difficulty', '==', difficulty)
         .orderBy('score', 'desc')
-        .limit(20) // Reduzido de 100 para 20
+        .orderBy('timestamp', 'desc')
+        .limit(100)
         .get();
       
       const userScores = new Map();
       
+      // Processar resultados para pegar a melhor pontuação de cada usuário
       resultsSnapshot.forEach(doc => {
         const data = doc.data();
         const userId = data.userId;
@@ -117,13 +81,15 @@ window.RankingManager = {
         }
       });
       
+      // Converter para array e ordenar
       const ranking = Array.from(userScores.values())
         .sort((a, b) => {
           if (b.score !== a.score) return b.score - a.score;
-          return a.timestamp.seconds - b.timestamp.seconds;
-        });
+          return a.timestamp.seconds - b.timestamp.seconds; // Mais antigo em caso de empate
+        })
+        .slice(0, 50);
       
-      console.log(`✅ Ranking por dificuldade: ${ranking.length} usuários (${resultsSnapshot.size} reads)`);
+      console.log('✅ Ranking por dificuldade carregado:', ranking.length, 'usuários');
       return ranking;
       
     } catch (error) {
@@ -175,27 +141,12 @@ window.RankingManager = {
     
     // Adicionar cabeçalho explicativo para ranking global
     if (type === 'global') {
-      const cacheAge = this.cache.lastUpdate ? 
-        Math.round((Date.now() - this.cache.lastUpdate) / (1000 * 60 * 60)) : 0; // em horas
-      
-      const timeLeft = this.cache.lastUpdate ? 
-        Math.round((this.cache.cacheTime - (Date.now() - this.cache.lastUpdate)) / (1000 * 60 * 60)) : 24; // em horas
-      
       html += `
         <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 8px; padding: 1rem; margin-bottom: 2rem; text-align: center;">
           <h3 style="color: #58a6ff; margin: 0 0 0.5rem 0;">🏆 Ranking Geral</h3>
           <p style="color: #c9d1d9; margin: 0; font-size: 0.9rem;">
             Classificação baseada na <strong>média de acertos</strong> de todos os quizzes realizados
           </p>
-          <p style="color: #6e7681; margin: 0.5rem 0 0 0; font-size: 0.8rem;">
-            🕐 Atualizado há ${cacheAge}h • Próxima atualização em ~${timeLeft}h • 💰 Sistema ultra-econômico
-          </p>
-          ${cacheAge >= 12 ? `
-            <button onclick="window.RankingManager.refreshCache().then(() => window.location.reload())" 
-                    style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: #238636; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
-              🔄 Forçar Atualização
-            </button>
-          ` : ''}
         </div>
       `;
     }
@@ -283,7 +234,7 @@ window.RankingManager = {
 
 // Aguardar Firebase estar pronto
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🏆 Sistema de Ranking Otimizado inicializado');
+  console.log('🏆 Sistema de Ranking inicializado');
   
   // Verificar se Firebase está disponível
   if (!window.db) {

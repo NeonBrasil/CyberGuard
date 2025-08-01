@@ -137,8 +137,9 @@ class UserAccountManager {
           <button class="profile-btn edit" onclick="userAccountManager.showEditProfile()">
             ✏️ Editar Perfil
           </button>
-          <button class="profile-btn preferences" onclick="userAccountManager.showPreferences()">
+          <button class="profile-btn preferences" onclick="alert('🔜 Em breve! Esta funcionalidade estará disponível em uma próxima atualização.')" style="position: relative;">
             ⚙️ Preferências
+            <span style="font-size: 0.7rem; color: #6e7681; margin-left: 0.5rem;">(Em breve)</span>
           </button>
           <button class="profile-btn export" onclick="userAccountManager.exportData()">
             📥 Exportar Dados

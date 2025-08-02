@@ -153,6 +153,20 @@
     </div>
   </div>
 
+  <!-- Modal de Aviso do Projeto -->
+  <div id="projectNoticeModal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width: 420px; text-align: center;">
+      <span class="close" id="closeProjectNotice" style="float:right; font-size:2rem; cursor:pointer;">&times;</span>
+      <h2 style="margin-top:0;">🚧 Projeto Educacional 🚧</h2>
+      <p style="margin: 1.5rem 0; font-size:1.1rem;">
+        Este site é um projeto <b>gratuito</b> para ensinar <b>segurança da informação</b> a todos.<br><br>
+        <b>Atenção:</b> O sistema ainda está em <b>desenvolvimento inicial</b>.<br>
+        Use à vontade, compartilhe e envie feedback!
+      </p>
+      <button id="closeNoticeBtn" style="background: var(--primary-color, #007bff); color: #fff; border: none; padding: 0.7rem 2rem; border-radius: 5px; font-size: 1rem; cursor: pointer;">OK, entendi</button>
+    </div>
+  </div>
+
   <footer>
     <div class="container">
       <div class="footer-content">
@@ -199,12 +213,35 @@
     window.firebase = firebase;
   </script>
 
-  <script src="Script/privacy-consent.js?v=1754072838"></script>
-  <script src="Script/data-protection.js?v=1754072838"></script>
-  <script src="Script/data-auditor.js?v=1754072838"></script>
-  <script src="Script/security.js?v=1754072838"></script>
-  <script src="Script/user-account.js?v=1754072838"></script>
-  <script src="Script/login-system.js?v=1754072838"></script>
-  <script src="Script/index.js?v=1754072838"></script>
+  <script src="Script/privacy-consent.js?v=1754073235"></script>
+  <script src="Script/data-protection.js?v=1754073235"></script>
+  <script src="Script/data-auditor.js?v=1754073235"></script>
+  <script src="Script/security.js?v=1754073235"></script>
+  <script src="Script/user-account.js?v=1754073235"></script>
+  <script src="Script/login-system.js?v=1754073235"></script>
+  <script src="Script/index.js?v=1754073235"></script>
+
+  <script>
+    // Exibir modal de aviso ao entrar no site
+    window.addEventListener('DOMContentLoaded', function() {
+      var modal = document.getElementById('projectNoticeModal');
+      var closeBtn = document.getElementById('closeNoticeBtn');
+      var closeX = document.getElementById('closeProjectNotice');
+      if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+      function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+      if (closeBtn) closeBtn.onclick = closeModal;
+      if (closeX) closeX.onclick = closeModal;
+      // Fechar ao clicar fora do modal
+      window.onclick = function(event) {
+        if (event.target === modal) closeModal();
+      };
+    });
+  </script>
 </body>
 </html>

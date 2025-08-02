@@ -3,34 +3,47 @@
 
 class PrivacyConsent {
   constructor() {
+    console.log('🔒 [PRIVACY] 🚀 Construtor PrivacyConsent chamado');
     this.consentVersion = '1.0';
     this.consentKey = 'sia_privacy_consent';
     this.consentData = this.loadConsent();
+    console.log('🔒 [PRIVACY] Configuração inicial:', {
+      version: this.consentVersion,
+      key: this.consentKey,
+      readyState: document.readyState
+    });
     
     // Inicializar após carregamento da página
     if (document.readyState === 'loading') {
+      console.log('🔒 [PRIVACY] Aguardando DOMContentLoaded...');
       document.addEventListener('DOMContentLoaded', () => this.init());
     } else {
+      console.log('🔒 [PRIVACY] DOM já carregado, inicializando agora...');
       this.init();
     }
   }
 
   init() {
+    console.log('🔒 [PRIVACY] Iniciando sistema de privacidade...');
+    
     // Carregar consentimento existente primeiro
     this.consentData = this.loadConsent();
+    console.log('🔒 [PRIVACY] Consentimento carregado:', this.consentData);
     
     // Verificar se precisa mostrar banner
+    console.log('🔒 [PRIVACY] Versão atual:', this.consentVersion);
     this.checkConsentRequired();
     this.setupPrivacyNotifications();
     
     // DEBUG: Adicionar função global para testar banner
     window.showPrivacyBanner = () => {
+      console.log('🔒 [DEBUG] Forçando exibição do banner...');
       localStorage.removeItem(this.consentKey);
       this.consentData = null;
       this.showConsentBanner();
     };
     
-    console.log('🔒 Sistema de privacidade inicializado');
+    console.log('🔒 [PRIVACY] Sistema de privacidade inicializado');
   }
 
   loadConsent() {
@@ -45,6 +58,9 @@ class PrivacyConsent {
 
   saveConsent(consentData) {
     try {
+      console.log('🔒 [PRIVACY] 💾 Salvando consentimento...');
+      console.log('🔒 [PRIVACY] Dados recebidos:', consentData);
+      
       const consentRecord = {
         version: this.consentVersion,
         timestamp: new Date().toISOString(),
@@ -56,17 +72,23 @@ class PrivacyConsent {
         }
       };
       
+      console.log('🔒 [PRIVACY] Registro completo:', consentRecord);
+      console.log('🔒 [PRIVACY] Chave localStorage:', this.consentKey);
+      
       localStorage.setItem(this.consentKey, JSON.stringify(consentRecord));
       this.consentData = consentRecord;
+      
+      console.log('🔒 [PRIVACY] ✅ Consentimento salvo no localStorage');
       
       // Log seguro do consentimento
       if (window.DataProtection) {
         window.DataProtection.secureLog('Consentimento registrado', 'privacy');
+        console.log('🔒 [PRIVACY] Log de segurança registrado');
       }
       
       return true;
     } catch (error) {
-      console.error('Erro ao salvar consentimento:', error);
+      console.error('🔒 [PRIVACY] ❌ Erro ao salvar consentimento:', error);
       return false;
     }
   }
@@ -77,22 +99,34 @@ class PrivacyConsent {
   }
 
   checkConsentRequired() {
+    console.log('🔒 [PRIVACY] Verificando necessidade de consentimento...');
+    console.log('🔒 [PRIVACY] Dados atuais:', this.consentData);
+    console.log('🔒 [PRIVACY] Versão esperada:', this.consentVersion);
+    
     // Verificar se precisa mostrar banner de consentimento
     if (!this.consentData || this.consentData.version !== this.consentVersion) {
+      console.log('🔒 [PRIVACY] ⚠️ Banner necessário - mostrando agora...');
       this.showConsentBanner();
+    } else {
+      console.log('🔒 [PRIVACY] ✅ Consentimento já existe e está atualizado');
     }
   }
 
   showConsentBanner() {
+    console.log('🔒 [PRIVACY] 🎯 Criando banner de consentimento...');
+    
     // Remover banner existente se houver
     const existingBanner = document.getElementById('privacy-consent-banner');
     if (existingBanner) {
+      console.log('🔒 [PRIVACY] Removendo banner existente...');
       existingBanner.remove();
     }
 
     const banner = document.createElement('div');
     banner.id = 'privacy-consent-banner';
     banner.className = 'privacy-consent-banner';
+    console.log('🔒 [PRIVACY] Banner criado, adicionando HTML...');
+    
     banner.innerHTML = `
       <div class="consent-content">
         <div class="consent-icon">🔒</div>
@@ -221,27 +255,38 @@ class PrivacyConsent {
     `;
 
     document.body.appendChild(banner);
+    console.log('🔒 [PRIVACY] ✅ Banner adicionado ao DOM');
 
     // Adicionar event listeners para o banner
     setTimeout(() => {
+      console.log('🔒 [PRIVACY] Configurando event listeners...');
       const essentialBtn = document.getElementById('essential-only-btn');
       const customizeBtn = document.getElementById('customize-btn');
       const acceptAllBtn = document.getElementById('accept-all-btn');
       
+      console.log('🔒 [PRIVACY] Botões encontrados:', {
+        essential: !!essentialBtn,
+        customize: !!customizeBtn,
+        acceptAll: !!acceptAllBtn
+      });
+      
       if (essentialBtn) {
         essentialBtn.addEventListener('click', () => {
+          console.log('🔒 [PRIVACY] Clique em "Essencial Only"');
           this.acceptEssentialOnly();
         });
       }
       
       if (customizeBtn) {
         customizeBtn.addEventListener('click', () => {
+          console.log('🔒 [PRIVACY] Clique em "Personalizar"');
           this.showPrivacySettings();
         });
       }
       
       if (acceptAllBtn) {
         acceptAllBtn.addEventListener('click', () => {
+          console.log('🔒 [PRIVACY] Clique em "Aceitar Todos"');
           this.acceptAll();
         });
       }
@@ -250,6 +295,7 @@ class PrivacyConsent {
 
   // Novas funções LGPD
   acceptEssentialOnly() {
+    console.log('🔒 [PRIVACY] 🎯 Aceitando apenas essenciais...');
     const essentialConsent = {
       essential: true,
       analytics: false,
@@ -257,7 +303,9 @@ class PrivacyConsent {
       functional: false
     };
     
+    console.log('🔒 [PRIVACY] Configurações:', essentialConsent);
     const success = this.saveConsent(essentialConsent);
+    console.log('🔒 [PRIVACY] Salvamento:', success ? 'SUCESSO' : 'ERRO');
     
     if (success) {
       this.hideConsentBanner();
@@ -267,6 +315,7 @@ class PrivacyConsent {
   }
 
   acceptAll() {
+    console.log('🔒 [PRIVACY] 🎯 Aceitando todas as configurações...');
     const fullConsent = {
       essential: true,
       analytics: true,
@@ -274,7 +323,9 @@ class PrivacyConsent {
       functional: true
     };
     
+    console.log('🔒 [PRIVACY] Configurações:', fullConsent);
     const success = this.saveConsent(fullConsent);
+    console.log('🔒 [PRIVACY] Salvamento:', success ? 'SUCESSO' : 'ERRO');
     
     if (success) {
       this.hideConsentBanner();
@@ -688,10 +739,17 @@ class PrivacyConsent {
   }
 
   hideConsentBanner() {
+    console.log('🔒 [PRIVACY] 🚪 Ocultando banner de consentimento...');
     const banner = document.getElementById('privacy-consent-banner');
     if (banner) {
+      console.log('🔒 [PRIVACY] Banner encontrado, removendo...');
       banner.style.transform = 'translateY(100%)';
-      setTimeout(() => banner.remove(), 300);
+      setTimeout(() => {
+        banner.remove();
+        console.log('🔒 [PRIVACY] ✅ Banner removido do DOM');
+      }, 300);
+    } else {
+      console.log('🔒 [PRIVACY] ⚠️ Banner não encontrado no DOM');
     }
   }
 
@@ -768,4 +826,6 @@ class PrivacyConsent {
 }
 
 // Inicializar sistema de consentimento
+console.log('🔒 [PRIVACY] 🎯 Criando instância global do PrivacyConsent...');
 window.privacyConsent = new PrivacyConsent();
+console.log('🔒 [PRIVACY] ✅ Instância criada e disponível globalmente');

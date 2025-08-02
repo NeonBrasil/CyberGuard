@@ -86,15 +86,20 @@ window.FirebaseManager = {
         db.collection('quizResults').add(result).then(function(docRef) {
           console.log('✅ Resultado salvo com ID:', docRef.id);
           
-          // Atualizar estatísticas do usuário
-          if (window.userAccountManager) {
-            window.userAccountManager.updateStats({
-              score: percentage,
-              timeSpent: timeSpent
-            });
-          }
+          // DELAY REALISTA: Simular processamento do ranking (2-3 segundos)
+          setTimeout(function() {
+            // Atualizar estatísticas do usuário após delay
+            if (window.userAccountManager) {
+              window.userAccountManager.updateStats({
+                score: percentage,
+                timeSpent: timeSpent
+              });
+            }
+            
+            console.log('✅ Resultado salvo e estatísticas atualizadas após processamento');
+            console.log('ℹ️ RANKING: Será atualizado automaticamente todos os dias às 19h para economizar Firebase reads');
+          }, Math.random() * 1000 + 2000); // 2-3 segundos aleatórios
           
-          console.log('✅ Resultado salvo e estatísticas atualizadas');
           resolve();
         }).catch(function(error) {
           console.error('❌ Erro ao salvar resultado:', error);
@@ -138,13 +143,20 @@ window.onLoginModalClose = function() {
 window.onLoginSuccess = function() {
   // Salvar resultado pendente se existir
   if (pendingResult) {
+    // Mostrar mensagem de processamento
+    alert('💾 Salvando resultado... O ranking é atualizado diariamente às 19h!');
+    
     window.FirebaseManager.saveQuizResult(
       pendingResult.difficulty, 
       pendingResult.score, 
       pendingResult.totalQuestions, 
       pendingResult.wrongAnswers
     ).then(function() {
-      alert('Seu resultado foi salvo! Agora você aparece no ranking! 🏆');
+      // Delay para simular processamento do ranking
+      setTimeout(function() {
+        alert('Seu resultado foi salvo! Você aparecerá no ranking após às 19h! 🏆');
+      }, Math.random() * 1000 + 2000); // 2-3 segundos
+      
       pendingResult = null;
       hideResultsModal(); // Fecha tela de resultados e reinicia
     });
@@ -154,13 +166,20 @@ window.onLoginSuccess = function() {
 window.onRegisterSuccess = function() {
   // Salvar resultado pendente se existir
   if (pendingResult) {
+    // Mostrar mensagem de processamento
+    alert('💾 Salvando resultado... O ranking é atualizado diariamente às 19h!');
+    
     window.FirebaseManager.saveQuizResult(
       pendingResult.difficulty, 
       pendingResult.score, 
       pendingResult.totalQuestions, 
       pendingResult.wrongAnswers
     ).then(function() {
-      alert('Seu resultado foi salvo! Bem-vindo ao ranking! 🏆');
+      // Delay para simular processamento do ranking
+      setTimeout(function() {
+        alert('Seu resultado foi salvo! Bem-vindo ao ranking (atualizado às 19h)! 🏆');
+      }, Math.random() * 1000 + 2000); // 2-3 segundos
+      
       pendingResult = null;
       hideResultsModal(); // Fecha tela de resultados e reinicia
     });
@@ -269,26 +288,42 @@ function startSimulation(difficulty) {
         return;
       }
       
-      // CORREÇÃO AUTOMÁTICA: Se correct é undefined, tentar encontrar a resposta correta
+      // CORREÇÃO CRÍTICA: Mapear correctAnswer para correct se não existe
+      if (typeof q.correct !== 'number' && typeof q.correctAnswer === 'number') {
+        q.correct = q.correctAnswer;
+        console.log('✅ Mapeamento correctAnswer -> correct:', q.correctAnswer, 'para pergunta:', q.question.substring(0, 50) + '...');
+        console.log('📋 DEBUG: Opções da pergunta:', q.options);
+        console.log('🎯 DEBUG: Resposta correta será:', q.options[q.correctAnswer]);
+      }
+      
+      // CORREÇÃO AUTOMÁTICA: Só tentar corrigir se realmente há um problema
       if (typeof q.correct !== 'number' || q.correct < 0 || q.correct >= q.options.length) {
         console.log('⚠️ Tentando corrigir pergunta com correct inválido:', q.question.substring(0, 50) + '...');
+        console.log('🔍 Valor atual de q.correct:', q.correct, 'Tipo:', typeof q.correct);
+        console.log('🔍 Tamanho de options:', q.options.length);
         
         // Verificar se há um campo alternativo ou tentar deduzir
         var correctIndex = -1;
         
-        // Estratégia 1: Procurar por um campo 'answer' ou 'correctAnswer'
-        if (q.answer && typeof q.answer === 'string') {
-          correctIndex = q.options.indexOf(q.answer);
-          console.log('Tentativa 1 - campo answer:', q.answer, 'índice:', correctIndex);
+        // Estratégia 1: Usar correctAnswer se for número válido
+        if (typeof q.correctAnswer === 'number' && q.correctAnswer >= 0 && q.correctAnswer < q.options.length) {
+          correctIndex = q.correctAnswer;
+          console.log('Tentativa 1 - usando correctAnswer numérico:', q.correctAnswer);
         }
         
-        // Estratégia 2: Procurar por um campo 'correctAnswer'
+        // Estratégia 2: Procurar por um campo 'answer' como string
+        if (correctIndex === -1 && q.answer && typeof q.answer === 'string') {
+          correctIndex = q.options.indexOf(q.answer);
+          console.log('Tentativa 2 - campo answer:', q.answer, 'índice:', correctIndex);
+        }
+        
+        // Estratégia 3: Procurar por um campo 'correctAnswer' como string
         if (correctIndex === -1 && q.correctAnswer && typeof q.correctAnswer === 'string') {
           correctIndex = q.options.indexOf(q.correctAnswer);
-          console.log('Tentativa 2 - campo correctAnswer:', q.correctAnswer, 'índice:', correctIndex);
+          console.log('Tentativa 3 - campo correctAnswer string:', q.correctAnswer, 'índice:', correctIndex);
         }
         
-        // Estratégia 3: Se ainda não encontrou, usar a primeira opção como padrão temporário
+        // Estratégia 4: Se ainda não encontrou, usar a primeira opção como último recurso
         if (correctIndex === -1) {
           correctIndex = 0;
           console.log('⚠️ USANDO PRIMEIRA OPÇÃO COMO PADRÃO para:', q.question.substring(0, 50));
@@ -296,6 +331,8 @@ function startSimulation(difficulty) {
         
         q.correct = correctIndex;
         console.log('✅ Pergunta corrigida - novo índice correct:', correctIndex);
+      } else {
+        console.log('✅ Pergunta já tem correct válido:', q.correct);
       }
       
       // Verificar novamente se a resposta correta existe
@@ -420,6 +457,17 @@ function nextQuestion() {
     console.log('✅ Resposta CORRETA!');
   } else {
     console.log('❌ Resposta INCORRETA!');
+    
+    // DEBUG DETALHADO: Vamos verificar os valores exatos
+    console.log('🔍 DEBUG RESPOSTA INCORRETA:');
+    console.log('- Pergunta:', question.question);
+    console.log('- Todas as opções:', question.options);
+    console.log('- selectedOption (índice):', selectedOption);
+    console.log('- question.correct (índice correto):', question.correct);
+    console.log('- Resposta escolhida:', question.options[selectedOption]);
+    console.log('- Resposta correta:', question.options[question.correct]);
+    console.log('- Campo correctAnswer original:', question.correctAnswer);
+    
     wrongAnswers.push({
       question: question.question,
       selectedAnswer: question.options[selectedOption] || 'Opção não encontrada',
@@ -564,10 +612,16 @@ function saveResults() {
   if (window.getCurrentUser && window.getCurrentUser()) {
     console.log('✅ Usuário já logado, salvando automaticamente...');
     
+    // Mostrar mensagem de processamento
+    alert('💾 Salvando resultado... O ranking é atualizado diariamente às 19h!');
+    
     window.FirebaseManager.saveQuizResult(currentDifficulty, score, currentQuiz.length, wrongAnswers)
       .then(function() {
-        alert('Seu resultado foi salvo no ranking! 🏆');
-        hideResultsModal();
+        // Delay para simular processamento do ranking
+        setTimeout(function() {
+          alert('Seu resultado foi salvo! Você aparecerá no ranking após às 19h! 🏆');
+          hideResultsModal();
+        }, Math.random() * 1000 + 2000); // 2-3 segundos
       });
   } else {
     console.log('❌ Usuário não logado, solicitando login...');

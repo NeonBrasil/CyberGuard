@@ -524,6 +524,10 @@ class UserAccountManager {
 
       this.userDoc.stats = newStats;
       console.log('Estatísticas atualizadas:', newStats);
+      console.log('ℹ️ RANKING: Cache preservado - ranking será atualizado automaticamente em 24h');
+
+      // REMOVIDO: Invalidação imediata do cache para economizar Firebase reads
+      // O ranking usa cache de 24h para otimizar custos e performance
 
     } catch (error) {
       console.error('Erro ao atualizar estatísticas:', error);

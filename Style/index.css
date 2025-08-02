@@ -311,6 +311,14 @@ footer {
   background: #2ea043;
 }
 
+/* Estilo específico para o modal de aviso do projeto */
+.project-notice-modal {
+  margin: auto;
+  transform: translateY(-5%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 2px solid #30363d;
+}
+
 .close {
   position: absolute;
   top: 10px;

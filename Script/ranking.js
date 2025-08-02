@@ -1,36 +1,116 @@
-// Sistema de Ranking Otimizado com Cache
+// Sistema de Ranking Otimizado com Cache Diário (Horário Brasileiro)
 window.RankingManager = {
   
   // Cache local com timestamp
   cache: {
     globalRanking: null,
     lastUpdate: null,
-    cacheTime: 24 * 60 * 60 * 1000 // 24 horas em ms - atualização diária
+    updateHour: 19, // Horário de atualização diária (19h)
+    timezone: 'America/Sao_Paulo' // Fuso horário brasileiro
   },
   
-  // Verificar se cache é válido
+  // Obter data/hora atual no fuso brasileiro
+  getBrazilTime() {
+    return new Date().toLocaleString('pt-BR', { 
+      timeZone: this.cache.timezone,
+      year: 'numeric',
+      month: '2-digit', 
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  },
+  
+  // Obter Date object no horário brasileiro
+  getBrazilDate() {
+    const now = new Date();
+    const brazilTime = new Date(now.toLocaleString('en-US', { timeZone: this.cache.timezone }));
+    return brazilTime;
+  },
+  
+  // Verificar se cache é válido baseado no horário de atualização diário
   isCacheValid() {
     if (!this.cache.lastUpdate || !this.cache.globalRanking) {
+      console.log('❌ Cache inexistente - primeira busca será feita');
       return false;
     }
     
-    const now = Date.now();
-    const timeDiff = now - this.cache.lastUpdate;
-    return timeDiff < this.cache.cacheTime;
+    const nowBrazil = this.getBrazilDate();
+    const lastUpdateBrazil = new Date(this.cache.lastUpdate);
+    
+    // Criar horário de atualização de hoje (19h Brasil)
+    const todayUpdate = new Date(nowBrazil);
+    todayUpdate.setHours(this.cache.updateHour, 0, 0, 0);
+    
+    console.log('🕐 Horário atual (Brasil):', this.getBrazilTime());
+    console.log('🕕 Última atualização:', lastUpdateBrazil.toLocaleString('pt-BR', { timeZone: this.cache.timezone }));
+    console.log('🕖 Horário de atualização hoje:', todayUpdate.toLocaleString('pt-BR', { timeZone: this.cache.timezone }));
+    
+    // CORREÇÃO CRÍTICA: Se já foi atualizado hoje após 19h, cache válido até amanhã às 19h
+    if (lastUpdateBrazil >= todayUpdate && 
+        lastUpdateBrazil.toDateString() === nowBrazil.toDateString()) {
+      console.log('✅ Cache válido - já atualizado hoje após 19h (válido até amanhã às 19h)');
+      return true;
+    }
+    
+    // Se ainda não chegou na hora de atualizar hoje
+    if (nowBrazil < todayUpdate) {
+      // Cache válido se foi atualizado ontem depois das 19h
+      const yesterdayUpdate = new Date(todayUpdate);
+      yesterdayUpdate.setDate(yesterdayUpdate.getDate() - 1);
+      
+      if (lastUpdateBrazil >= yesterdayUpdate) {
+        console.log('✅ Cache válido - usando dados de ontem após 19h');
+        return true;
+      }
+    }
+    
+    // Se chegou aqui, precisa atualizar apenas se passou das 19h E não foi atualizado hoje
+    if (nowBrazil >= todayUpdate && 
+        lastUpdateBrazil.toDateString() !== nowBrazil.toDateString()) {
+      console.log('❌ Cache expirado - passou das 19h e não foi atualizado hoje');
+      return false;
+    }
+    
+    // Para qualquer outro caso, manter cache válido
+    console.log('✅ Cache válido - mantendo dados atuais');
+    return true;
   },
   
-  // Carregar ranking global com cache
+  // Verificar próximo horário de atualização
+  getNextUpdateTime() {
+    const nowBrazil = this.getBrazilDate();
+    const todayUpdate = new Date(nowBrazil);
+    todayUpdate.setHours(this.cache.updateHour, 0, 0, 0);
+    
+    if (nowBrazil >= todayUpdate) {
+      // Se já passou das 19h hoje, próxima atualização é amanhã às 19h
+      const tomorrow = new Date(todayUpdate);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return tomorrow;
+    } else {
+      // Se ainda não passou das 19h, próxima é hoje às 19h
+      return todayUpdate;
+    }
+  },
+  
+  // Carregar ranking global com cache diário (Horário Brasileiro)
   async getGlobalRanking() {
     try {
       console.log('🏆 Verificando cache do ranking...');
+      console.log('🇧🇷 Horário atual (Brasil):', this.getBrazilTime());
       
       // Se cache é válido, usar dados locais
       if (this.isCacheValid()) {
+        const nextUpdate = this.getNextUpdateTime();
         console.log('✅ Usando ranking do cache (economizando reads)');
+        console.log(`⏰ Próxima atualização: ${nextUpdate.toLocaleString('pt-BR', { timeZone: this.cache.timezone })}`);
         return this.cache.globalRanking;
       }
       
-      console.log('🔄 Cache expirado, buscando dados atualizados...');
+      console.log('🔄 Cache expirado - buscando dados atualizados do Firebase...');
+      console.log('💰 CONSUMINDO 1 READ do Firebase para atualizar ranking');
       
       // Buscar dados atualizados (só quando necessário)
       const usersSnapshot = await window.db.collection('users')
@@ -61,11 +141,15 @@ window.RankingManager = {
         return b.totalQuizzes - a.totalQuizzes;
       });
       
-      // Atualizar cache
+      // Atualizar cache com timestamp brasileiro
       this.cache.globalRanking = ranking;
-      this.cache.lastUpdate = Date.now();
+      this.cache.lastUpdate = this.getBrazilDate().getTime(); // Usar horário brasileiro
       
+      const nextUpdate = this.getNextUpdateTime();
       console.log(`✅ Ranking atualizado: ${ranking.length} usuários (${usersSnapshot.size} reads consumidos)`);
+      console.log(`🇧🇷 Atualizado em: ${this.getBrazilTime()}`);
+      console.log(`⏰ Próxima atualização: ${nextUpdate.toLocaleString('pt-BR', { timeZone: this.cache.timezone })}`);
+      console.log('💾 Cache válido até a próxima atualização - SEM MAIS READS até lá!');
       return ranking;
       
     } catch (error) {
@@ -292,3 +376,24 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Firebase Firestore disponível para ranking');
   }
 });
+
+// SISTEMA DE CACHE OTIMIZADO PARA HORÁRIO BRASILEIRO
+// O ranking busca dados do Firebase APENAS UMA VEZ POR DIA às 19h (horário de Brasília)
+// Depois disso, usa cache local até o próximo dia às 19h
+
+// Função de debug para verificar horários
+window.RankingManager.debugTime = function() {
+  console.log('=== DEBUG HORÁRIO BRASILEIRO ===');
+  console.log('🇧🇷 Horário atual (Brasil):', this.getBrazilTime());
+  console.log('🌍 Horário UTC:', new Date().toISOString());
+  console.log('⏰ Horário de atualização:', this.cache.updateHour + 'h');
+  console.log('📅 Cache válido?', this.isCacheValid());
+  
+  if (this.cache.lastUpdate) {
+    const lastUpdate = new Date(this.cache.lastUpdate);
+    console.log('🕐 Última atualização:', lastUpdate.toLocaleString('pt-BR', { timeZone: this.cache.timezone }));
+  }
+  
+  const nextUpdate = this.getNextUpdateTime();
+  console.log('🔄 Próxima atualização:', nextUpdate.toLocaleString('pt-BR', { timeZone: this.cache.timezone }));
+};

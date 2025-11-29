@@ -16,38 +16,60 @@ class DataAuditor {
   }
 
   setupDataInterceptors() {
-    // Interceptar localStorage
-    const originalSetItem = localStorage.setItem;
-    localStorage.setItem = (key, value) => {
-      this.logDataCollection('localStorage', key, this.classifyData(key, value));
-      return originalSetItem.call(localStorage, key, value);
-    };
+    try {
+      // Interceptar localStorage
+      const originalSetItem = localStorage.setItem.bind(localStorage);
+      localStorage.setItem = (key, value) => {
+        this.logDataCollection('localStorage', key, this.classifyData(key, value));
+        return originalSetItem(key, value);
+      };
 
-    // Interceptar sessionStorage
-    const originalSessionSetItem = sessionStorage.setItem;
-    sessionStorage.setItem = (key, value) => {
-      this.logDataCollection('sessionStorage', key, this.classifyData(key, value));
-      return originalSessionSetItem.call(sessionStorage, key, value);
-    };
+      // Interceptar sessionStorage
+      const originalSessionSetItem = sessionStorage.setItem.bind(sessionStorage);
+      sessionStorage.setItem = (key, value) => {
+        this.logDataCollection('sessionStorage', key, this.classifyData(key, value));
+        return originalSessionSetItem(key, value);
+      };
 
-    // Interceptar Firebase Auth
-    if (window.auth) {
-      this.monitorFirebaseAuth();
+      console.log('✅ Data Auditor: Interceptores configurados com sucesso');
+    } catch (error) {
+      console.error('⚠️ Data Auditor: Erro ao configurar interceptores:', error);
     }
+
+    // Interceptar Firebase Auth (aguardar estar disponível)
+    const checkAuth = setInterval(() => {
+      if (window.auth) {
+        clearInterval(checkAuth);
+        this.monitorFirebaseAuth();
+      }
+    }, 500);
+    
+    // Timeout após 10 segundos
+    setTimeout(() => clearInterval(checkAuth), 10000);
   }
 
   monitorFirebaseAuth() {
-    // Monitorar mudanças de estado de autenticação
-    window.auth.onAuthStateChanged((user) => {
-      if (user) {
-        this.logDataCollection('Firebase Auth', 'user_session', {
-          type: 'authentication',
-          dataPoints: ['email (masked)', 'uid', 'timestamp'],
-          purpose: 'Login e autenticação',
-          retention: 'Durante a sessão'
-        });
-      }
-    });
+    try {
+      // Monitorar mudanças de estado de autenticação
+      window.auth.onAuthStateChanged((user) => {
+        if (user) {
+          this.logDataCollection('Firebase Auth', 'user_session', {
+            type: 'sensitive',
+            purpose: 'Login e autenticação',
+            retention: 'Durante a sessão ativa',
+            legal_basis: 'Execução de contrato',
+            encrypted: true,
+            masked_in_logs: true
+          });
+          
+          console.log('✅ Data Auditor: Usuário autenticado monitorado');
+        }
+      });
+      
+      console.log('✅ Data Auditor: Firebase Auth monitorado');
+    } catch (error) {
+      console.error('⚠️ Data Auditor: Erro ao monitorar Firebase Auth:', error);
+    }
   }
 
   logDataCollection(source, key, classification) {
@@ -112,7 +134,7 @@ class DataAuditor {
     const auditButton = document.createElement('button');
     auditButton.id = 'data-audit-btn';
     auditButton.innerHTML = '🔍';
-    auditButton.title = 'Ver Auditoria de Dados';
+    auditButton.title = 'Ver Auditoria de Dados (Transparência LGPD)';
     auditButton.style.cssText = `
       position: fixed;
       bottom: 80px;
@@ -120,8 +142,8 @@ class DataAuditor {
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary-color, #00ff7f), var(--accent-color, #40e0d0));
-      color: var(--bg-color, #0a0a0a);
+      background: linear-gradient(135deg, #00ff7f, #40e0d0);
+      color: #0a0a0a;
       border: none;
       font-size: 1.2rem;
       cursor: pointer;
@@ -134,6 +156,7 @@ class DataAuditor {
     auditButton.addEventListener('mouseenter', () => {
       auditButton.style.opacity = '1';
       auditButton.style.transform = 'scale(1.1)';
+      auditButton.title = `Ver Auditoria - ${this.auditLog.length} registros coletados`;
     });
 
     auditButton.addEventListener('mouseleave', () => {
@@ -143,7 +166,16 @@ class DataAuditor {
 
     auditButton.addEventListener('click', () => this.showAuditModal());
 
-    document.body.appendChild(auditButton);
+    // Aguardar DOM estar pronto
+    if (document.body) {
+      document.body.appendChild(auditButton);
+      console.log('✅ Data Auditor: Botão de auditoria criado');
+    } else {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body.appendChild(auditButton);
+        console.log('✅ Data Auditor: Botão de auditoria criado');
+      });
+    }
   }
 
   showAuditModal() {

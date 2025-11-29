@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -102,53 +103,66 @@
   <main>
     <div class="study-container">
       <h1 class="study-title">Material de Estudo</h1>
+      <div id="user-progress" style="text-align: center; margin-bottom: 2rem;">
+        <div id="progress-bar-container" style="background: #e0e0e0; border-radius: 5px; overflow: hidden;">
+          <div id="progress-bar" style="width: 0%; background: #4caf50; color: white; text-align: center; line-height: 20px;">0%</div>
+        </div>
+      </div>
       <ul class="topic-list">
-        <li class="topic-item">
+        <li class="topic-item" data-topic-id="introducao">
           <div class="topic-header">
             <span>Tópico 1 - Introdução</span>
-            <span class="arrow">&#9654;</span>
+            <span class="progress-indicator"></span>
+            <span class="arrow">▶</span>
           </div>
           <div class="topic-content">
             <p>
               Descubra a importância da segurança cibernética, os principais conceitos e por que todos devem se preocupar com ameaças digitais. Ideal para quem está começando!
             </p>
             <a href="topico1.html" class="start-btn">Iniciar Estudo</a>
+            <button class="mark-complete-btn" data-topic-id="introducao">Marcar como concluído</button>
           </div>
         </li>
-        <li class="topic-item">
+        <li class="topic-item" data-topic-id="basicos-seguranca">
           <div class="topic-header">
             <span>Tópico 1.1 - Básicos da Segurança</span>
-            <span class="arrow">&#9654;</span>
+            <span class="progress-indicator"></span>
+            <span class="arrow">▶</span>
           </div>
           <div class="topic-content">
             <p>
               Aprenda os fundamentos: tipos de ameaças, princípios de proteção, terminologias essenciais e como identificar riscos no dia a dia.
             </p>
             <a href="topico1,1.html" class="start-btn">Iniciar Estudo</a>
+            <button class="mark-complete-btn" data-topic-id="basicos-seguranca">Marcar como concluído</button>
           </div>
         </li>
-        <li class="topic-item">
+        <li class="topic-item" data-topic-id="ameacas-comuns">
           <div class="topic-header">
             <span>Tópico 1.2 - Ameaças Comuns</span>
-            <span class="arrow">&#9654;</span>
+            <span class="progress-indicator"></span>
+            <span class="arrow">▶</span>
           </div>
           <div class="topic-content">
             <p>
               Conheça as ameaças mais frequentes, como phishing, malware, ransomware e engenharia social, e saiba como se proteger delas.
             </p>
             <a href="topico1.2.html" class="start-btn">Iniciar Estudo</a>
+            <button class="mark-complete-btn" data-topic-id="ameacas-comuns">Marcar como concluído</button>
           </div>
         </li>
-        <li class="topic-item">
+        <li class="topic-item" data-topic-id="boas-praticas">
           <div class="topic-header">
             <span>Tópico 2 - Boas Práticas</span>
-            <span class="arrow">&#9654;</span>
+            <span class="progress-indicator"></span>
+            <span class="arrow">▶</span>
           </div>
           <div class="topic-content">
             <p>
               Dicas práticas para proteger seus dados, criar senhas seguras, manter sistemas atualizados e evitar armadilhas digitais.
             </p>
             <a href="topico2.html" class="start-btn">Iniciar Estudo</a>
+            <button class="mark-complete-btn" data-topic-id="boas-praticas">Marcar como concluído</button>
           </div>
         </li>
         <!-- Adicione mais tópicos conforme necessário -->
@@ -165,18 +179,16 @@
         <div class="social-links">
           <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
           <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
-          <a href="" title="Email">📧</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <script>
-    // Accordion para tópicos
-    document.querySelectorAll('.topic-item').forEach(item => {
-      item.querySelector('.topic-header').addEventListener('click', () => {
-        item.classList.toggle('active');
-      });
-    });
-  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="Script/firebase-config.js"></script>
+  <script src="Script/estudo.js"></script>
 </body>
+</html>

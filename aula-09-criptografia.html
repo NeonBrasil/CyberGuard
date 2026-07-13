@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 9 - Criptografia: Conceitos Essenciais | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Intermediário · Aula 9</span>
+      <h1>Criptografia: Conceitos Essenciais</h1>
+      <p class="lesson-meta">⏱️ 25-30 minutos · 📚 Trilha Intermediária</p>
+
+      <p class="lesson-intro">
+        Criptografia é a base técnica por trás de praticamente toda proteção de dados moderna: HTTPS, apps
+        de mensagem, senhas armazenadas, assinaturas digitais. Você não precisa saber implementar um
+        algoritmo criptográfico — mas entender os conceitos certos evita decisões perigosas (como "inventar"
+        seu próprio esquema de proteção).
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>A diferença entre criptografia simétrica e assimétrica</li>
+          <li>O que é hashing e por que não é a mesma coisa que criptografia</li>
+          <li>Como HTTPS combina os dois tipos de criptografia</li>
+          <li>Assinaturas digitais e certificados</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Criptografia simétrica</h2>
+        <p>
+          Usa a <strong>mesma chave</strong> para criptografar e descriptografar. É rápida e eficiente para
+          grandes volumes de dados (ex: criptografar um disco inteiro), mas tem um problema logístico: como
+          as duas partes trocam a chave secreta de forma segura antes de se comunicar? Exemplo de algoritmo
+          amplamente usado: <strong>AES</strong> (Advanced Encryption Standard).
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Criptografia assimétrica (chave pública)</h2>
+        <p>
+          Usa um <strong>par de chaves</strong> matematicamente relacionadas: uma pública (pode ser
+          compartilhada com qualquer um) e uma privada (mantida em segredo). O que é criptografado com a
+          chave pública só pode ser descriptografado com a chave privada correspondente, e vice-versa. Isso
+          resolve o problema de troca de chaves da criptografia simétrica, mas é computacionalmente mais
+          pesada. Exemplo de algoritmo: <strong>RSA</strong>.
+        </p>
+        <p>
+          Na prática, sistemas modernos combinam os dois: usam criptografia assimétrica só para negociar com
+          segurança uma chave simétrica temporária, e depois usam essa chave simétrica (mais rápida) para o
+          resto da comunicação. É exatamente assim que o HTTPS funciona.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Hashing: não é criptografia (e não deveria ser confundido com ela)</h2>
+        <p>
+          Um hash transforma qualquer entrada em uma saída de tamanho fixo, de forma que:
+        </p>
+        <ul>
+          <li>É praticamente impossível reverter o hash de volta para a entrada original (é uma via de mão única — diferente de criptografia, que é feita para ser revertida com a chave certa).</li>
+          <li>Qualquer mudança mínima na entrada gera um hash completamente diferente.</li>
+          <li>A mesma entrada sempre gera o mesmo hash.</li>
+        </ul>
+        <p>
+          É por isso que senhas são armazenadas como hash, não criptografadas: o serviço nunca precisa
+          "reverter" para ver sua senha original, só precisa gerar o hash do que você digitou no login e
+          comparar com o hash salvo. Algoritmos modernos de hash de senha (como bcrypt, scrypt, Argon2) são
+          propositalmente lentos, para dificultar tentativas de força bruta em massa.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Assinaturas digitais e certificados</h2>
+        <p>
+          Uma assinatura digital usa criptografia assimétrica ao contrário: você "assina" algo com sua chave
+          privada, e qualquer pessoa pode verificar a assinatura com sua chave pública — provando que a
+          mensagem veio realmente de você e não foi alterada no caminho.
+        </p>
+        <p>
+          Certificados digitais (usados no HTTPS) são como uma "carteira de identidade" que vincula uma
+          chave pública a uma entidade (ex: um site), emitida e assinada por uma Autoridade Certificadora
+          (CA) confiável. É por isso que seu navegador confia no certificado do seu banco: ele foi validado
+          por uma CA reconhecida.
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Ao acessar um site HTTPS, seu navegador usa a chave pública do certificado do site (criptografia
+          assimétrica) para negociar de forma segura uma chave simétrica temporária. A partir daí, toda a
+          navegação usa essa chave simétrica — rápida o suficiente para não travar o carregamento da página,
+          mas ainda assim protegida.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          "Criptografar" senhas em vez de fazer hash delas. Se um banco de dados de senhas criptografadas
+          (reversíveis) vaza junto com a chave (o que acontece com frequência em invasões reais), todas as
+          senhas ficam expostas em texto puro. Hash correto e com salt evita exatamente esse cenário.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>Simétrica: uma chave, rápida, mas com desafio de troca segura de chave.</li>
+          <li>Assimétrica: par de chaves pública/privada, resolve a troca, mas é mais lenta.</li>
+          <li>Hashing é unidirecional — usado para verificar, não para recuperar dados originais.</li>
+          <li>HTTPS combina os dois tipos de criptografia; certificados vinculam chave pública a identidade.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://pt.wikipedia.org/wiki/Criptografia" target="_blank" rel="noopener noreferrer">Criptografia — Wikipédia</a></li>
+          <li><a href="https://pt.wikipedia.org/wiki/Função_hash_criptográfica" target="_blank" rel="noopener noreferrer">Função hash criptográfica — Wikipédia</a></li>
+          <li><a href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">TryHackMe</a><span class="resource-tag">salas práticas de criptografia aplicada</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-08-engenharia-social.html" class="prev">← Engenharia Social na Prática</a>
+        <a href="aula-10-seguranca-redes.html" class="next">Próxima aula: Segurança de Redes →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

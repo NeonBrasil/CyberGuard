@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 15 - Frameworks NIST CSF e CIS Controls | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Avançado · Aula 15</span>
+      <h1>Frameworks de Segurança: NIST CSF e CIS Controls</h1>
+      <p class="lesson-meta">⏱️ 30-35 minutos · 📚 Trilha Avançada</p>
+
+      <p class="lesson-intro">
+        Empresas maduras não inventam segurança do zero — elas seguem frameworks reconhecidos, testados e
+        continuamente atualizados por comunidades inteiras de especialistas. Nesta aula, os dois frameworks
+        mais citados no mundo corporativo: o NIST CSF e os CIS Controls.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>As 6 funções do NIST Cybersecurity Framework 2.0</li>
+          <li>Os 18 CIS Controls e os 3 grupos de implementação (IG1/IG2/IG3)</li>
+          <li>Como esses frameworks se complementam na prática</li>
+          <li>Por que "framework" não é a mesma coisa que "produto de segurança"</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>NIST Cybersecurity Framework (CSF) 2.0</h2>
+        <p>Organiza a gestão de risco cibernético em seis funções centrais:</p>
+        <ul>
+          <li><strong>Govern (Governar):</strong> definir estratégia, papéis, responsabilidades e política de risco — a função mais nova, adicionada na versão 2.0.</li>
+          <li><strong>Identify (Identificar):</strong> entender ativos, riscos e vulnerabilidades da organização.</li>
+          <li><strong>Protect (Proteger):</strong> implementar salvaguardas (controle de acesso, treinamento, proteção de dados).</li>
+          <li><strong>Detect (Detectar):</strong> identificar eventos de segurança em tempo hábil.</li>
+          <li><strong>Respond (Responder):</strong> agir diante de um incidente detectado (ligação direta com a Aula 12).</li>
+          <li><strong>Recover (Recuperar):</strong> restaurar capacidades afetadas (ligação com a Aula 13, BCDR).</li>
+        </ul>
+        <p>
+          O CSF não é uma checklist rígida — é uma estrutura flexível que qualquer organização, de qualquer
+          tamanho ou setor, pode adaptar ao seu próprio nível de maturidade e apetite de risco.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>CIS Controls</h2>
+        <p>
+          O Center for Internet Security mantém uma lista de 18 controles prioritários, ordenados
+          aproximadamente por impacto — a ideia é que os primeiros controles (inventário de ativos,
+          inventário de software, proteção de dados, configuração segura) já eliminam boa parte do risco
+          mais comum, mesmo antes de chegar aos controles mais avançados.
+        </p>
+        <p>Os CIS Controls são organizados em três Grupos de Implementação (IG), pensados para diferentes níveis de maturidade organizacional:</p>
+        <ul>
+          <li><strong>IG1:</strong> higiene cibernética essencial — recomendado como piso mínimo para qualquer organização, inclusive pequenas empresas com poucos recursos de TI.</li>
+          <li><strong>IG2:</strong> para organizações com dados mais sensíveis e maior exposição a risco.</li>
+          <li><strong>IG3:</strong> para organizações com alta exposição, visadas por atacantes sofisticados (ex: infraestrutura crítica, grandes instituições financeiras).</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Como os dois se complementam</h2>
+        <p>
+          O NIST CSF responde "o quê" fazer em termos de gestão de risco em nível estratégico (governança,
+          categorias amplas de função). Os CIS Controls respondem "como" de forma mais tática e prática — uma
+          lista concreta de ações técnicas priorizadas. Muitas organizações usam o CSF para estruturar a
+          conversa com a liderança e os CIS Controls para guiar a implementação técnica do dia a dia.
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Uma empresa pequena, começando do zero em segurança, foca primeiro em atingir o IG1 dos CIS
+          Controls (inventário de ativos, controle de configuração, gestão de contas, proteção de dados
+          básica) — cobrindo boa parte da função "Protect" do NIST CSF — antes de investir em controles mais
+          sofisticados de detecção avançada.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Achar que comprar uma ferramenta específica ("compramos um SIEM") equivale a "estar em
+          conformidade com o framework". Frameworks descrevem capacidades e processos, não produtos
+          isolados — uma ferramenta sozinha, mal configurada ou sem processo em volta dela, não cumpre a
+          função que o framework descreve.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>NIST CSF 2.0: Govern, Identify, Protect, Detect, Respond, Recover.</li>
+          <li>CIS Controls: 18 controles priorizados, organizados em 3 grupos de implementação por maturidade.</li>
+          <li>CSF orienta estratégia; CIS Controls orientam execução técnica.</li>
+          <li>Framework é processo e capacidade, não uma ferramenta comprada isoladamente.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://www.nist.gov/cyberframework" target="_blank" rel="noopener noreferrer">NIST Cybersecurity Framework (site oficial)</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://pt.wikipedia.org/wiki/NIST" target="_blank" rel="noopener noreferrer">NIST — Wikipédia</a></li>
+          <li><a href="https://www.comptia.org/" target="_blank" rel="noopener noreferrer">CompTIA</a><span class="resource-tag">certificações como Security+ cobram esses frameworks</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-14-seguranca-nuvem.html" class="prev">← Segurança em Nuvem</a>
+        <a href="aula-16-iso27001.html" class="next">Próxima aula: ISO 27001 e Gestão de Segurança →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

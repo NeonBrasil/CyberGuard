@@ -2,49 +2,162 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-    <title>Tópico 1.2 - Tipos de Ameaças | SIA: Security & Information Academy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 3 - Ameaças e Ataques Comuns | SIA: Security & Information Academy</title>
   <link rel="stylesheet" href="Style/index.css">
-  <style>
-    body { background: #f6f8fa; font-family: 'Segoe UI', Arial, sans-serif; }
-    .back-link { display: flex; align-items: center; gap: 8px; color: #2d7efb; text-decoration: none; font-weight: 500; margin: 32px 0 0 24px; transition: color 0.2s; }
-    .back-link:hover { color: #195bb5; }
-    .topic-content-container { max-width: 650px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); padding: 36px 28px; text-align: center; }
-    .topic-content-container h1 { font-size: 2rem; color: #222; margin-bottom: 18px; }
-    .topic-content-container p { color: #444; font-size: 1.1rem; margin-bottom: 24px; }
-    .topic-img { width: 120px; margin-bottom: 18px; opacity: 0.92; }
-  </style>
+  <link rel="stylesheet" href="Style/licao.css">
 </head>
 <body>
-  <a href="estudo.html" class="back-link">
-    <span style="font-size:1.3rem;">&#8592;</span> Voltar ao Material de Estudo
-  </a>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
   <main>
-    <div class="topic-content-container">
-      <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" alt="Ameaças Comuns" class="topic-img">
-      <h1>Tópico 1.2 - Ameaças Comuns</h1>
-      <p>
-        Conheça os principais tipos de ameaças digitais e como se proteger delas.
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Iniciante · Aula 3</span>
+      <h1>Ameaças e Ataques Comuns</h1>
+      <p class="lesson-meta">⏱️ 25-30 minutos · 📚 Trilha Iniciante</p>
+
+      <p class="lesson-intro">
+        Agora que você já conhece os fundamentos, é hora de conhecer o "inimigo": os tipos de ataque mais
+        frequentes no dia a dia. A boa notícia é que a maioria segue padrões bem conhecidos — aprender a
+        reconhecê-los é a defesa mais eficaz que existe.
       </p>
-      <div style="background:#f0f4fb; border-radius:10px; padding:22px 18px; margin-bottom:24px; box-shadow:0 1px 8px rgba(45,126,251,0.07); text-align:left;">
-        <h2 style="color:#2d7efb; font-size:1.15rem; margin-bottom:10px;">Principais ameaças</h2>
-        <ul style="color:#444; margin-left:18px;">
-          <li>Phishing</li>
-          <li>Malware</li>
-          <li>Ransomware</li>
-          <li>Engenharia social</li>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>O que é phishing e suas variações (spear phishing, vishing, smishing)</li>
+          <li>Os principais tipos de malware e como eles diferem</li>
+          <li>Como o ransomware funciona na prática</li>
+          <li>Engenharia social: por que o ser humano é o alvo mais fácil</li>
         </ul>
       </div>
-      <div style="background:#e9ecef; border-radius:10px; padding:18px; margin-bottom:24px;">
-        <p style="color:#888; margin-bottom:10px;">Assista ao vídeo ou veja a imagem explicativa:</p>
-        <div style="width:100%; max-width:400px; margin:0 auto;">
-          <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" alt="Placeholder vídeo ou imagem" style="width:100%; border-radius:8px; opacity:0.8;">
-        </div>
+
+      <div class="lesson-section">
+        <h2>Phishing</h2>
+        <p>
+          É a tentativa de enganar alguém para que revele informações sensíveis (senhas, dados bancários) ou
+          instale malware, geralmente através de e-mails, mensagens ou sites falsos que imitam empresas
+          confiáveis.
+        </p>
+        <ul>
+          <li><strong>Spear phishing:</strong> phishing direcionado a uma pessoa ou empresa específica, com informações personalizadas que aumentam a credibilidade.</li>
+          <li><strong>Vishing:</strong> phishing por voz/telefone (ex: alguém ligando se passando pelo banco).</li>
+          <li><strong>Smishing:</strong> phishing por SMS.</li>
+          <li><strong>Whaling:</strong> spear phishing direcionado a executivos ou pessoas de alto escalão ("peixes grandes").</li>
+        </ul>
+        <p>Sinais de alerta comuns: urgência artificial ("sua conta será bloqueada em 24h"), erros de português, remetente com domínio ligeiramente diferente do oficial, e pedidos de dados que a empresa nunca pediria por e-mail.</p>
       </div>
-      <div style="background:#f8fafc; border-radius:10px; padding:18px;">
-        <p style="color:#888; margin-bottom:10px;">Leia o PDF complementar:</p>
-        <embed src="exemplo.pdf" type="application/pdf" width="100%" height="320px" style="border-radius:8px; background:#fff;" />
+
+      <div class="lesson-section">
+        <h2>Malware: a família toda</h2>
+        <p>"Malware" é o termo genérico para qualquer software malicioso. Dentro dessa família:</p>
+        <ul>
+          <li><strong>Vírus:</strong> se anexa a um programa legítimo e se espalha quando esse programa é executado.</li>
+          <li><strong>Worm:</strong> se espalha sozinho pela rede, sem precisar de um programa hospedeiro.</li>
+          <li><strong>Trojan (cavalo de troia):</strong> se disfarça de programa legítimo para enganar o usuário a instalá-lo.</li>
+          <li><strong>Spyware:</strong> monitora e coleta informações da vítima sem que ela perceba.</li>
+          <li><strong>Ransomware:</strong> criptografa os arquivos da vítima e exige pagamento de resgate para liberá-los.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Ransomware em detalhe</h2>
+        <p>
+          O ransomware merece atenção especial: é hoje um dos ataques mais lucrativos e destrutivos contra
+          empresas. O ciclo típico é: o atacante ganha acesso inicial (geralmente via phishing ou uma
+          vulnerabilidade não corrigida) → se move lateralmente pela rede → identifica e criptografa os
+          dados mais valiosos, incluindo backups acessíveis → exige pagamento (geralmente em criptomoeda)
+          para restaurar o acesso, muitas vezes ameaçando também vazar os dados publicamente
+          (<em>double extortion</em>).
+        </p>
+        <p>A defesa mais eficaz não é uma ferramenta única, mas uma combinação: backups isolados (offline ou imutáveis), patches em dia, segmentação de rede e treinamento contra phishing.</p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Engenharia social</h2>
+        <p>
+          É a manipulação psicológica de pessoas para que executem ações ou revelem informações
+          confidenciais. Diferente de um ataque técnico, aqui o "alvo" é a confiança humana, explorando
+          gatilhos como autoridade, urgência, medo ou curiosidade.
+        </p>
+        <ul>
+          <li><strong>Pretexting:</strong> criar uma história falsa e convincente para obter informações ("sou do suporte técnico, preciso confirmar sua senha").</li>
+          <li><strong>Baiting:</strong> deixar uma "isca" física (ex: um pen drive infectado "esquecido" na recepção).</li>
+          <li><strong>Tailgating:</strong> seguir alguém autorizado por uma porta de acesso restrito sem crachá-la própria.</li>
+        </ul>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Um e-mail chega dizendo ser do RH, pedindo para "confirmar seus dados" clicando em um link antes
+          do fim do expediente (urgência). O link leva a uma página que imita o portal de login da empresa,
+          mas o domínio é <code>empresa-rh.com</code> em vez do domínio oficial. Isso é phishing clássico:
+          urgência artificial + site falso + coleta de credenciais.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Achar que só e-mails "malfeitos", cheios de erros de português, são phishing. Ataques direcionados
+          (spear phishing) são cuidadosamente escritos, sem erros, e podem até usar informações reais sobre
+          você ou sua empresa coletadas de redes sociais. Nunca confie só na "aparência" da mensagem — confira o remetente e desconfie de qualquer pedido de dados sensíveis.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>Phishing tem variações por canal: e-mail, telefone (vishing), SMS (smishing) e alvos específicos (spear phishing, whaling).</li>
+          <li>Malware é o termo guarda-chuva; ransomware é o tipo mais destrutivo hoje em dia.</li>
+          <li>Engenharia social explora psicologia humana, não falhas técnicas.</li>
+          <li>Backups isolados são a defesa mais confiável contra ransomware.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://www.cisco.com/c/en/us/products/security/what-is-ransomware.html" target="_blank" rel="noopener noreferrer">O que é Ransomware — Cisco</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://pt.wikipedia.org/wiki/Phishing" target="_blank" rel="noopener noreferrer">Phishing — Wikipédia</a></li>
+          <li><a href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">TryHackMe</a><span class="resource-tag">salas práticas sobre phishing e engenharia social</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="topico1,1.html" class="prev">← Fundamentos da Segurança</a>
+        <a href="topico2.html" class="next">Próxima aula: Boas Práticas de Segurança →</a>
       </div>
     </div>
   </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

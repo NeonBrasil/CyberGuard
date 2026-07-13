@@ -105,5 +105,11 @@ service cloud.firestore {
       allow read: if isOwner(userId);
       allow write: if isOwner(userId);
     }
+
+    // Progresso no Material de Estudo (botão "marcar como concluído")
+    match /userProgress/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
   }
 }

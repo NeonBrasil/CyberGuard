@@ -2,97 +2,162 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Tópico 1 - Introdução | SIA: Security & Information Academy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 1 - Introdução à Segurança Cibernética | SIA: Security & Information Academy</title>
   <link rel="stylesheet" href="Style/index.css">
-  <style>
-    body {
-      background: #f6f8fa;
-      font-family: 'Segoe UI', Arial, sans-serif;
-    }
-    .back-link {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #2d7efb;
-      text-decoration: none;
-      font-weight: 500;
-      margin: 32px 0 0 24px;
-      transition: color 0.2s;
-    }
-    .back-link:hover {
-      color: #195bb5;
-    }
-    .topic-content-container {
-      max-width: 650px;
-      margin: 40px auto;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-      padding: 36px 28px;
-      text-align: center;
-    }
-    .topic-content-container h1 {
-      font-size: 2rem;
-      color: #222;
-      margin-bottom: 18px;
-    }
-    .topic-content-container p {
-      color: #444;
-      font-size: 1.1rem;
-      margin-bottom: 24px;
-    }
-    .topic-img {
-      width: 120px;
-      margin-bottom: 18px;
-      opacity: 0.92;
-    }
-  </style>
+  <link rel="stylesheet" href="Style/licao.css">
 </head>
 <body>
-  <a href="estudo.html" class="back-link">
-    <span style="font-size:1.3rem;">&#8592;</span> Voltar ao Material de Estudo
-  </a>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
   <main>
-    <div class="topic-content-container">
-      <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Segurança Cibernética" class="topic-img">
-      <h1>Tópico 1 - Introdução</h1>
-      <p>
-        Segurança cibernética é essencial para proteger dados e evitar ameaças digitais. Entenda os conceitos básicos e a importância de se manter seguro online.
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Iniciante · Aula 1</span>
+      <h1>Introdução à Segurança Cibernética</h1>
+      <p class="lesson-meta">⏱️ 15-20 minutos · 📚 Trilha Iniciante</p>
+
+      <p class="lesson-intro">
+        Segurança cibernética é o conjunto de práticas, processos e tecnologias usadas para proteger
+        computadores, redes, sistemas e dados contra acesso não autorizado, roubo ou dano. Não é um assunto
+        só de quem trabalha em TI: hoje, praticamente todo mundo usa e-mail, redes sociais, aplicativos de
+        banco e sistemas de trabalho — e cada uma dessas ferramentas é um alvo em potencial.
       </p>
-      <!-- Caixa de explicação básica -->
-      <div style="background:#f0f4fb; border-radius:10px; padding:22px 18px; margin-bottom:24px; box-shadow:0 1px 8px rgba(45,126,251,0.07); text-align:left;">
-        <h2 style="color:#2d7efb; font-size:1.15rem; margin-bottom:10px;">O que é Segurança Cibernética?</h2>
-        <p style="color:#333; margin-bottom:10px;">
-          Segurança cibernética é o conjunto de práticas e tecnologias usadas para proteger computadores, redes e dados contra acessos não autorizados e ataques digitais.
-        </p>
-        <ul style="color:#444; margin-left:18px;">
-          <li>Protege informações pessoais e empresariais.</li>
-          <li>Ajuda a evitar fraudes, roubos e vazamentos de dados.</li>
-          <li>Promove o uso consciente e seguro da tecnologia.</li>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>Por que segurança cibernética importa para qualquer pessoa, não só para profissionais de TI</li>
+          <li>Os três pilares clássicos da segurança da informação (a Tríade CIA)</li>
+          <li>A diferença entre uma ameaça, uma vulnerabilidade e um risco</li>
+          <li>Uma visão geral de quem ataca e por quê</li>
         </ul>
       </div>
-      <!-- Placeholder para vídeo ou imagem -->
-      <div style="background:#e9ecef; border-radius:10px; padding:18px; margin-bottom:24px;">
-        <p style="color:#888; margin-bottom:10px;">Assista ao vídeo ou veja a imagem explicativa:</p>
-        <!-- Substitua pelo vídeo real futuramente -->
-        <div style="width:100%; max-width:400px; margin:0 auto;">
-          <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Placeholder vídeo ou imagem" style="width:100%; border-radius:8px; opacity:0.8;">
-        </div>
-        <!-- Exemplo de vídeo:
-        <video controls width="100%">
-          <source src="seu-video.mp4" type="video/mp4">
-          Seu navegador não suporta vídeo.
-        </video>
-        -->
+
+      <div class="lesson-section">
+        <h2>Por que isso importa pra você</h2>
+        <p>
+          Todo ano, milhões de contas são invadidas, empresas pagam resgates de ransomware e pessoas comuns
+          perdem dinheiro em golpes online. A maioria desses ataques não explora falhas técnicas complexas —
+          explora <strong>decisões humanas</strong>: uma senha fraca, um clique em um link malicioso, um
+          anexo aberto sem pensar duas vezes. Entender os fundamentos de segurança te dá as ferramentas para
+          reconhecer esses riscos antes que eles virem prejuízo.
+        </p>
       </div>
-      <!-- Placeholder para PDF -->
-      <div style="background:#f8fafc; border-radius:10px; padding:18px;">
-        <p style="color:#888; margin-bottom:10px;">Leia o PDF complementar:</p>
-        <!-- Substitua pelo PDF real futuramente -->
-        <embed src="exemplo.pdf" type="application/pdf" width="100%" height="320px" style="border-radius:8px; background:#fff;" />
-        <!-- Caso não tenha PDF ainda, pode deixar só o texto acima -->
+
+      <div class="lesson-section">
+        <h2>A Tríade CIA: os três pilares da segurança da informação</h2>
+        <p>
+          Quase tudo em segurança cibernética gira em torno de três objetivos, conhecidos como a
+          <strong>Tríade CIA</strong> (do inglês <em>Confidentiality, Integrity, Availability</em>):
+        </p>
+        <ul>
+          <li>
+            <strong>Confidencialidade:</strong> garantir que só pessoas autorizadas acessem uma informação.
+            Exemplo: sua senha de banco não deve ser vista por mais ninguém.
+          </li>
+          <li>
+            <strong>Integridade:</strong> garantir que a informação não seja alterada de forma indevida.
+            Exemplo: o valor de uma transferência bancária precisa chegar exatamente igual ao que foi enviado.
+          </li>
+          <li>
+            <strong>Disponibilidade:</strong> garantir que sistemas e dados estejam acessíveis quando
+            necessário. Exemplo: um site de e-commerce precisa estar no ar durante uma promoção.
+          </li>
+        </ul>
+        <p>
+          Quase todo ataque cibernético é, no fundo, uma tentativa de violar um (ou mais) desses três
+          pilares. Um vazamento de dados quebra a confidencialidade; uma fraude que altera valores quebra a
+          integridade; um ataque de negação de serviço (DDoS) quebra a disponibilidade.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Ameaça, vulnerabilidade e risco: três palavras que não são sinônimos</h2>
+        <p>Essas três palavras aparecem o tempo todo em segurança, e vale a pena entender a diferença:</p>
+        <ul>
+          <li><strong>Ameaça:</strong> algo ou alguém com potencial de causar dano (um invasor, um vírus, uma enchente que derruba um data center).</li>
+          <li><strong>Vulnerabilidade:</strong> uma fraqueza que pode ser explorada (um sistema desatualizado, uma senha fraca, uma porta destrancada).</li>
+          <li><strong>Risco:</strong> a probabilidade de uma ameaça explorar uma vulnerabilidade, multiplicada pelo impacto se isso acontecer.</li>
+        </ul>
+        <p>
+          Em outras palavras: a ameaça existe quer você se proteja ou não. O que você controla é a
+          vulnerabilidade — e reduzir vulnerabilidades é como se reduz risco.
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Um funcionário usa a mesma senha em vários sites (vulnerabilidade). Um grupo de crackers vaza a
+          base de dados de um site menor e testa essas credenciais em outros serviços, incluindo o e-mail
+          corporativo (ameaça = ataque de <em>credential stuffing</em>). O risco de a conta corporativa ser
+          comprometida é alto — não porque a empresa foi invadida diretamente, mas porque a mesma senha foi
+          reaproveitada.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Achar que "eu não tenho nada de importante, ninguém vai me atacar". Na prática, a maioria dos
+          ataques não é direcionada a uma pessoa específica — são varreduras automatizadas em massa
+          procurando qualquer vulnerabilidade explorável. Seu dispositivo pode ser usado como ponto de
+          partida para atacar outras pessoas (ex: uma botnet), mesmo que você "não tenha nada de valor".
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>Segurança cibernética protege confidencialidade, integridade e disponibilidade (Tríade CIA).</li>
+          <li>Ameaça é quem/o que ataca; vulnerabilidade é a fraqueza explorável; risco é a combinação dos dois.</li>
+          <li>A maioria dos ataques explora comportamento humano, não só falhas técnicas.</li>
+          <li>Ataques automatizados em massa afetam qualquer pessoa, não só "alvos importantes".</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://pt.wikipedia.org/wiki/Segurança_da_informação" target="_blank" rel="noopener noreferrer">Segurança da informação — Wikipédia</a><span class="resource-tag">visão geral e histórico</span></li>
+          <li><a href="https://www.nist.gov/cyberframework" target="_blank" rel="noopener noreferrer">NIST Cybersecurity Framework</a><span class="resource-tag">referência oficial usada por empresas no mundo todo</span></li>
+          <li><a href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">TryHackMe</a><span class="resource-tag">plataforma prática para aprender segurança fazendo</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="estudo.html" class="prev">← Material de Estudo</a>
+        <a href="topico1,1.html" class="next">Próxima aula: Fundamentos da Segurança →</a>
       </div>
     </div>
   </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

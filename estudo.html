@@ -203,6 +203,17 @@
       text-decoration: underline;
       margin-left: 8px;
     }
+    .topic-level-divider {
+      color: #58a6ff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 32px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(88, 166, 255, 0.25);
+    }
+    .topic-level-divider:first-of-type {
+      margin-top: 8px;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-10px);}
       to { opacity: 1; transform: translateY(0);}
@@ -271,18 +282,19 @@
         </div>
       </div>
       
+      <div class="topic-level-divider">📗 Nível Iniciante</div>
       <ul class="topic-list">
         <li class="topic-item" data-topic-id="introducao">
           <div class="topic-header">
             <div class="topic-title-wrapper">
               <span class="progress-indicator">🔲</span>
-              <span>Tópico 1 - Introdução à Segurança Cibernética</span>
+              <span>Aula 1 - Introdução à Segurança Cibernética</span>
             </div>
             <span class="arrow">▶</span>
           </div>
           <div class="topic-content">
             <p>
-              🎯 Descubra a importância da segurança cibernética, os principais conceitos e por que todos devem se preocupar com ameaças digitais. 
+              🎯 Descubra a importância da segurança cibernética, a Tríade CIA e a diferença entre ameaça, vulnerabilidade e risco.
               <strong>Ideal para quem está começando!</strong>
             </p>
             <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
@@ -298,13 +310,13 @@
           <div class="topic-header">
             <div class="topic-title-wrapper">
               <span class="progress-indicator">🔲</span>
-              <span>Tópico 1.1 - Fundamentos da Segurança</span>
+              <span>Aula 2 - Fundamentos da Segurança</span>
             </div>
             <span class="arrow">▶</span>
           </div>
           <div class="topic-content">
             <p>
-              🛡️ Aprenda os fundamentos essenciais: tipos de ameaças, princípios de proteção, terminologias importantes e como identificar riscos no seu dia a dia digital.
+              🛡️ Autenticação vs. autorização, menor privilégio, defesa em profundidade e o vocabulário essencial de segurança.
             </p>
             <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
               📖 Tempo estimado: 20-25 minutos • Nível: Iniciante
@@ -319,16 +331,16 @@
           <div class="topic-header">
             <div class="topic-title-wrapper">
               <span class="progress-indicator">🔲</span>
-              <span>Tópico 1.2 - Ameaças e Ataques Comuns</span>
+              <span>Aula 3 - Ameaças e Ataques Comuns</span>
             </div>
             <span class="arrow">▶</span>
           </div>
           <div class="topic-content">
             <p>
-              ⚠️ Conheça as ameaças mais frequentes: phishing, malware, ransomware e engenharia social. Aprenda a identificá-las e se proteger efetivamente.
+              ⚠️ Phishing (e suas variações), a família dos malwares, ransomware em detalhe e engenharia social.
             </p>
             <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
-              📖 Tempo estimado: 25-30 minutos • Nível: Intermediário
+              📖 Tempo estimado: 25-30 minutos • Nível: Iniciante
             </p>
             <div class="topic-actions">
               <a href="topico1.2.html" class="start-btn">🚀 Iniciar Estudo</a>
@@ -340,16 +352,16 @@
           <div class="topic-header">
             <div class="topic-title-wrapper">
               <span class="progress-indicator">🔲</span>
-              <span>Tópico 2 - Boas Práticas de Segurança</span>
+              <span>Aula 4 - Boas Práticas de Segurança</span>
             </div>
             <span class="arrow">▶</span>
           </div>
           <div class="topic-content">
             <p>
-              ✅ Dicas práticas e acionáveis para proteger seus dados: criação de senhas seguras, autenticação de dois fatores, manutenção de sistemas e muito mais.
+              ✅ Senhas fortes, MFA, a regra 3-2-1 de backup e higiene básica de navegação segura.
             </p>
             <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
-              📖 Tempo estimado: 20-25 minutos • Nível: Intermediário
+              📖 Tempo estimado: 20-25 minutos • Nível: Iniciante
             </p>
             <div class="topic-actions">
               <a href="topico2.html" class="start-btn">🚀 Iniciar Estudo</a>
@@ -357,7 +369,371 @@
             </div>
           </div>
         </li>
-        <!-- Adicione mais tópicos conforme necessário -->
+        <li class="topic-item" data-topic-id="senhas-mfa">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 5 - Senhas e Autenticação na Prática</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              🔑 Como senhas são quebradas de verdade (força bruta, dicionário, credential stuffing), MFA fatigue e passkeys.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 20-25 minutos • Nível: Iniciante
+            </p>
+            <div class="topic-actions">
+              <a href="aula-05-senhas-mfa.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="senhas-mfa">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="wifi-navegacao">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 6 - Segurança em Wi-Fi e Navegação</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              📶 Riscos de Wi-Fi público, man-in-the-middle, Evil Twin, o que o HTTPS realmente garante e configuração segura de roteador.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 20-25 minutos • Nível: Iniciante
+            </p>
+            <div class="topic-actions">
+              <a href="aula-06-wifi-navegacao.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="wifi-navegacao">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="dispositivos-moveis">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 7 - Segurança em Dispositivos Móveis</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              📱 Permissões de apps, riscos de jailbreak/root, como se preparar para perda ou roubo e juice jacking.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 15-20 minutos • Nível: Iniciante
+            </p>
+            <div class="topic-actions">
+              <a href="aula-07-dispositivos-moveis.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="dispositivos-moveis">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="engenharia-social">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 8 - Engenharia Social na Prática</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              🎭 Os 6 gatilhos psicológicos mais usados, fraude do CEO (BEC) e como validar um pedido suspeito sem ser rude.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 20-25 minutos • Nível: Iniciante
+            </p>
+            <div class="topic-actions">
+              <a href="aula-08-engenharia-social.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="engenharia-social">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <div class="topic-level-divider">📘 Nível Intermediário</div>
+      <ul class="topic-list">
+        <li class="topic-item" data-topic-id="criptografia">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 9 - Criptografia: Conceitos Essenciais</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              🔐 Criptografia simétrica vs. assimétrica, hashing, e como o HTTPS combina os dois em certificados digitais.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 25-30 minutos • Nível: Intermediário
+            </p>
+            <div class="topic-actions">
+              <a href="aula-09-criptografia.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="criptografia">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="seguranca-redes">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 10 - Segurança de Redes</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              🌐 Firewalls, segmentação de rede, IDS vs. IPS e o modelo Zero Trust.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 25-30 minutos • Nível: Intermediário
+            </p>
+            <div class="topic-actions">
+              <a href="aula-10-seguranca-redes.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="seguranca-redes">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="iam">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 11 - Gestão de Identidade e Acesso (IAM)</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              🪪 RBAC vs. ABAC, Single Sign-On, provisionamento/desprovisionamento e contas privilegiadas.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 25-30 minutos • Nível: Intermediário
+            </p>
+            <div class="topic-actions">
+              <a href="aula-11-iam.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="iam">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="resposta-incidentes">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 12 - Resposta a Incidentes</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              🚨 As 6 fases do ciclo de resposta a incidentes do NIST, contenção vs. erradicação e o papel de um CSIRT/SOC.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 25-30 minutos • Nível: Intermediário
+            </p>
+            <div class="topic-actions">
+              <a href="aula-12-resposta-incidentes.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="resposta-incidentes">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="backup-bcdr">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 13 - Backup e Continuidade de Negócio (BCDR)</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              💾 RTO e RPO, Análise de Impacto no Negócio (BIA) e estratégias de disaster recovery (hot/warm/cold site).
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 25-30 minutos • Nível: Intermediário
+            </p>
+            <div class="topic-actions">
+              <a href="aula-13-backup-bcdr.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="backup-bcdr">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="seguranca-nuvem">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 14 - Segurança em Nuvem: Fundamentos</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              ☁️ Modelo de responsabilidade compartilhada, IaaS/PaaS/SaaS e por que misconfiguration é a causa nº 1 de vazamentos.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 25-30 minutos • Nível: Intermediário
+            </p>
+            <div class="topic-actions">
+              <a href="aula-14-seguranca-nuvem.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="seguranca-nuvem">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <div class="topic-level-divider">📕 Nível Avançado</div>
+      <ul class="topic-list">
+        <li class="topic-item" data-topic-id="nist-cis">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 15 - Frameworks: NIST CSF e CIS Controls</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              📐 As 6 funções do NIST CSF 2.0 e os 18 CIS Controls organizados em grupos de implementação (IG1/IG2/IG3).
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 30-35 minutos • Nível: Avançado
+            </p>
+            <div class="topic-actions">
+              <a href="aula-15-nist-cis.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="nist-cis">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="iso27001">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 16 - ISO 27001 e Gestão de Segurança (SGSI)</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              📋 O ciclo PDCA, o Anexo A, a Declaração de Aplicabilidade (SoA) e como funciona o processo de certificação.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 30-35 minutos • Nível: Avançado
+            </p>
+            <div class="topic-actions">
+              <a href="aula-16-iso27001.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="iso27001">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="lgpd-gdpr">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 17 - LGPD, GDPR e Privacidade de Dados</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              ⚖️ Princípios centrais, controlador vs. operador, direitos do titular e o papel do DPO/Encarregado.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 30-35 minutos • Nível: Avançado
+            </p>
+            <div class="topic-actions">
+              <a href="aula-17-lgpd-gdpr.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="lgpd-gdpr">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="analise-risco">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 18 - Análise de Risco e Gestão de Vulnerabilidades</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              📊 A fórmula de risco, qualitativo vs. quantitativo (ALE), as 4 formas de tratar um risco e priorização com CVSS.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 30-35 minutos • Nível: Avançado
+            </p>
+            <div class="topic-actions">
+              <a href="aula-18-analise-risco.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="analise-risco">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="pentest">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 19 - Introdução a Pentest e Ethical Hacking</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              🕵️ Autorização e legalidade, as fases de um teste de invasão, black/white/grey box e onde praticar de forma legal.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 30-35 minutos • Nível: Avançado
+            </p>
+            <div class="topic-actions">
+              <a href="aula-19-pentest.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="pentest">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="soc-siem">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 20 - SOC, SIEM e Threat Intelligence</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              🖥️ Como um SOC é organizado em níveis, como um SIEM correlaciona eventos, IOCs e uma introdução ao MITRE ATT&CK.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 30-35 minutos • Nível: Avançado
+            </p>
+            <div class="topic-actions">
+              <a href="aula-20-soc-siem.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="soc-siem">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
+        <li class="topic-item" data-topic-id="certificacoes">
+          <div class="topic-header">
+            <div class="topic-title-wrapper">
+              <span class="progress-indicator">🔲</span>
+              <span>Aula 21 - Trilhas de Certificação em Segurança</span>
+            </div>
+            <span class="arrow">▶</span>
+          </div>
+          <div class="topic-content">
+            <p>
+              🎓 Um mapa das certificações mais reconhecidas do mercado (CC, Security+, CySA+, Pentest+, CEH, CISSP, CISM, CISA, CCSP) e como escolher por onde seguir.
+            </p>
+            <p style="color: #6e7681; font-size: 0.9rem; margin-top: 8px;">
+              📖 Tempo estimado: 25-30 minutos • Nível: Avançado
+            </p>
+            <div class="topic-actions">
+              <a href="aula-21-certificacoes.html" class="start-btn">🚀 Iniciar Estudo</a>
+              <button class="mark-complete-btn" data-topic-id="certificacoes">✓ Marcar como concluído</button>
+            </div>
+          </div>
+        </li>
       </ul>
     </div>
   </main>

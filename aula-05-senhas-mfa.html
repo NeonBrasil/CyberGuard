@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 5 - Senhas e Autenticação (MFA) | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Iniciante · Aula 5</span>
+      <h1>Senhas e Autenticação na Prática</h1>
+      <p class="lesson-meta">⏱️ 20-25 minutos · 📚 Trilha Iniciante</p>
+
+      <p class="lesson-intro">
+        Já vimos o básico de senhas e MFA na aula anterior. Agora vamos entender <strong>como</strong> as
+        senhas são quebradas de verdade, por que "senha123!" não engana ninguém, e como os ataques mais
+        recentes contornam até o MFA — e o que fazer a respeito.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>Como ataques de força bruta, dicionário e credential stuffing funcionam</li>
+          <li>Por que comprimento importa mais que complexidade</li>
+          <li>MFA fatigue: como atacantes contornam o segundo fator</li>
+          <li>O que são passkeys e por que são o futuro da autenticação</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Como uma senha é "quebrada" de verdade</h2>
+        <ul>
+          <li><strong>Força bruta:</strong> testar todas as combinações possíveis até acertar. Quanto mais longa a senha, exponencialmente mais demorado.</li>
+          <li><strong>Ataque de dicionário:</strong> testar palavras e senhas comuns (as listas de "senhas mais vazadas" têm milhões de entradas) em vez de combinações aleatórias — muito mais rápido que força bruta pura.</li>
+          <li><strong>Credential stuffing:</strong> pegar combinações de e-mail/senha vazadas de um site e testá-las em massa em outros sites, apostando que a pessoa reutilizou a senha.</li>
+          <li><strong>Rainbow tables:</strong> tabelas pré-computadas de hashes de senhas comuns, usadas para reverter rapidamente um hash vazado para a senha original (por isso sites sérios usam "salt" — um valor aleatório somado à senha antes de gerar o hash, que invalida essas tabelas).</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Comprimento vence complexidade</h2>
+        <p>
+          "P@ssw0rd1" parece complexa, mas é uma das primeiras tentativas de qualquer ataque de dicionário
+          (substituições óbvias de letra por símbolo são previsíveis). Uma passphrase aleatória de quatro
+          palavras sem sentido entre si ("javali-turquesa-13-guarda-chuva") tem muito mais entropia (mais
+          combinações possíveis) e é mais fácil de lembrar.
+        </p>
+        <p>
+          Regra prática: priorize <strong>comprimento</strong> (14+ caracteres) e <strong>unicidade</strong>
+          (nunca repetida em outro serviço) acima de exigir símbolos específicos.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>MFA fatigue (bombardeio de notificações)</h2>
+        <p>
+          Com apps autenticadores que enviam notificação push ("aprovar login?"), atacantes que já roubaram
+          a senha da vítima podem tentar logins repetidamente, disparando dezenas de notificações — na
+          esperança de que a vítima aprove uma delas por cansaço ou confusão. Esse tipo de ataque já foi
+          usado em invasões reais de grandes empresas.
+        </p>
+        <p>Defesa: nunca aprovar uma notificação de login que você não iniciou, e usar MFA com "number matching" (onde você precisa digitar um número exibido na tela de login, não só apertar "aprovar").</p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Passkeys: o próximo passo</h2>
+        <p>
+          Passkeys usam criptografia de chave pública/privada em vez de senha: seu dispositivo guarda uma
+          chave privada (protegida por biometria ou PIN local) e o site só conhece a chave pública
+          correspondente. Como não existe "senha" para vazar ou digitar, passkeys são resistentes a
+          phishing e a vazamentos de banco de dados — o site invadido não tem nada de útil para o atacante roubar.
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Uma pessoa usa "Julia2010" no Instagram, no e-mail pessoal e no sistema do trabalho. O Instagram
+          sofre um vazamento de dados. Meses depois, alguém testa essa mesma combinação de e-mail/senha no
+          sistema corporativo (credential stuffing) e consegue entrar — não porque a empresa foi invadida
+          diretamente, mas porque a senha foi reaproveitada.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Trocar a senha só quando "01" vira "02" no final ("Senha01" → "Senha02"). Políticas de troca
+          periódica sem mudança real de padrão dão falsa sensação de segurança — um atacante que conhece o
+          padrão anterior adivinha o próximo facilmente.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>Credential stuffing é o motivo número um para nunca reutilizar senhas.</li>
+          <li>Comprimento importa mais que símbolos especiais para resistir a força bruta e dicionário.</li>
+          <li>MFA fatigue explora cansaço humano — nunca aprove um login que você não iniciou.</li>
+          <li>Passkeys eliminam a senha do processo, sendo resistentes a phishing por design.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://pt.wikipedia.org/wiki/Ataque_de_força_bruta" target="_blank" rel="noopener noreferrer">Ataque de força bruta — Wikipédia</a></li>
+          <li><a href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">TryHackMe</a><span class="resource-tag">salas práticas de cracking de senhas em ambiente autorizado</span></li>
+          <li><a href="https://www.nist.gov/cyberframework" target="_blank" rel="noopener noreferrer">NIST Cybersecurity Framework</a><span class="resource-tag">o NIST também publica diretrizes específicas de senhas (SP 800-63B)</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="topico2.html" class="prev">← Boas Práticas de Segurança</a>
+        <a href="aula-06-wifi-navegacao.html" class="next">Próxima aula: Segurança em Wi-Fi e Navegação →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 14 - Segurança em Nuvem: Fundamentos | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Intermediário · Aula 14</span>
+      <h1>Segurança em Nuvem: Fundamentos</h1>
+      <p class="lesson-meta">⏱️ 25-30 minutos · 📚 Trilha Intermediária</p>
+
+      <p class="lesson-intro">
+        Praticamente toda empresa hoje usa algum serviço de nuvem — mesmo que não perceba (e-mail
+        corporativo, CRM, armazenamento de arquivos). A nuvem muda quem é responsável por quê em segurança,
+        e esse é o conceito mais importante desta aula.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>O modelo de responsabilidade compartilhada</li>
+          <li>IaaS, PaaS e SaaS: onde a responsabilidade do cliente muda</li>
+          <li>Por que configuração incorreta (misconfiguration) é a causa nº 1 de vazamentos em nuvem</li>
+          <li>O papel de um CASB</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Modelo de responsabilidade compartilhada</h2>
+        <p>
+          Todo provedor de nuvem sério (AWS, Azure, Google Cloud) opera sob um princípio simples: o provedor
+          é responsável pela segurança <strong>da</strong> nuvem (data centers físicos, infraestrutura,
+          isolamento entre clientes); o cliente é responsável pela segurança <strong>na</strong> nuvem
+          (configuração, dados, gestão de identidade e acesso, o que é exposto publicamente).
+        </p>
+        <p>
+          A maioria dos incidentes de segurança em nuvem não vem de uma falha do provedor — vem de erro de
+          configuração do lado do cliente.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>IaaS, PaaS, SaaS: onde a linha se move</h2>
+        <table>
+          <tr><th>Modelo</th><th>O provedor cuida de</th><th>O cliente cuida de</th></tr>
+          <tr><td>IaaS (Infraestrutura)</td><td>Servidores físicos, rede, virtualização</td><td>Sistema operacional, aplicações, dados, configuração de rede virtual</td></tr>
+          <tr><td>PaaS (Plataforma)</td><td>Infraestrutura + sistema operacional + runtime</td><td>Aplicação e dados</td></tr>
+          <tr><td>SaaS (Software)</td><td>Praticamente tudo, até a aplicação</td><td>Dados, usuários, configuração de acesso e permissões</td></tr>
+        </table>
+        <p>Quanto mais "as a Service", menos controle técnico o cliente tem — mas a responsabilidade por dados e acesso nunca sai totalmente das mãos do cliente, em nenhum dos três modelos.</p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Misconfiguration: o vilão nº 1</h2>
+        <p>
+          Buckets de armazenamento configurados como públicos por engano, painéis administrativos expostos
+          sem autenticação, permissões excessivamente amplas concedidas "só por enquanto" e nunca revistas —
+          esse tipo de erro de configuração é, de forma consistente, a principal causa de vazamentos de
+          dados em ambientes de nuvem, superando ataques sofisticados. A superfície de exposição em nuvem
+          muda rápido (novos serviços, novos times criando recursos), o que torna fácil perder o controle
+          sem processos claros.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>CASB: visibilidade sobre o uso de nuvem</h2>
+        <p>
+          Um <strong>CASB</strong> (Cloud Access Security Broker) atua como um ponto de controle entre os
+          usuários da empresa e os serviços de nuvem que eles usam — dando visibilidade sobre quais serviços
+          estão sendo usados (incluindo "shadow IT", serviços não aprovados oficialmente), aplicando
+          políticas de segurança consistentes entre múltiplos provedores de nuvem, e ajudando a prevenir
+          vazamento de dados.
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Uma empresa migra o armazenamento de arquivos para a nuvem. Um funcionário cria um bucket para
+          compartilhar arquivos com um parceiro externo e, por pressa, configura acesso público em vez de
+          restrito por link com expiração. Meses depois, uma ferramenta automatizada de varredura de buckets
+          públicos encontra e indexa o conteúdo. Não houve invasão técnica — houve erro de configuração, que é justamente a responsabilidade do cliente no modelo compartilhado.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Achar que "está na nuvem de uma empresa grande e confiável, então está seguro por padrão". A
+          infraestrutura do provedor pode ser extremamente robusta — mas se a configuração de acesso feita
+          pelo cliente estiver errada, isso não protege nada. Segurança em nuvem é uma responsabilidade
+          compartilhada, não terceirizada por completo.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>Responsabilidade compartilhada: provedor cuida da nuvem, cliente cuida do que coloca nela.</li>
+          <li>Quanto mais gerenciado o modelo (SaaS > PaaS > IaaS), menos controle técnico — mas nunca zero responsabilidade.</li>
+          <li>Misconfiguration é a causa mais comum de vazamento de dados em nuvem, não invasões sofisticadas.</li>
+          <li>CASB dá visibilidade e controle centralizado sobre uso de múltiplos serviços de nuvem.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://pt.wikipedia.org/wiki/Computação_em_nuvem" target="_blank" rel="noopener noreferrer">Computação em nuvem — Wikipédia</a></li>
+          <li><a href="https://www.cisco.com/c/en/us/products/security/cloud-security.html" target="_blank" rel="noopener noreferrer">Cloud Security — Cisco</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://www.isc2.org/" target="_blank" rel="noopener noreferrer">(ISC)²</a><span class="resource-tag">certificação CCSP é focada inteiramente em segurança de nuvem</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-13-backup-bcdr.html" class="prev">← Backup e Continuidade de Negócio</a>
+        <a href="aula-15-nist-cis.html" class="next">Próxima aula: Frameworks NIST CSF e CIS Controls →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

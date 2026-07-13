@@ -2,48 +2,164 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Tópico 1.1 - Básicos da Segurança | SIA: Security & Information Academy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 2 - Fundamentos da Segurança | SIA: Security & Information Academy</title>
   <link rel="stylesheet" href="Style/index.css">
-  <style>
-    body { background: #f6f8fa; font-family: 'Segoe UI', Arial, sans-serif; }
-    .back-link { display: flex; align-items: center; gap: 8px; color: #2d7efb; text-decoration: none; font-weight: 500; margin: 32px 0 0 24px; transition: color 0.2s; }
-    .back-link:hover { color: #195bb5; }
-    .topic-content-container { max-width: 650px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); padding: 36px 28px; text-align: center; }
-    .topic-content-container h1 { font-size: 2rem; color: #222; margin-bottom: 18px; }
-    .topic-content-container p { color: #444; font-size: 1.1rem; margin-bottom: 24px; }
-    .topic-img { width: 120px; margin-bottom: 18px; opacity: 0.92; }
-  </style>
+  <link rel="stylesheet" href="Style/licao.css">
 </head>
 <body>
-  <a href="estudo.html" class="back-link">
-    <span style="font-size:1.3rem;">&#8592;</span> Voltar ao Material de Estudo
-  </a>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
   <main>
-    <div class="topic-content-container">
-      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Básicos da Segurança" class="topic-img">
-      <h1>Tópico 1.1 - Básicos da Segurança</h1>
-      <p>
-        Conheça os principais conceitos e práticas para começar sua jornada em segurança digital.
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Iniciante · Aula 2</span>
+      <h1>Fundamentos da Segurança</h1>
+      <p class="lesson-meta">⏱️ 20-25 minutos · 📚 Trilha Iniciante</p>
+
+      <p class="lesson-intro">
+        Antes de entrar em ameaças específicas, vale a pena conhecer alguns conceitos e termos que aparecem
+        o tempo todo em segurança da informação. Eles formam o vocabulário básico que você vai usar no resto
+        da trilha — e também são o que separa "eu ouvi falar de firewall" de "eu entendo pra que serve".
       </p>
-      <div style="background:#f0f4fb; border-radius:10px; padding:22px 18px; margin-bottom:24px; box-shadow:0 1px 8px rgba(45,126,251,0.07); text-align:left;">
-        <h2 style="color:#2d7efb; font-size:1.15rem; margin-bottom:10px;">Fundamentos</h2>
-        <ul style="color:#444; margin-left:18px;">
-          <li>Senhas fortes e únicas</li>
-          <li>Atualizações regulares</li>
-          <li>Desconfiar de links e anexos suspeitos</li>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>Autenticação vs. autorização — dois conceitos que se confundem, mas são diferentes</li>
+          <li>O princípio do menor privilégio</li>
+          <li>Defesa em profundidade (várias camadas de proteção)</li>
+          <li>Terminologia essencial: malware, exploit, patch, firewall</li>
         </ul>
       </div>
-      <div style="background:#e9ecef; border-radius:10px; padding:18px; margin-bottom:24px;">
-        <p style="color:#888; margin-bottom:10px;">Assista ao vídeo ou veja a imagem explicativa:</p>
-        <div style="width:100%; max-width:400px; margin:0 auto;">
-          <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Placeholder vídeo ou imagem" style="width:100%; border-radius:8px; opacity:0.8;">
-        </div>
+
+      <div class="lesson-section">
+        <h2>Autenticação vs. Autorização</h2>
+        <p>São dois processos diferentes que costumam acontecer em sequência:</p>
+        <ul>
+          <li><strong>Autenticação:</strong> provar que você é quem diz ser (login + senha, biometria, código de SMS).</li>
+          <li><strong>Autorização:</strong> definir o que você tem permissão de fazer depois de autenticado (ex: um estagiário autenticado no sistema não tem autorização para acessar a folha de pagamento).</li>
+        </ul>
+        <p>
+          Um erro de autenticação deixa qualquer um entrar. Um erro de autorização deixa uma pessoa
+          legítima fazer mais do que deveria. Os dois são falhas de segurança, mas são problemas diferentes
+          e exigem soluções diferentes.
+        </p>
       </div>
-      <div style="background:#f8fafc; border-radius:10px; padding:18px;">
-        <p style="color:#888; margin-bottom:10px;">Leia o PDF complementar:</p>
-        <embed src="exemplo.pdf" type="application/pdf" width="100%" height="320px" style="border-radius:8px; background:#fff;" />
+
+      <div class="lesson-section">
+        <h2>Princípio do menor privilégio</h2>
+        <p>
+          Cada pessoa (ou sistema) deve ter <strong>apenas o acesso mínimo necessário</strong> para fazer seu
+          trabalho — nada além disso. Se o acesso não é necessário, ele deve ser removido ou nunca concedido.
+        </p>
+        <p>
+          Isso limita o estrago em caso de comprometimento: se a conta de alguém do financeiro for invadida,
+          o invasor não deveria conseguir, por consequência, acessar o código-fonte do sistema ou os
+          servidores de produção — porque essa pessoa nunca tinha esse acesso para começo de conversa.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Defesa em profundidade</h2>
+        <p>
+          É a ideia de que <strong>nenhuma proteção sozinha é suficiente</strong> — por isso se usam várias
+          camadas de defesa, de forma que, se uma falhar, as outras ainda seguram o ataque. Pense num
+          castelo medieval: fosso, muralha, portão, guardas e uma torre interna — várias barreiras, não só uma.
+        </p>
+        <p>Em um ambiente digital, isso normalmente inclui:</p>
+        <ul>
+          <li>Firewall na borda da rede</li>
+          <li>Antivírus/EDR nos dispositivos</li>
+          <li>Autenticação multifator no login</li>
+          <li>Criptografia dos dados</li>
+          <li>Monitoramento e detecção de atividade suspeita</li>
+          <li>Backups isolados, caso tudo o resto falhe</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Vocabulário essencial</h2>
+        <table>
+          <tr><th>Termo</th><th>O que significa</th></tr>
+          <tr><td>Malware</td><td>Qualquer software malicioso: vírus, worm, trojan, ransomware, spyware.</td></tr>
+          <tr><td>Exploit</td><td>Código ou técnica usada para tirar proveito de uma vulnerabilidade específica.</td></tr>
+          <tr><td>Patch</td><td>Atualização de software que corrige uma vulnerabilidade conhecida.</td></tr>
+          <tr><td>Firewall</td><td>Sistema que filtra o tráfego de rede, permitindo ou bloqueando conexões com base em regras.</td></tr>
+          <tr><td>Zero-day</td><td>Vulnerabilidade explorada antes de existir uma correção disponível.</td></tr>
+        </table>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Um sistema fica desatualizado por meses (a correção/<em>patch</em> mais recente nunca foi
+          aplicada). Um atacante descobre a vulnerabilidade conhecida e usa um <em>exploit</em> já público
+          para invadir. Nesse caso, a falha não foi sofisticada — foi simplesmente a ausência de uma camada
+          básica de defesa em profundidade: manter o software atualizado.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Confundir "eu tenho antivírus, estou protegido" com segurança de verdade. Antivírus é <strong>uma</strong>
+          camada, não a solução completa. Defesa em profundidade existe justamente porque nenhuma ferramenta
+          isolada pega tudo.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>Autenticação prova identidade; autorização define permissões.</li>
+          <li>Menor privilégio: acesso só ao que é estritamente necessário.</li>
+          <li>Defesa em profundidade: várias camadas, para que uma falha não signifique comprometimento total.</li>
+          <li>Patch é a correção de uma vulnerabilidade; exploit é o que a explora antes que ela seja corrigida.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://www.cisco.com/c/en/us/products/security/what-is-a-firewall.html" target="_blank" rel="noopener noreferrer">O que é um Firewall — Cisco</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://pt.wikipedia.org/wiki/Controle_de_acesso" target="_blank" rel="noopener noreferrer">Controle de acesso — Wikipédia</a><span class="resource-tag">autenticação e autorização</span></li>
+          <li><a href="https://attack.mitre.org/" target="_blank" rel="noopener noreferrer">MITRE ATT&CK</a><span class="resource-tag">catálogo de táticas e técnicas reais de ataque, referência da indústria</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="topico1.html" class="prev">← Introdução à Segurança Cibernética</a>
+        <a href="topico1.2.html" class="next">Próxima aula: Ameaças e Ataques Comuns →</a>
       </div>
     </div>
   </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 13 - Backup e Continuidade de Negócio (BCDR) | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Intermediário · Aula 13</span>
+      <h1>Backup e Continuidade de Negócio (BCDR)</h1>
+      <p class="lesson-meta">⏱️ 25-30 minutos · 📚 Trilha Intermediária</p>
+
+      <p class="lesson-intro">
+        BCDR junta duas disciplinas complementares: <strong>Business Continuity Planning (BCP)</strong> —
+        como a empresa continua operando durante uma crise — e <strong>Disaster Recovery (DR)</strong> —
+        como os sistemas de TI são restaurados depois de um desastre. Já vimos backup do ponto de vista
+        pessoal (Aula 4); agora vamos ver como isso escala para uma organização inteira.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>RTO e RPO: as duas métricas que definem qualquer plano de recuperação</li>
+          <li>O que é uma Análise de Impacto no Negócio (BIA)</li>
+          <li>Estratégias comuns de disaster recovery (hot/warm/cold site)</li>
+          <li>Por que testar o plano é tão importante quanto ter um</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>RTO e RPO</h2>
+        <ul>
+          <li>
+            <strong>RTO (Recovery Time Objective):</strong> quanto tempo a operação pode ficar parada até
+            ser restaurada, antes que o impacto se torne inaceitável. "Nosso sistema de vendas precisa
+            voltar em até 4 horas."
+          </li>
+          <li>
+            <strong>RPO (Recovery Point Objective):</strong> quantos dados a empresa pode se dar ao luxo de
+            perder, medido em tempo. "Podemos perder no máximo 1 hora de transações" significa que backups
+            precisam rodar pelo menos a cada hora.
+          </li>
+        </ul>
+        <p>
+          Essas duas métricas, definidas junto com as áreas de negócio (não só pela TI), guiam todo o
+          desenho técnico da solução de backup e recuperação — quanto mais agressivos os objetivos, mais
+          caro e complexo costuma ser atingi-los.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Análise de Impacto no Negócio (BIA)</h2>
+        <p>
+          Antes de definir RTO/RPO, é preciso saber quais processos são realmente críticos. A BIA mapeia
+          cada processo de negócio, o impacto (financeiro, reputacional, legal) de ele ficar indisponível ao
+          longo do tempo, e as dependências entre sistemas. Nem tudo merece o mesmo nível de proteção — BIA
+          é o que evita gastar a mesma energia protegendo o sistema de recados internos e o sistema que
+          processa pagamentos.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Estratégias de disaster recovery</h2>
+        <table>
+          <tr><th>Tipo de site</th><th>Características</th></tr>
+          <tr><td>Hot site</td><td>Ambiente redundante já ativo e sincronizado em tempo real. Recuperação quase imediata, mas o mais caro.</td></tr>
+          <tr><td>Warm site</td><td>Infraestrutura pronta, mas dados precisam ser sincronizados/atualizados na hora do desastre. Custo e tempo intermediários.</td></tr>
+          <tr><td>Cold site</td><td>Apenas o espaço/infraestrutura básica existe; tudo precisa ser configurado do zero. Mais barato, recuperação muito mais lenta.</td></tr>
+        </table>
+        <p>A escolha depende diretamente do RTO definido na BIA: quanto menor o RTO tolerável, mais "quente" o site precisa ser.</p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Testar o plano é a parte que mais falha</h2>
+        <p>
+          Um plano de continuidade nunca testado é uma suposição, não uma garantia. Testes variam de simples
+          (revisão em mesa, discutindo o plano teoricamente) a completos (simulação real de failover para o
+          site de contingência). Empresas descobrem falhas nos próprios planos com frequência assustadora —
+          e é infinitamente melhor descobrir isso em um teste programado do que durante um incidente real.
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Um ataque de ransomware criptografa os servidores de produção de uma empresa. Como o RPO definido
+          era de 1 hora, o backup mais recente (feito 40 minutos antes do ataque) permite restaurar as
+          operações com perda mínima de dados. Como existia um warm site pré-configurado, a equipe consegue
+          direcionar o tráfego para lá dentro do RTO de 4 horas combinado com as áreas de negócio.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Definir RTO/RPO ambiciosos sem orçamento compatível, ou definir esses valores apenas dentro da TI,
+          sem envolver as áreas de negócio que realmente entendem o impacto de cada sistema ficar fora do
+          ar. BCDR eficaz é uma decisão de negócio com implementação técnica — não o contrário.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>RTO = quanto tempo até voltar; RPO = quanto dado se pode perder.</li>
+          <li>BIA define o que é crítico antes de desenhar qualquer solução técnica.</li>
+          <li>Hot/warm/cold site são níveis de prontidão com trade-off direto entre custo e velocidade de recuperação.</li>
+          <li>Um plano não testado é uma suposição — testes regulares são parte do plano, não um extra.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://pt.wikipedia.org/wiki/Plano_de_continuidade_de_negócios" target="_blank" rel="noopener noreferrer">Plano de continuidade de negócios — Wikipédia</a></li>
+          <li><a href="https://pt.wikipedia.org/wiki/Recuperação_de_desastre" target="_blank" rel="noopener noreferrer">Recuperação de desastre — Wikipédia</a></li>
+          <li><a href="https://www.isc2.org/" target="_blank" rel="noopener noreferrer">(ISC)²</a><span class="resource-tag">BCDR é um domínio do CISSP e do (ISC)² CC</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-12-resposta-incidentes.html" class="prev">← Resposta a Incidentes</a>
+        <a href="aula-14-seguranca-nuvem.html" class="next">Próxima aula: Segurança em Nuvem →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

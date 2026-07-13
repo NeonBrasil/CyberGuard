@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 10 - Segurança de Redes | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Intermediário · Aula 10</span>
+      <h1>Segurança de Redes</h1>
+      <p class="lesson-meta">⏱️ 25-30 minutos · 📚 Trilha Intermediária</p>
+
+      <p class="lesson-intro">
+        Toda comunicação digital passa por uma rede — e é nela que boa parte das defesas corporativas se
+        concentram. Vamos entender as ferramentas fundamentais: firewalls, VPNs, segmentação e os sistemas
+        que detectam tráfego suspeito.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>Como um firewall decide o que bloquear e o que permitir</li>
+          <li>Por que segmentação de rede limita o estrago de uma invasão</li>
+          <li>A diferença entre IDS e IPS</li>
+          <li>O conceito de Zero Trust</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Firewall: o porteiro da rede</h2>
+        <p>
+          Um firewall filtra tráfego de rede com base em regras (origem, destino, porta, protocolo),
+          permitindo ou bloqueando conexões. Pode ser implementado em hardware dedicado, em software no
+          próprio dispositivo, ou na nuvem.
+        </p>
+        <ul>
+          <li><strong>Firewall de filtro de pacotes:</strong> analisa cada pacote individualmente, com base em regras simples.</li>
+          <li><strong>Firewall de inspeção com estado (stateful):</strong> acompanha o contexto da conexão inteira, não só pacotes isolados.</li>
+          <li><strong>Firewall de próxima geração (NGFW):</strong> combina inspeção de pacotes com detecção de aplicações, prevenção de intrusão e outras funções avançadas.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Segmentação de rede</h2>
+        <p>
+          É dividir uma rede em partes isoladas, de forma que um dispositivo comprometido em um segmento não
+          consiga automaticamente alcançar tudo o mais. Exemplo prático: a rede de câmeras de segurança de
+          uma empresa não deveria estar na mesma rede que os servidores financeiros — se as câmeras (que
+          frequentemente têm segurança fraca) forem comprometidas, o atacante não ganha acesso direto ao que
+          importa.
+        </p>
+        <p>
+          Esse é também o princípio por trás de redes de convidados separadas em casa (Aula 6): isolar o
+          que não precisa se comunicar entre si.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>IDS vs. IPS</h2>
+        <table>
+          <tr><th>Sigla</th><th>Nome</th><th>O que faz</th></tr>
+          <tr><td>IDS</td><td>Intrusion Detection System</td><td>Detecta e alerta sobre atividade suspeita, mas não bloqueia sozinho — passivo.</td></tr>
+          <tr><td>IPS</td><td>Intrusion Prevention System</td><td>Detecta e bloqueia ativamente o tráfego identificado como malicioso — em linha com o tráfego.</td></tr>
+        </table>
+        <p>Ambos comparam tráfego contra assinaturas de ataques conhecidos e/ou padrões de comportamento anômalo.</p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Zero Trust: "nunca confie, sempre verifique"</h2>
+        <p>
+          O modelo tradicional de segurança de rede assume que tudo <em>dentro</em> do perímetro (firewall)
+          é confiável, e tudo fora não é. O problema: se um atacante entra (via phishing, por exemplo), ele
+          se move livremente por dentro. <strong>Zero Trust</strong> parte do princípio oposto: nenhum
+          usuário ou dispositivo é confiável por padrão, mesmo estando "dentro" da rede — cada acesso é
+          verificado individualmente, com autenticação forte e o menor privilégio necessário, não importa de
+          onde a solicitação vem.
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Uma empresa segmenta sua rede em: rede de convidados, rede de dispositivos IoT (câmeras, sensores),
+          rede de estações de trabalho e rede de servidores críticos — cada uma isolada das demais por
+          firewall interno. Quando um funcionário clica em um phishing e seu notebook é comprometido, o
+          atacante fica limitado à rede de estações de trabalho, sem alcance direto aos servidores críticos.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Confiar cegamente que "está tudo atrás do firewall corporativo, então está seguro". Firewalls
+          protegem a borda, mas não impedem movimentação lateral depois que um atacante já está dentro — daí
+          a importância de segmentação e Zero Trust como camadas adicionais.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>Firewall filtra tráfego com base em regras; NGFW adiciona inspeção mais profunda.</li>
+          <li>Segmentação limita o alcance de um dispositivo comprometido.</li>
+          <li>IDS detecta e alerta; IPS detecta e bloqueia ativamente.</li>
+          <li>Zero Trust: verificar sempre, não confiar por padrão só porque está "dentro" da rede.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://www.cisco.com/c/en/us/products/security/what-is-a-firewall.html" target="_blank" rel="noopener noreferrer">O que é um Firewall — Cisco</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://pt.wikipedia.org/wiki/Firewall" target="_blank" rel="noopener noreferrer">Firewall — Wikipédia</a></li>
+          <li><a href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">TryHackMe</a><span class="resource-tag">trilhas de fundamentos de redes e segurança de rede</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-09-criptografia.html" class="prev">← Criptografia: Conceitos Essenciais</a>
+        <a href="aula-11-iam.html" class="next">Próxima aula: Gestão de Identidade e Acesso →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

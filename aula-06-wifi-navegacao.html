@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 6 - Segurança em Wi-Fi e Navegação | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Iniciante · Aula 6</span>
+      <h1>Segurança em Redes Wi-Fi e Navegação</h1>
+      <p class="lesson-meta">⏱️ 20-25 minutos · 📚 Trilha Iniciante</p>
+
+      <p class="lesson-intro">
+        Redes Wi-Fi e navegação na web são onde a maioria de nós passa a maior parte do tempo online — e por
+        isso são um dos alvos favoritos de ataques oportunistas. Vamos entender os riscos reais (sem
+        exagero) e como se proteger sem complicar sua vida.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>Os riscos reais de redes Wi-Fi públicas</li>
+          <li>O que é um ataque "man-in-the-middle" e um Evil Twin</li>
+          <li>Como o HTTPS protege (e o que ele não protege)</li>
+          <li>Configurações básicas de segurança do seu próprio roteador</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Riscos de redes Wi-Fi públicas</h2>
+        <p>
+          Em uma rede pública (aeroporto, café, hotel), você compartilha a mesma rede com estranhos. Isso
+          abre espaço para:
+        </p>
+        <ul>
+          <li><strong>Sniffing:</strong> interceptar tráfego não criptografado que passa pela rede.</li>
+          <li><strong>Man-in-the-middle (MITM):</strong> o atacante se posiciona entre você e o destino, podendo ler ou alterar os dados trocados.</li>
+          <li><strong>Evil Twin:</strong> um ponto de acesso falso com nome parecido ao legítimo ("Aeroporto_WiFi_Free" em vez de "Aeroporto_WiFi"), criado para capturar quem se conectar nele.</li>
+        </ul>
+        <p>
+          Na prática, a maior parte do tráfego web moderno já é criptografado por padrão (HTTPS), o que
+          reduz bastante o risco de sniffing simples — mas não elimina o risco de um Evil Twin bem feito,
+          que pode tentar interceptar tráfego antes da criptografia ou redirecionar para sites falsos.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>O que o HTTPS garante (e o que não garante)</h2>
+        <p>
+          O cadeado no navegador (HTTPS) significa que a conexão entre você e o servidor está
+          <strong>criptografada</strong> — ninguém no meio do caminho consegue ler o conteúdo. Isso é
+          diferente de dizer que o site é <strong>confiável</strong>.
+        </p>
+        <div class="callout warning">
+          <h3>⚠️ Erro comum</h3>
+          <p>
+            Achar que "o site tem cadeado, então é seguro". Sites de phishing hoje em dia quase sempre usam
+            HTTPS também — certificados são gratuitos e fáceis de obter. O cadeado garante criptografia da
+            conexão, não a legitimidade de quem está do outro lado.
+          </p>
+        </div>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Configurando seu próprio roteador</h2>
+        <ul>
+          <li>Troque a senha padrão de administração do roteador (muitos vêm com "admin/admin").</li>
+          <li>Use criptografia <strong>WPA3</strong> (ou WPA2 se WPA3 não estiver disponível) — nunca WEP, que é considerado quebrado.</li>
+          <li>Crie uma <strong>rede separada para visitantes</strong>, isolada da rede principal onde ficam seus dispositivos.</li>
+          <li>Desative recursos que você não usa, como WPS (Wi-Fi Protected Setup), historicamente vulnerável a força bruta.</li>
+          <li>Mantenha o firmware do roteador atualizado.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>VPN: quando faz sentido usar</h2>
+        <p>
+          Uma VPN cria um túnel criptografado entre seu dispositivo e um servidor, escondendo seu tráfego de
+          quem estiver na mesma rede local. Faz sentido usar em redes públicas não confiáveis ou para
+          acessar recursos corporativos remotamente. Importante: você está transferindo a confiança da rede
+          local para o provedor da VPN — escolha um serviço com boa reputação, especialmente se for gratuito
+          (o "produto" de VPNs gratuitas duvidosas costuma ser os seus dados de navegação).
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Em um aeroporto, você vê duas redes: "Aeroporto-Free-Wifi" e "Aeroporto_Free_WiFi". Uma delas é um
+          Evil Twin criado por alguém com um roteador portátil, esperando que passageiros se conectem por
+          engano. Antes de conectar, confirme o nome exato da rede oficial com um funcionário ou em uma
+          placa informativa.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>HTTPS protege a conexão, não garante que o site é legítimo.</li>
+          <li>Evil Twin é uma rede Wi-Fi falsa com nome parecido ao legítimo.</li>
+          <li>WPA3 (ou WPA2) sempre, WEP nunca; troque a senha padrão do roteador.</li>
+          <li>VPN é útil em redes não confiáveis, mas transfere a confiança para o provedor da VPN.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://www.cisco.com/c/en/us/products/security/what-is-network-security.html" target="_blank" rel="noopener noreferrer">O que é Segurança de Rede — Cisco</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://pt.wikipedia.org/wiki/Ataque_man-in-the-middle" target="_blank" rel="noopener noreferrer">Ataque man-in-the-middle — Wikipédia</a></li>
+          <li><a href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">TryHackMe</a><span class="resource-tag">salas práticas de redes e Wi-Fi em ambiente controlado</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-05-senhas-mfa.html" class="prev">← Senhas e Autenticação na Prática</a>
+        <a href="aula-07-dispositivos-moveis.html" class="next">Próxima aula: Segurança em Dispositivos Móveis →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

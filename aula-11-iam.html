@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 11 - Gestão de Identidade e Acesso (IAM) | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Intermediário · Aula 11</span>
+      <h1>Gestão de Identidade e Acesso (IAM)</h1>
+      <p class="lesson-meta">⏱️ 25-30 minutos · 📚 Trilha Intermediária</p>
+
+      <p class="lesson-intro">
+        IAM (Identity and Access Management) é a disciplina de garantir que a pessoa certa tenha o acesso
+        certo, ao recurso certo, pelo tempo certo — nem mais, nem menos. É uma das áreas mais críticas (e
+        mais mal implementadas) da segurança corporativa.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>RBAC vs. ABAC: dois modelos de controle de acesso</li>
+          <li>O que é Single Sign-On (SSO) e por que ele reduz risco</li>
+          <li>Provisionamento e desprovisionamento de acesso</li>
+          <li>Contas privilegiadas e por que merecem cuidado extra</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>RBAC vs. ABAC</h2>
+        <ul>
+          <li>
+            <strong>RBAC (Role-Based Access Control):</strong> o acesso é definido por função/cargo. Um
+            "analista financeiro" tem um conjunto pré-definido de permissões associadas a esse papel.
+            Simples de administrar, mas pode ficar rígido em cenários complexos.
+          </li>
+          <li>
+            <strong>ABAC (Attribute-Based Access Control):</strong> o acesso é decidido dinamicamente com
+            base em atributos (departamento, localização, horário, sensibilidade do dado). Mais flexível,
+            mas mais complexo de configurar e auditar.
+          </li>
+        </ul>
+        <p>A maioria das empresas usa RBAC como base, com regras ABAC adicionais para casos específicos de alto risco.</p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Single Sign-On (SSO)</h2>
+        <p>
+          Com SSO, o usuário se autentica uma única vez em um provedor de identidade central e ganha acesso
+          a múltiplos sistemas sem precisar logar em cada um separadamente. Isso reduz o número de senhas
+          que o usuário precisa gerenciar (menos reutilização de senha) e centraliza o controle: quando
+          alguém sai da empresa, desativar uma única conta central revoga o acesso a todos os sistemas
+          conectados de uma vez.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Provisionamento e desprovisionamento</h2>
+        <p>
+          <strong>Provisionamento</strong> é o processo de criar contas e conceder acessos quando alguém
+          entra na empresa ou muda de função. <strong>Desprovisionamento</strong> é o processo inverso —
+          revogar acessos quando a pessoa sai ou muda de função.
+        </p>
+        <div class="callout warning">
+          <h3>⚠️ Erro comum</h3>
+          <p>
+            Desprovisionamento lento ou inexistente. É extremamente comum em auditorias encontrar contas
+            ativas de ex-funcionários, meses ou anos depois do desligamento — um dos vetores de risco mais
+            subestimados em segurança corporativa. Revisões periódicas de acesso ("access review") existem
+            justamente para pegar esses casos.
+          </p>
+        </div>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Contas privilegiadas</h2>
+        <p>
+          Contas de administrador, root ou com acesso a sistemas críticos são alvos prioritários de
+          atacantes, porque comprometer uma delas vale muito mais do que comprometer uma conta comum. Boas
+          práticas incluem:
+        </p>
+        <ul>
+          <li>Contas administrativas separadas das contas de uso diário (a mesma pessoa usa uma conta comum para e-mail e uma conta separada, só ativada quando precisa de privilégio elevado).</li>
+          <li>PAM (Privileged Access Management): ferramentas dedicadas para monitorar, limitar e registrar o uso de credenciais privilegiadas.</li>
+          <li>Acesso privilegiado por tempo limitado (Just-in-Time), em vez de permissão permanente.</li>
+        </ul>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Um administrador de sistemas usa uma conta comum para tarefas do dia a dia (e-mail, documentos) e
+          só ativa uma conta administrativa separada, com aprovação e por tempo limitado, quando precisa
+          realmente fazer uma mudança que exige privilégio elevado. Se a conta comum for phishada, o
+          atacante não ganha automaticamente privilégios administrativos.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>RBAC define acesso por função; ABAC decide dinamicamente com base em atributos.</li>
+          <li>SSO reduz reutilização de senha e centraliza a revogação de acesso.</li>
+          <li>Desprovisionamento lento é um dos riscos mais comuns e subestimados em IAM.</li>
+          <li>Contas privilegiadas merecem isolamento, monitoramento e acesso por tempo limitado.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://pt.wikipedia.org/wiki/Controle_de_acesso_baseado_em_função" target="_blank" rel="noopener noreferrer">Controle de acesso baseado em função (RBAC) — Wikipédia</a></li>
+          <li><a href="https://www.cisco.com/c/en/us/products/security/identity-access-management.html" target="_blank" rel="noopener noreferrer">Identity and Access Management — Cisco</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://www.isc2.org/" target="_blank" rel="noopener noreferrer">(ISC)²</a><span class="resource-tag">IAM é um dos domínios centrais do CISSP</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-10-seguranca-redes.html" class="prev">← Segurança de Redes</a>
+        <a href="aula-12-resposta-incidentes.html" class="next">Próxima aula: Resposta a Incidentes →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

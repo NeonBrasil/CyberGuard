@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 16 - ISO 27001 e Gestão de Segurança (SGSI) | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Avançado · Aula 16</span>
+      <h1>ISO 27001 e Gestão de Segurança da Informação</h1>
+      <p class="lesson-meta">⏱️ 30-35 minutos · 📚 Trilha Avançada</p>
+
+      <p class="lesson-intro">
+        A ISO/IEC 27001 é o padrão internacional mais reconhecido para um Sistema de Gestão de Segurança da
+        Informação (SGSI) — e é diferente dos frameworks da aula anterior por um motivo importante:
+        organizações podem ser <strong>certificadas</strong> nela por um auditor externo independente.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>O que é um SGSI e por que ele é um "sistema de gestão", não uma lista de controles</li>
+          <li>O ciclo PDCA (Plan-Do-Check-Act) por trás da norma</li>
+          <li>O que é a Declaração de Aplicabilidade (SoA) e o Anexo A</li>
+          <li>Como funciona o processo de certificação</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>SGSI: um sistema, não uma lista</h2>
+        <p>
+          Um erro comum é pensar na ISO 27001 como "uma lista de 93 controles técnicos para implementar".
+          Na verdade, o núcleo da norma é o <strong>SGSI</strong> — um sistema de gestão contínuo:
+          identificar riscos, decidir como tratá-los, implementar controles, monitorar a eficácia, e
+          melhorar continuamente. Os controles técnicos existem para apoiar esse sistema, não são o sistema
+          em si.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>O ciclo PDCA</h2>
+        <ul>
+          <li><strong>Plan (Planejar):</strong> avaliar riscos de segurança da informação e definir controles para tratá-los.</li>
+          <li><strong>Do (Fazer):</strong> implementar e operar os controles definidos.</li>
+          <li><strong>Check (Verificar):</strong> monitorar e revisar a eficácia do SGSI (auditorias internas, métricas).</li>
+          <li><strong>Act (Agir):</strong> corrigir desvios e melhorar continuamente com base no que foi observado.</li>
+        </ul>
+        <p>Esse ciclo se repete indefinidamente — a certificação não é um evento único, é um compromisso contínuo, reavaliado em auditorias de manutenção anuais e recertificação a cada poucos anos.</p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Anexo A e Declaração de Aplicabilidade (SoA)</h2>
+        <p>
+          O <strong>Anexo A</strong> da norma lista controles de referência organizados em temas (organizacionais, de pessoas, físicos e tecnológicos). Nem toda organização precisa aplicar todos — a
+          <strong>Declaração de Aplicabilidade (Statement of Applicability, SoA)</strong> é o documento onde
+          a empresa justifica, controle por controle, se ele é aplicável ao seu contexto e, se não for, por
+          quê. Esse documento é central em qualquer auditoria: ele mostra que a decisão de incluir ou
+          excluir cada controle foi consciente e baseada em análise de risco, não em omissão.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Como funciona a certificação</h2>
+        <p>
+          Uma organização de certificação acreditada realiza uma auditoria em duas etapas: primeiro revisa a
+          documentação do SGSI (políticas, SoA, avaliação de risco); depois verifica na prática se os
+          controles descritos estão realmente implementados e funcionando. Se aprovada, o certificado é
+          válido por três anos, com auditorias de manutenção anuais para confirmar que o sistema continua
+          ativo — não é uma foto única no tempo.
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Durante a etapa de "Plan", uma empresa identifica que o risco de vazamento de dados de clientes via
+          e-mail é alto. Ela decide implementar controles do Anexo A relacionados a classificação de
+          informação e prevenção de vazamento de dados (DLP), documentando essa decisão na SoA. Na etapa
+          "Check", uma auditoria interna descobre que o DLP não está capturando anexos grandes corretamente
+          — isso vira uma ação corretiva na etapa "Act".
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Tratar a certificação como destino final ("já temos o certificado, terminamos"). Na prática, a
+          certificação é o início formal de um ciclo contínuo de melhoria — empresas que "implementam e
+          esquecem" costumam falhar nas auditorias de manutenção seguintes.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>ISO 27001 certifica um sistema de gestão (SGSI), não apenas controles técnicos isolados.</li>
+          <li>PDCA: Planejar, Fazer, Verificar, Agir — um ciclo contínuo, não um projeto com fim definido.</li>
+          <li>A SoA documenta e justifica quais controles do Anexo A se aplicam à organização.</li>
+          <li>Certificação válida por 3 anos, com auditorias de manutenção anuais.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://www.iso.org/standard/27001" target="_blank" rel="noopener noreferrer">ISO/IEC 27001 (site oficial da ISO)</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://pt.wikipedia.org/wiki/ISO/IEC_27001" target="_blank" rel="noopener noreferrer">ISO/IEC 27001 — Wikipédia</a></li>
+          <li><a href="https://www.isc2.org/" target="_blank" rel="noopener noreferrer">(ISC)²</a><span class="resource-tag">governança e gestão de segurança são domínios centrais do CISSP</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-15-nist-cis.html" class="prev">← Frameworks NIST CSF e CIS Controls</a>
+        <a href="aula-17-lgpd-gdpr.html" class="next">Próxima aula: LGPD, GDPR e Privacidade de Dados →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 20 - SOC, SIEM e Threat Intelligence | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Avançado · Aula 20</span>
+      <h1>SOC, SIEM e Threat Intelligence</h1>
+      <p class="lesson-meta">⏱️ 30-35 minutos · 📚 Trilha Avançada</p>
+
+      <p class="lesson-intro">
+        Se resposta a incidentes (Aula 12) é o "o que fazer quando algo acontece", esta aula é sobre "como
+        saber que algo está acontecendo" em primeiro lugar. É o mundo do monitoramento contínuo — onde
+        vivem os analistas de SOC.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>O que faz um SOC (Security Operations Center) e como ele é organizado em níveis</li>
+          <li>Como um SIEM correlaciona eventos de dezenas de fontes diferentes</li>
+          <li>O que são IOCs e como threat intelligence os usa</li>
+          <li>Uma introdução ao MITRE ATT&CK</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>SOC: a torre de controle</h2>
+        <p>
+          Um SOC monitora continuamente (muitas vezes 24/7) a infraestrutura de uma organização em busca de
+          sinais de atividade maliciosa. É comum organizar os analistas em níveis:
+        </p>
+        <ul>
+          <li><strong>Nível 1 (Triagem):</strong> monitora alertas, faz uma primeira análise e escala o que parece relevante.</li>
+          <li><strong>Nível 2 (Investigação):</strong> investiga mais a fundo os alertas escalados, correlacionando informações de múltiplas fontes.</li>
+          <li><strong>Nível 3 (Resposta avançada / Threat Hunting):</strong> lida com os casos mais complexos e busca ativamente por ameaças que os alertas automáticos não capturaram.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>SIEM: juntando os pontos</h2>
+        <p>
+          Um <strong>SIEM</strong> (Security Information and Event Management) centraliza logs e eventos de
+          dezenas ou centenas de fontes diferentes — firewalls, servidores, endpoints, aplicações — e aplica
+          regras de correlação para identificar padrões suspeitos que, isoladamente em uma única fonte,
+          passariam despercebidos.
+        </p>
+        <p>
+          O valor do SIEM está exatamente na correlação: um login falho isolado não significa nada; cem
+          logins falhos em contas diferentes vindos do mesmo endereço em poucos minutos, seguidos de um
+          login bem-sucedido, é um padrão que o SIEM pode sinalizar automaticamente.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Threat Intelligence e IOCs</h2>
+        <p>
+          Threat Intelligence é informação processada sobre ameaças ativas — quem está atacando, como, e
+          quais sinais eles deixam. Um <strong>IOC</strong> (Indicator of Compromise) é uma evidência
+          concreta de comprometimento: um endereço IP malicioso conhecido, o hash de um arquivo de malware,
+          um domínio usado em campanhas de phishing. SOCs alimentam seus SIEMs com feeds de IOCs atualizados
+          para detectar automaticamente se algum desses indicadores aparece na própria rede.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>MITRE ATT&CK</h2>
+        <p>
+          É uma base de conhecimento pública e amplamente adotada que cataloga táticas e técnicas reais
+          usadas por atacantes, organizadas por fase do ataque (acesso inicial, execução, persistência,
+          movimentação lateral, exfiltração, etc.). Times de defesa usam o ATT&CK como linguagem comum para
+          mapear suas próprias capacidades de detecção ("conseguimos detectar a técnica X?") e identificar
+          lacunas de cobertura.
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Um analista de Nível 1 vê um alerta de um processo incomum sendo executado em um servidor. Ele
+          escala para o Nível 2, que correlaciona esse evento com um IOC recente de uma campanha de
+          ransomware conhecida (mesmo hash de arquivo). Usando o MITRE ATT&CK como referência, a equipe
+          identifica rapidamente em qual fase do ataque a atividade se encaixa e quais próximos passos o
+          atacante provavelmente tentaria — permitindo uma resposta mais rápida e direcionada.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Configurar um SIEM e assumir que ele "detecta tudo sozinho". Um SIEM é tão bom quanto as fontes de
+          log conectadas e as regras de correlação configuradas — sem ajuste e revisão contínua, ele gera
+          ruído (falsos positivos) ou, pior, deixa passar ameaças reais (falsos negativos).
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>SOC monitora continuamente, geralmente organizado em níveis de triagem, investigação e resposta avançada.</li>
+          <li>SIEM correlaciona eventos de múltiplas fontes para revelar padrões invisíveis isoladamente.</li>
+          <li>IOCs são evidências concretas de comprometimento, alimentadas por feeds de threat intelligence.</li>
+          <li>MITRE ATT&CK é a linguagem comum da indústria para descrever táticas e técnicas de ataque.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://attack.mitre.org/" target="_blank" rel="noopener noreferrer">MITRE ATT&CK (site oficial)</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://pt.wikipedia.org/wiki/Security_operations_center" target="_blank" rel="noopener noreferrer">Security Operations Center — Wikipédia</a></li>
+          <li><a href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">TryHackMe</a><span class="resource-tag">salas práticas de SOC, SIEM e threat hunting</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-19-pentest.html" class="prev">← Introdução a Pentest e Ethical Hacking</a>
+        <a href="aula-21-certificacoes.html" class="next">Próxima aula: Trilhas de Certificação →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

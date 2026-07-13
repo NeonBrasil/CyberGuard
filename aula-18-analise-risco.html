@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 18 - Análise de Risco e Gestão de Vulnerabilidades | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Avançado · Aula 18</span>
+      <h1>Análise de Risco e Gestão de Vulnerabilidades</h1>
+      <p class="lesson-meta">⏱️ 30-35 minutos · 📚 Trilha Avançada</p>
+
+      <p class="lesson-intro">
+        Nenhuma organização tem orçamento infinito para eliminar todo risco possível. Análise de risco é a
+        disciplina que ajuda a decidir <strong>onde investir primeiro</strong> — transformando uma lista
+        infinita de vulnerabilidades possíveis em prioridades concretas e acionáveis.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>A fórmula clássica de risco e como aplicá-la</li>
+          <li>Risco qualitativo vs. quantitativo</li>
+          <li>As quatro formas de tratar um risco</li>
+          <li>Como funciona um ciclo de gestão de vulnerabilidades (scan → priorização → remediação)</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>A fórmula clássica de risco</h2>
+        <p>
+          <strong>Risco = Probabilidade × Impacto.</strong> Uma vulnerabilidade crítica em um sistema que
+          ninguém usa e não tem dados sensíveis pode representar um risco menor do que uma vulnerabilidade
+          moderada em um sistema crítico exposto à internet, com dados de clientes. O objetivo da análise de
+          risco não é eliminar toda vulnerabilidade — é entender qual combinação de probabilidade e impacto
+          merece atenção prioritária.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Qualitativo vs. quantitativo</h2>
+        <ul>
+          <li>
+            <strong>Análise qualitativa:</strong> usa escalas descritivas (baixo/médio/alto, ou uma matriz
+            5x5) para classificar risco. Mais rápida e intuitiva, mas mais subjetiva.
+          </li>
+          <li>
+            <strong>Análise quantitativa:</strong> tenta atribuir valores numéricos/financeiros ao risco.
+            Um modelo clássico é o <strong>ALE (Annual Loss Expectancy)</strong>: <br>
+            ALE = SLE (perda esperada por incidente) × ARO (frequência anual estimada do incidente). <br>
+            Mais precisa em teoria, mas depende de dados históricos ou estimativas que nem sempre existem
+            com boa qualidade.
+          </li>
+        </ul>
+        <p>Na prática, muitas organizações combinam os dois: qualitativa para triagem rápida, quantitativa para justificar investimentos maiores perante a liderança.</p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>As quatro formas de tratar um risco</h2>
+        <ul>
+          <li><strong>Mitigar:</strong> reduzir a probabilidade ou o impacto (ex: aplicar um patch, adicionar um controle).</li>
+          <li><strong>Transferir:</strong> passar o impacto financeiro para terceiros (ex: contratar um seguro cibernético, terceirizar um serviço com cláusulas contratuais de responsabilidade).</li>
+          <li><strong>Aceitar:</strong> decidir conscientemente conviver com o risco, porque o custo de tratá-lo supera o benefício — decisão que deve ser formal e documentada, não por omissão.</li>
+          <li><strong>Evitar:</strong> eliminar a atividade ou sistema que gera o risco por completo (ex: desligar um sistema legado sem suporte, em vez de tentar protegê-lo indefinidamente).</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>O ciclo de gestão de vulnerabilidades</h2>
+        <ol>
+          <li><strong>Descoberta:</strong> scanners automatizados identificam vulnerabilidades conhecidas em sistemas e aplicações.</li>
+          <li>
+            <strong>Priorização:</strong> nem toda vulnerabilidade "crítica" no scanner é igualmente urgente
+            — cruzar a pontuação técnica (ex: <strong>CVSS</strong>, que mede severidade técnica) com o
+            contexto do ativo (está exposto à internet? tem exploit conhecido ativamente usado? qual sistema
+            está rodando?) para decidir a ordem real de remediação.
+          </li>
+          <li><strong>Remediação:</strong> aplicar o patch, mudar a configuração ou implementar um controle compensatório quando não é possível corrigir imediatamente.</li>
+          <li><strong>Verificação:</strong> confirmar que a correção realmente eliminou a vulnerabilidade, sem introduzir um novo problema.</li>
+        </ol>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Um scan encontra duas vulnerabilidades "críticas" pela pontuação técnica (CVSS). A primeira está
+          em um servidor de teste isolado, sem acesso à internet. A segunda está em um servidor web
+          público, com um exploit já ativamente usado por atacantes (informação disponível em feeds de
+          inteligência de ameaças). Mesmo com pontuação técnica parecida, a segunda é tratada com urgência
+          muito maior — é isso que priorização baseada em contexto significa na prática.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Tratar a pontuação CVSS como a única fonte de verdade para priorização, ignorando o contexto do
+          ativo. Uma vulnerabilidade "média" em um sistema crítico e exposto pode merecer mais atenção
+          imediata do que uma "crítica" em um sistema isolado e de baixo valor.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>Risco = Probabilidade × Impacto — a base de qualquer priorização.</li>
+          <li>Análise qualitativa é rápida; quantitativa (ex: ALE) é mais precisa, mas exige mais dados.</li>
+          <li>Todo risco identificado deve ser mitigado, transferido, aceito (formalmente) ou evitado.</li>
+          <li>Priorização de vulnerabilidades combina severidade técnica (CVSS) com contexto real do ativo.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://pt.wikipedia.org/wiki/Gestão_de_riscos" target="_blank" rel="noopener noreferrer">Gestão de riscos — Wikipédia</a></li>
+          <li><a href="https://www.first.org/cvss/" target="_blank" rel="noopener noreferrer">CVSS (Common Vulnerability Scoring System) — FIRST.org</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://www.isc2.org/" target="_blank" rel="noopener noreferrer">(ISC)²</a><span class="resource-tag">gestão de risco é um domínio central do CISSP e do CC</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-17-lgpd-gdpr.html" class="prev">← LGPD, GDPR e Privacidade de Dados</a>
+        <a href="aula-19-pentest.html" class="next">Próxima aula: Introdução a Pentest e Ethical Hacking →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

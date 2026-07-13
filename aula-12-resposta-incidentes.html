@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 12 - Resposta a Incidentes | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Intermediário · Aula 12</span>
+      <h1>Resposta a Incidentes: Primeiros Passos</h1>
+      <p class="lesson-meta">⏱️ 25-30 minutos · 📚 Trilha Intermediária</p>
+
+      <p class="lesson-intro">
+        Não existe segurança perfeita — mais cedo ou mais tarde, um incidente acontece. O que separa uma
+        empresa que se recupera rápido de uma que sofre danos graves geralmente não é ter evitado o
+        incidente, mas ter um <strong>processo claro</strong> para lidar com ele.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>As 6 fases do ciclo de resposta a incidentes (baseado no NIST)</li>
+          <li>A diferença entre conter, erradicar e recuperar</li>
+          <li>Por que a fase de "lições aprendidas" é frequentemente pulada — e não deveria ser</li>
+          <li>O que é um CSIRT/SOC e seu papel</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>As fases da resposta a incidentes</h2>
+        <p>O NIST (National Institute of Standards and Technology, dos EUA) descreve um ciclo amplamente adotado pela indústria:</p>
+        <ol>
+          <li><strong>Preparação:</strong> ter processos, ferramentas e uma equipe pronta <em>antes</em> de qualquer incidente acontecer — inclui playbooks, contatos de emergência e backups testados.</li>
+          <li><strong>Detecção e Análise:</strong> identificar que algo anormal está acontecendo e confirmar se é, de fato, um incidente de segurança.</li>
+          <li><strong>Contenção:</strong> limitar o dano, isolando sistemas afetados sem necessariamente já ter eliminado a causa (ex: desconectar uma máquina infectada da rede).</li>
+          <li><strong>Erradicação:</strong> remover a causa raiz (malware, conta comprometida, vulnerabilidade explorada).</li>
+          <li><strong>Recuperação:</strong> restaurar sistemas à operação normal, com monitoramento reforçado para garantir que o problema não retorne.</li>
+          <li><strong>Lições Aprendidas:</strong> analisar o que aconteceu, o que funcionou, o que não funcionou, e atualizar processos e defesas.</li>
+        </ol>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Contenção não é o mesmo que resolver</h2>
+        <p>
+          Um erro comum sob pressão é tentar "limpar tudo" imediatamente. Isso pode destruir evidências
+          necessárias para entender como o ataque aconteceu (e fechar a porta de verdade) e pode alertar um
+          atacante ainda ativo, fazendo-o acelerar ou se esconder melhor. Contenção bem feita isola o
+          problema de forma controlada antes de partir para erradicação.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>A fase mais pulada: lições aprendidas</h2>
+        <p>
+          Depois que os sistemas voltam a funcionar, a pressão do dia a dia frequentemente faz as equipes
+          pularem direto para o próximo problema, sem documentar formalmente o que houve. Isso significa
+          perder a chance de corrigir a causa raiz de verdade — e aumenta a chance de o mesmo tipo de
+          incidente se repetir. Uma boa análise pós-incidente pergunta: como isso começou? Por que não foi
+          detectado antes? O que precisa mudar para evitar recorrência?
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>CSIRT e SOC</h2>
+        <p>
+          Um <strong>CSIRT</strong> (Computer Security Incident Response Team) é a equipe dedicada a
+          responder a incidentes de segurança quando eles acontecem. Um <strong>SOC</strong> (Security
+          Operations Center) é a estrutura mais ampla responsável pelo monitoramento contínuo de segurança
+          — detectando o que, eventualmente, aciona o CSIRT. (Vamos falar mais sobre SOC na Aula 20.)
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Um alerta indica tráfego incomum saindo de um servidor às 3h da manhã. A equipe isola o servidor
+          da rede (contenção) sem desligá-lo, preservando evidências. Investigação revela um processo
+          malicioso explorando uma vulnerabilidade não corrigida (causa raiz). O processo é removido e o
+          patch aplicado (erradicação), o servidor volta ao ar com monitoramento reforçado (recuperação), e
+          uma revisão pós-incidente identifica que o patch estava disponível há 3 meses sem ser aplicado —
+          gerando uma mudança no processo de gestão de patches (lições aprendidas).
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Formatar e reinstalar um sistema comprometido imediatamente, sem investigar antes. Isso destrói
+          evidências forenses e a chance de entender como o atacante entrou — o que significa que a mesma
+          porta pode continuar aberta para um próximo ataque.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>Ciclo NIST: Preparação → Detecção/Análise → Contenção → Erradicação → Recuperação → Lições Aprendidas.</li>
+          <li>Contenção isola o problema; erradicação remove a causa raiz — são etapas distintas.</li>
+          <li>Lições aprendidas é a fase mais pulada e uma das mais importantes para evitar recorrência.</li>
+          <li>CSIRT responde a incidentes; SOC monitora continuamente e aciona o CSIRT quando necessário.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://www.nist.gov/cyberframework" target="_blank" rel="noopener noreferrer">NIST Cybersecurity Framework</a><span class="resource-tag">a função "Respond" trata diretamente de resposta a incidentes</span></li>
+          <li><a href="https://pt.wikipedia.org/wiki/Resposta_a_incidentes_de_segurança_informática" target="_blank" rel="noopener noreferrer">Resposta a incidentes — Wikipédia</a></li>
+          <li><a href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">TryHackMe</a><span class="resource-tag">salas práticas de resposta a incidentes e forense digital</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-11-iam.html" class="prev">← Gestão de Identidade e Acesso</a>
+        <a href="aula-13-backup-bcdr.html" class="next">Próxima aula: Backup e Continuidade de Negócio →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

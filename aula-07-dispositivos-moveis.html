@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 7 - Segurança em Dispositivos Móveis | SIA: Security & Information Academy</title>
+  <link rel="stylesheet" href="Style/index.css">
+  <link rel="stylesheet" href="Style/licao.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">🛡️ SIA: Security & Information Academy</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="estudo.html">Estudos</a></li>
+        <li><a href="features.html">Recursos</a></li>
+        <li><a href="about.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="estudo.html" class="lesson-back-link">&#8592; Voltar ao Material de Estudo</a>
+
+  <main>
+    <div class="lesson-container">
+      <span class="lesson-eyebrow">Iniciante · Aula 7</span>
+      <h1>Segurança em Dispositivos Móveis</h1>
+      <p class="lesson-meta">⏱️ 15-20 minutos · 📚 Trilha Iniciante</p>
+
+      <p class="lesson-intro">
+        Seu celular provavelmente tem mais informações sensíveis sobre você do que seu computador: e-mails,
+        apps bancários, localização, fotos, conversas. E ele viaja com você para lugares onde um notebook
+        nunca vai. Vale um cuidado dedicado.
+      </p>
+
+      <div class="lesson-objectives">
+        <h2>🎯 O que você vai aprender</h2>
+        <ul>
+          <li>Riscos específicos de apps e permissões em dispositivos móveis</li>
+          <li>O que é jailbreak/root e por que reduz sua segurança</li>
+          <li>Como configurar um celular perdido ou roubado para minimizar dano</li>
+          <li>Riscos de carregadores públicos ("juice jacking")</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Apps e permissões</h2>
+        <p>
+          Antes de instalar um app, vale perguntar: essa permissão faz sentido pra função do app? Uma
+          lanterna que pede acesso a contatos e localização é um sinal de alerta. Revise periodicamente as
+          permissões concedidas nas configurações do sistema, e prefira instalar apps só das lojas oficiais
+          (Google Play, App Store), que têm (embora imperfeita) uma camada de revisão contra apps maliciosos.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Jailbreak e root: liberdade com risco</h2>
+        <p>
+          Fazer jailbreak (iOS) ou root (Android) remove restrições impostas pelo fabricante, dando acesso
+          total ao sistema. Isso também remove camadas de segurança que isolam apps uns dos outros — um app
+          malicioso instalado em um dispositivo com root tem muito mais poder de causar dano do que teria em
+          um dispositivo padrão. Para uso pessoal do dia a dia, o risco geralmente supera o benefício.
+        </p>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Se preparando para perda ou roubo</h2>
+        <ul>
+          <li>Ative bloqueio de tela com PIN/biometria — parece óbvio, mas é a primeira e mais eficaz barreira.</li>
+          <li>Ative criptografia do dispositivo (padrão na maioria dos aparelhos modernos, mas vale confirmar).</li>
+          <li>Ative localização e apagamento remoto ("Encontrar meu iPhone", "Encontrar meu Dispositivo" no Android) <strong>antes</strong> de precisar — depois de perdido é tarde.</li>
+          <li>Use autenticação biométrica com cautela em situações de risco físico (uma pessoa pode ser forçada a desbloquear com o dedo/rosto mais facilmente do que "esquecer" uma senha).</li>
+        </ul>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Juice jacking: carregadores públicos</h2>
+        <p>
+          Portas USB públicas (aeroportos, shoppings) podem, em teoria, transmitir dados além de energia,
+          permitindo em cenários específicos a instalação de malware ou extração de dados de um dispositivo
+          conectado. O risco na prática é considerado baixo comparado a outras ameaças do dia a dia, mas a
+          mitigação é simples: use um adaptador "somente energia" (bloqueador de dados USB) ou sua própria
+          fonte/tomada quando possível.
+        </p>
+      </div>
+
+      <div class="callout example">
+        <h3>💡 Exemplo prático</h3>
+        <p>
+          Você perde o celular em um evento. Como já tinha ativado localização remota e bloqueio de tela com
+          PIN, consegue localizar o aparelho pelo computador, bloqueá-lo remotamente e, se necessário, apagar
+          os dados à distância — evitando que quem encontrar o aparelho tenha acesso a e-mails, apps
+          bancários e fotos.
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <h3>⚠️ Erro comum</h3>
+        <p>
+          Usar o mesmo PIN do cartão do banco como PIN de tela do celular, ou um PIN óbvio como "0000" ou
+          "1234". Esses são os primeiros testados em caso de tentativa de acesso físico não autorizado.
+        </p>
+      </div>
+
+      <div class="lesson-summary">
+        <h2>✅ Pontos-chave</h2>
+        <ul>
+          <li>Revise permissões de apps: elas devem fazer sentido para a função do aplicativo.</li>
+          <li>Jailbreak/root aumentam risco ao remover isolamento de segurança do sistema.</li>
+          <li>Configure localização e apagamento remoto antes de precisar, não depois.</li>
+          <li>Prefira sua própria fonte de energia a portas USB públicas desconhecidas.</li>
+        </ul>
+      </div>
+
+      <div class="lesson-resources">
+        <h2>🔗 Para se aprofundar</h2>
+        <ul>
+          <li><a href="https://pt.wikipedia.org/wiki/Segurança_da_informação" target="_blank" rel="noopener noreferrer">Segurança da informação — Wikipédia</a><span class="resource-tag">conceitos aplicáveis também a mobile</span></li>
+          <li><a href="https://www.cisco.com/c/en/us/products/security/what-is-malware.html" target="_blank" rel="noopener noreferrer">O que é Malware — Cisco</a><span class="resource-tag">em inglês</span></li>
+          <li><a href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">TryHackMe</a><span class="resource-tag">fundamentos de segurança aplicáveis a qualquer dispositivo</span></li>
+        </ul>
+      </div>
+
+      <div class="lesson-nav">
+        <a href="aula-06-wifi-navegacao.html" class="prev">← Segurança em Wi-Fi e Navegação</a>
+        <a href="aula-08-engenharia-social.html" class="next">Próxima aula: Engenharia Social na Prática →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <p>&copy; 2025 Cayque Cicarelli. Todos os direitos reservados.</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/cayque-cicarelli/" title="LinkedIn">🔗</a>
+          <a href="https://github.com/NeonBrasil" title="GitHub">💻</a>
+          <a href="mailto:cayquecicarelli@gmail.com" title="Email">📧</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

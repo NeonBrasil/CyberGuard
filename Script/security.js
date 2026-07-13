@@ -1,5 +1,13 @@
 // Sistema de Segurança SIA: Security & Information Academy
-// Proteção contra ataques DDoS, spam, abuso de recursos e vazamento de dados
+// Proteção contra spam e abuso de recursos no uso normal do site.
+//
+// IMPORTANTE: isso é 100% client-side. Serve para desencorajar abuso
+// casual (ex. alguém clicando "login" repetidamente), mas NÃO é proteção
+// real contra um atacante deliberado: qualquer um pode chamar a API do
+// Firebase Auth/Firestore diretamente (sem carregar esse arquivo) e
+// ignorar tudo isso. Proteção de verdade contra brute-force/DDoS exige
+// controles do lado do servidor (Firebase App Check, Cloud Functions,
+// ou as proteções nativas do Identity Platform).
 
 console.log('🛡️ SIA: Security & Information Academy Security System carregado');
 
@@ -26,47 +34,73 @@ var SecurityConfig = {
 };
 
 // Sistema de Rate Limiting
+// Persistido em localStorage: antes ficava só em memória (var storage = {}),
+// então um simples F5 na página zerava todas as tentativas contadas. Ainda é
+// contornável (limpar localStorage/aba anônima), mas pelo menos não reseta
+// sozinho a cada navegação.
 var RateLimiter = {
+  storageKey: 'sia_rate_limiter',
   storage: {},
-  
+
+  _load: function() {
+    try {
+      var raw = localStorage.getItem(this.storageKey);
+      this.storage = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      this.storage = {};
+    }
+  },
+
+  _save: function() {
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify(this.storage));
+    } catch (e) {
+      // localStorage indisponível (modo privado/cheio) - segue só em memória
+    }
+  },
+
   // Verificar se ação é permitida
   isAllowed: function(action, identifier, limit, window) {
     var now = Date.now();
     var key = action + '_' + identifier;
-    
+
     if (!this.storage[key]) {
       this.storage[key] = { count: 0, resetTime: now + window };
     }
-    
+
     var record = this.storage[key];
-    
+
     // Reset se janela expirou
     if (now > record.resetTime) {
       record.count = 0;
       record.resetTime = now + window;
     }
-    
+
     // Verificar limite
     if (record.count >= limit) {
       console.warn('🚨 Rate limit atingido para', action, 'por', identifier);
+      this._save();
       return false;
     }
-    
+
     record.count++;
+    this._save();
     return true;
   },
-  
+
   // Obter tempo restante para reset
   getTimeUntilReset: function(action, identifier) {
     var key = action + '_' + identifier;
     var record = this.storage[key];
-    
+
     if (!record) return 0;
-    
+
     var now = Date.now();
     return Math.max(0, record.resetTime - now);
   }
 };
+
+RateLimiter._load();
 
 // Sistema de detecção de comportamento suspeito
 var BehaviorMonitor = {
@@ -130,9 +164,23 @@ var BehaviorMonitor = {
     return this.suspiciousIPs.has(ip);
   },
   
-  // Obter IP do cliente (simulado para frontend)
+  // Identificador do navegador (NÃO é o IP real - JS não tem acesso a isso,
+  // só o servidor vê o IP de verdade). Antes gerava um valor aleatório novo
+  // a cada chamada, o que fazia o "bloqueio de IP suspeito" nunca reconhecer
+  // o mesmo cliente duas vezes. Agora persiste em localStorage para pelo
+  // menos identificar o mesmo navegador entre chamadas/reloads.
   getClientIP: function() {
-    return 'client_' + Math.random().toString(36).substring(2, 9);
+    try {
+      var stored = localStorage.getItem('sia_client_id');
+      if (stored) return stored;
+
+      var id = 'client_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+      localStorage.setItem('sia_client_id', id);
+      return id;
+    } catch (e) {
+      // localStorage indisponível (modo privado, etc)
+      return 'client_' + Math.random().toString(36).substring(2, 9);
+    }
   }
 };
 
@@ -175,7 +223,8 @@ var LoginSecurity = {
       });
       
       // Reset contador de tentativas em caso de sucesso
-      RateLimiter.storage['login_' + email] = null;
+      delete RateLimiter.storage['login_' + email];
+      RateLimiter._save();
     }
   }
 };

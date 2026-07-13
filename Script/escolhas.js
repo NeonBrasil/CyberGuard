@@ -69,9 +69,25 @@ window.FirebaseManager = {
           userName = window.userAccountManager.userDoc.name || userName;
         }
         
-        var result = {
+        // Doc público usado no ranking - NUNCA inclui o conteúdo das
+        // respostas (pergunta/resposta certa/errada), só o essencial para
+        // exibir a posição no leaderboard. Esse doc é legível por qualquer
+        // visitante (ver firestore.rules), então nada sensível vai aqui.
+        var publicResult = {
           userId: window.currentUser.uid,
           userName: userName,
+          difficulty: difficulty,
+          score: percentage,
+          totalQuestions: totalQuestions,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          timeSpent: timeSpent
+        };
+
+        // Doc privado (só o dono lê) com o detalhe completo, incluindo as
+        // respostas erradas - usado no histórico da conta e na exportação
+        // de dados (LGPD).
+        var privateAttempt = {
+          userId: window.currentUser.uid,
           difficulty: difficulty,
           score: percentage,
           totalQuestions: totalQuestions,
@@ -79,13 +95,18 @@ window.FirebaseManager = {
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           timeSpent: timeSpent
         };
-        
-        console.log('Dados do resultado:', result);
-        
-        // Salvar na coleção quizResults (não quiz_results)
-        db.collection('quizResults').add(result).then(function(docRef) {
+
+        console.log('Dados do resultado:', publicResult);
+
+        db.collection('quizResults').add(publicResult).then(function(docRef) {
           console.log('✅ Resultado salvo com ID:', docRef.id);
-          
+
+          db.collection('users').doc(window.currentUser.uid)
+            .collection('quizAttempts').add(privateAttempt)
+            .catch(function(error) {
+              console.error('❌ Erro ao salvar detalhe privado do resultado:', error);
+            });
+
           // DELAY REALISTA: Simular processamento do ranking (2-3 segundos)
           setTimeout(function() {
             // Atualizar estatísticas do usuário após delay
@@ -95,11 +116,11 @@ window.FirebaseManager = {
                 timeSpent: timeSpent
               });
             }
-            
+
             console.log('✅ Resultado salvo e estatísticas atualizadas após processamento');
             console.log('ℹ️ RANKING: Será atualizado automaticamente todos os dias às 19h para economizar Firebase reads');
           }, Math.random() * 1000 + 2000); // 2-3 segundos aleatórios
-          
+
           resolve();
         }).catch(function(error) {
           console.error('❌ Erro ao salvar resultado:', error);

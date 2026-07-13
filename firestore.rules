@@ -2,50 +2,108 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Regras para perguntas (leitura pública, escrita apenas admin)
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    // Limita o quanto os campos de estatística podem mudar em UMA escrita.
+    // Não impede 100% de trapaça (isso exigiria calcular o score no servidor,
+    // ex. Cloud Functions), mas impede o ataque trivial de "escrever
+    // totalScore: 999999 direto pelo console" e trava os valores em faixas
+    // plausíveis (0-100%, +1 quiz por escrita).
+    function isPlausibleStatsUpdate(oldData, newData) {
+      let oldStats = ('stats' in oldData) ? oldData.stats : null;
+      let newStats = newData.stats;
+      let oldTotalQuizzes = oldStats == null ? 0 : (('totalQuizzes' in oldStats) ? oldStats.totalQuizzes : 0);
+      return newStats.totalQuizzes is number &&
+        newStats.totalQuizzes >= oldTotalQuizzes &&
+        newStats.totalQuizzes <= oldTotalQuizzes + 1 &&
+        newStats.averageScore is number &&
+        newStats.averageScore >= 0 && newStats.averageScore <= 100 &&
+        (!('bestScore' in newStats) ||
+          (newStats.bestScore is number && newStats.bestScore >= 0 && newStats.bestScore <= 100));
+    }
+
+    // Perguntas do quiz: leitura pública, escrita só por admin (custom claim)
     match /questions/{document} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.admin == true;
+      allow write: if isAdmin();
     }
-    
-    // Regras para usuários (leitura pública para ranking, escrita apenas próprio usuário)
+
+    // Perfil do usuário (leitura pública para exibir nome/stats no ranking)
     match /users/{userId} {
-      allow read: if true; // Permite leitura pública para ranking
-      allow write: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null && request.auth.uid == userId;
+      allow read: if true;
+
+      allow create: if isOwner(userId) &&
+        (!('stats' in request.resource.data) ||
+          (request.resource.data.stats.totalQuizzes == 0 &&
+           request.resource.data.stats.totalScore == 0 &&
+           request.resource.data.stats.averageScore == 0));
+
+      allow update: if isOwner(userId) &&
+        (!('stats' in request.resource.data) ||
+          isPlausibleStatsUpdate(resource.data, request.resource.data));
+
+      // Histórico detalhado de tentativas de quiz (inclui respostas erradas).
+      // Privado: só o dono pode ler. Imutável (não dá para editar um score já
+      // salvo), mas o dono pode apagar - necessário para exclusão de conta
+      // (LGPD, direito de eliminação).
+      match /quizAttempts/{attemptId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          request.resource.data.userId == userId &&
+          request.resource.data.score is number &&
+          request.resource.data.score >= 0 && request.resource.data.score <= 100;
+        allow update: if false;
+        allow delete: if isOwner(userId);
+      }
     }
-    
-    // Regras para resultados de quiz (compatibilidade com quizResults e quiz_results)
+
+    // Resultados de quiz usados no ranking público (sem dados sensíveis
+    // como respostas erradas - isso fica em users/{uid}/quizAttempts).
     match /quizResults/{document} {
-      allow read: if true; // Leitura pública para ranking
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-      allow update: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow read: if true;
+      allow create: if isSignedIn() &&
+        request.auth.uid == request.resource.data.userId &&
+        request.resource.data.score is number &&
+        request.resource.data.score >= 0 && request.resource.data.score <= 100 &&
+        request.resource.data.difficulty in ['easy', 'medium', 'hard'];
+      // Imutável (não dá para editar um score já salvo para "subir" no
+      // ranking), mas o dono pode apagar - necessário para exclusão de
+      // conta (LGPD, direito de eliminação).
+      allow update: if false;
+      allow delete: if isSignedIn() && request.auth.uid == resource.data.userId;
     }
-    
-    match /quiz_results/{document} {
-      allow read: if request.auth != null && 
-        (request.auth.uid == resource.data.userId || resource.data.isPublic == true);
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-      allow update: if request.auth != null && request.auth.uid == resource.data.userId;
-    }
-    
-    // Regras para leaderboard (leitura pública de dados públicos)
+
+    // Leaderboard (leitura pública de dados públicos)
     match /leaderboard/{userId} {
       allow read: if resource.data.isPublic == true;
-      allow write: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null && request.auth.uid == userId;
+      allow write: if isOwner(userId) &&
+        request.resource.data.totalScore is number &&
+        request.resource.data.totalQuizzes is number &&
+        request.resource.data.totalQuizzes >= 0;
     }
-    
-    // Regras para estatísticas globais (leitura pública)
+
+    // Estatísticas globais: hoje não é escrito por nenhum código do site.
+    // Reservado para uso futuro via admin/Cloud Function.
     match /global_stats/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
-    
-    // Regras para conquistas/achievements
+
+    // Conquistas/achievements
     match /achievements/{userId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
     }
   }
 }

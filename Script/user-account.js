@@ -103,10 +103,10 @@ class UserAccountManager {
           <div class="profile-avatar">
             ${this.generateAvatar(this.userDoc.name)}
           </div>
-          
+
           <div class="profile-info">
-            <h3>${this.userDoc.name}</h3>
-            <p class="profile-email">${this.maskEmail(this.userDoc.email)}</p>
+            <h3>${this.escapeHtml(this.userDoc.name)}</h3>
+            <p class="profile-email">${this.escapeHtml(this.maskEmail(this.userDoc.email))}</p>
             <p class="profile-since">Membro desde ${this.formatDate(this.userDoc.createdAt)}</p>
           </div>
         </div>
@@ -170,14 +170,14 @@ class UserAccountManager {
         <form class="edit-profile-form" onsubmit="userAccountManager.saveProfileChanges(event)">
           <div class="form-group">
             <label for="edit-name">Nome:</label>
-            <input type="text" id="edit-name" value="${this.userDoc.name}" required 
+            <input type="text" id="edit-name" value="${this.escapeHtml(this.userDoc.name)}" required
                    placeholder="Seu nome completo" maxlength="50">
             <small>Como você quer ser chamado no sistema</small>
           </div>
 
           <div class="form-group">
             <label for="edit-email">Email:</label>
-            <input type="email" id="edit-email" value="${this.userDoc.email}" readonly 
+            <input type="email" id="edit-email" value="${this.escapeHtml(this.userDoc.email)}" readonly
                    title="Para alterar o email, entre em contato conosco">
             <small>⚠️ Para alterar email, entre em contato via suporte</small>
           </div>
@@ -411,25 +411,34 @@ class UserAccountManager {
 
   // Excluir todos os dados do usuário no Firestore
   async deleteUserData(userId) {
-    const batch = window.db.batch();
-
     try {
-      // Excluir perfil do usuário
-      const userRef = window.db.collection('users').doc(userId);
-      batch.delete(userRef);
+      // Excluir histórico detalhado de tentativas (subcoleção privada)
+      const quizAttempts = await window.db.collection('users').doc(userId)
+        .collection('quizAttempts').get();
 
-      // Excluir resultados de quiz
-      const quizResults = await window.db.collection('quiz_results')
+      const attemptsBatch = window.db.batch();
+      quizAttempts.forEach(doc => attemptsBatch.delete(doc.ref));
+      if (!quizAttempts.empty) {
+        await attemptsBatch.commit();
+      }
+
+      // Excluir resultados de quiz usados no ranking público
+      const quizResults = await window.db.collection('quizResults')
         .where('userId', '==', userId)
         .get();
-      
-      quizResults.forEach(doc => {
-        batch.delete(doc.ref);
-      });
 
-      // Executar todas as exclusões
-      await batch.commit();
-      
+      const resultsBatch = window.db.batch();
+      quizResults.forEach(doc => resultsBatch.delete(doc.ref));
+      if (!quizResults.empty) {
+        await resultsBatch.commit();
+      }
+
+      // Excluir posição no leaderboard, se existir
+      await window.db.collection('leaderboard').doc(userId).delete().catch(() => {});
+
+      // Excluir perfil do usuário
+      await window.db.collection('users').doc(userId).delete();
+
       console.log('Dados do usuário excluídos do Firestore');
     } catch (error) {
       console.error('Erro ao excluir dados do Firestore:', error);
@@ -466,17 +475,26 @@ class UserAccountManager {
       const userData = {
         profile: this.userDoc,
         exportedAt: new Date().toISOString(),
-        quizResults: []
+        quizResults: [],
+        quizAttemptDetails: []
       };
 
-      // Buscar resultados de quiz
-      const quizResults = await window.db.collection('quiz_results')
+      // Buscar resultados de quiz (usados no ranking público)
+      const quizResults = await window.db.collection('quizResults')
         .where('userId', '==', this.userDoc.id)
         .orderBy('timestamp', 'desc')
         .get();
 
       quizResults.forEach(doc => {
         userData.quizResults.push(doc.data());
+      });
+
+      // Buscar histórico detalhado (inclui respostas erradas), privado
+      const quizAttempts = await window.db.collection('users').doc(this.userDoc.id)
+        .collection('quizAttempts').orderBy('timestamp', 'desc').get();
+
+      quizAttempts.forEach(doc => {
+        userData.quizAttemptDetails.push(doc.data());
       });
 
       // Criar arquivo para download
@@ -539,12 +557,12 @@ class UserAccountManager {
     const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'];
     const color = colors[name.length % colors.length];
-    
+
     return `
-      <div class="avatar" style="background: ${color}; color: white; width: 60px; height: 60px; 
-           border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+      <div class="avatar" style="background: ${color}; color: white; width: 60px; height: 60px;
+           border-radius: 50%; display: flex; align-items: center; justify-content: center;
            font-size: 1.5rem; font-weight: bold;">
-        ${initials}
+        ${this.escapeHtml(initials)}
       </div>
     `;
   }
@@ -553,6 +571,21 @@ class UserAccountManager {
     const [local, domain] = email.split('@');
     const maskedLocal = local.substring(0, 2) + '*'.repeat(local.length - 2);
     return maskedLocal + '@' + domain;
+  }
+
+  // Escapa texto vindo do Firestore antes de inserir via innerHTML, incluindo
+  // aspas (necessário pois é usado dentro de atributos value="..." também).
+  // Necessário porque as Firestore Rules só verificam o dono do documento,
+  // não o conteúdo do campo "name" - um valor malicioso pode chegar aqui
+  // mesmo que a UI normalmente valide o que o usuário digita.
+  escapeHtml(text) {
+    if (text == null) return '';
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   formatDate(dateString) {

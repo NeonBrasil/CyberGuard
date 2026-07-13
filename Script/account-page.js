@@ -133,85 +133,120 @@ class AccountPageManager {
 
   async handleLogin(event) {
     event.preventDefault();
-    
+
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
-    
+
     // Validação básica
     if (!email || !password) {
       this.showMessage('Por favor, preencha todos os campos.', 'error');
       return;
     }
 
+    // Validação de segurança (mesma usada em login-system.js): formato de
+    // email, domínios temporários bloqueados e rate limiting de tentativas.
+    // Antes essa checagem não rodava nessa página porque dependia de um
+    // objeto window.loginSystem que nunca chegou a existir.
+    try {
+      if (window.InputValidator) {
+        window.InputValidator.validateEmail(email);
+        window.InputValidator.validatePassword(password);
+      }
+      if (window.LoginSecurity) {
+        window.LoginSecurity.canAttemptLogin(email);
+      }
+    } catch (error) {
+      this.showMessage('Erro de segurança: ' + error.message, 'error');
+      return;
+    }
+
     try {
       this.showMessage('Fazendo login...', 'info');
-      
-      // Usa o sistema de login existente
-      if (typeof window.loginSystem !== 'undefined') {
-        await window.loginSystem.loginUser(email, password);
-      } else {
-        await firebase.auth().signInWithEmailAndPassword(email, password);
+
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+
+      if (window.LoginSecurity) {
+        window.LoginSecurity.recordLoginAttempt(email, true);
       }
-      
+
       this.showMessage('Login realizado com sucesso!', 'success');
     } catch (error) {
       console.error('Erro no login:', error);
+      if (window.LoginSecurity) {
+        window.LoginSecurity.recordLoginAttempt(email, false);
+      }
       this.showMessage(this.getErrorMessage(error), 'error');
     }
   }
 
   async handleRegister(event) {
     event.preventDefault();
-    
+
     const name = document.getElementById('registerName').value;
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    
+
     // Validações
     if (!name || !email || !password || !confirmPassword) {
       this.showMessage('Por favor, preencha todos os campos.', 'error');
       return;
     }
-    
+
     if (password !== confirmPassword) {
       this.showMessage('As senhas não coincidem.', 'error');
       return;
     }
-    
-    if (password.length < 6) {
-      this.showMessage('A senha deve ter pelo menos 6 caracteres.', 'error');
+
+    // Validação de segurança (mesma usada em login-system.js): nome sem
+    // caracteres perigosos, email válido/não-temporário, senha dentro dos
+    // limites e rate limiting de tentativas.
+    try {
+      if (window.InputValidator) {
+        window.InputValidator.validateName(name);
+        window.InputValidator.validateEmail(email);
+        window.InputValidator.validatePassword(password);
+      } else if (password.length < 6) {
+        throw new Error('A senha deve ter pelo menos 6 caracteres.');
+      }
+      if (window.LoginSecurity) {
+        window.LoginSecurity.canAttemptLogin(email);
+      }
+    } catch (error) {
+      this.showMessage(error.message, 'error');
       return;
     }
 
     try {
       this.showMessage('Criando conta...', 'info');
-      
-      // Usa o sistema de registro existente
-      if (typeof window.loginSystem !== 'undefined') {
-        await window.loginSystem.registerUser(email, password, name);
-      } else {
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-        await userCredential.user.updateProfile({ displayName: name });
-        
-        // Cria perfil no Firestore
-        await firebase.firestore().collection('users').doc(userCredential.user.uid).set({
-          name: name,
-          email: email,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          stats: {
-            totalQuizzes: 0,
-            totalScore: 0,
-            averageScore: 0,
-            timeSpent: 0,
-            lastQuizDate: null
-          }
-        });
+
+      const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      await userCredential.user.updateProfile({ displayName: name });
+
+      // Cria perfil no Firestore
+      await firebase.firestore().collection('users').doc(userCredential.user.uid).set({
+        name: name,
+        email: email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        stats: {
+          totalQuizzes: 0,
+          totalScore: 0,
+          averageScore: 0,
+          timeSpent: 0,
+          lastQuizDate: null
+        }
+      });
+
+      if (window.LoginSecurity) {
+        window.LoginSecurity.recordLoginAttempt(email, true);
       }
-      
+
       this.showMessage('Conta criada com sucesso!', 'success');
     } catch (error) {
       console.error('Erro no registro:', error);
+      if (window.LoginSecurity) {
+        window.LoginSecurity.recordLoginAttempt(email, false);
+      }
       this.showMessage(this.getErrorMessage(error), 'error');
     }
   }

@@ -54,3 +54,11 @@ Thumbs.db
 # Temporary folders
 tmp/
 temp/
+
+# Documentação interna (não publicar no GitHub)
+*.md
+
+# Backups e arquivos de rascunho
+*.backup
+*.bak
+*.orig
